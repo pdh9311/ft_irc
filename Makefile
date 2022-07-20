@@ -6,7 +6,7 @@
 #    By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/22 23:04:25 by minsunki          #+#    #+#              #
-#    Updated: 2022/07/18 15:27:46 by minsunki         ###   ########seoul.kr   #
+#    Updated: 2022/07/21 01:29:44 by minsunki         ###   ########seoul.kr   #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,8 @@ SRCF_B		=	$(SRCF)/bonus
 # INCF		=	includes
 
 FIL_M		=	main \
-				irc \
+				server/server \
+				client/client \
 				util \
 				debug
 
