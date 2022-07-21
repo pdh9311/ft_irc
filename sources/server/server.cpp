@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:39:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/21 16:51:41 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/22 01:08:43 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "../client/client.hpp"
 
 #include <cstdlib>
+#include <ctime>
 #include <iostream>
 
 #include <unistd.h>
@@ -56,7 +57,7 @@ namespace ft::irc
 
 	void	Server::queue(const int& fd, std::string msg)
 	{
-		_sque.push(std::make_pair(fd, msg));
+		_sque.push(std::make_pair(fd, msg + "\r\n"));
 	}
 
 	void	Server::flush()
@@ -69,6 +70,23 @@ namespace ft::irc
 			/*	TODO make better send function	*/
 			send(fd, &msg[0], msg.size(), 0);
 			_sque.pop();
+		}
+	}
+
+	void	Server::ping()
+	{
+		time_t								ct = std::time(0);
+		std::map<int, Client*>::iterator	it = _clients.begin();
+
+		while (it != _clients.end())
+		{
+			Client*&	client = it->second;
+
+			if (ct - client->getLastPing() >= 5)	/*	TODO:: make proper config class	*/
+				(void)client; // client is not responding to ping. kill?
+
+			this->queue(client->getFD(), "PING minsunki");	/*	TODO:: replace placeholder with something fitting	*/
+			it++;
 		}
 	}
 
@@ -94,12 +112,17 @@ namespace ft::irc
 
 	void	Server::run()
 	{
-		int	pr;
+		time_t	last_ping = 0;
+		int		pr;
 
 		while (1)
 		{
+			if (std::time(0) - last_ping > 1)	/*	TODO:: proper config class	*/
+				this->ping(), last_ping = std::time(0);
+
 			_pfds.reserve(42);
-			pr = poll(&_pfds[0], _pfds.size(), 100), DBG(-1, pr, "poll");
+			pr = poll(&_pfds[0], _pfds.size(), 1000), DBG(-1, pr, "poll");
+
 
 			if (pr)
 			{
@@ -120,7 +143,8 @@ namespace ft::irc
 					_clients[pfd.fd]->recv();
 				}
 			}
-			
+
+
 			if (_sque.size())
 				this->flush();
 		}

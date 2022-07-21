@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/21 17:10:29 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/21 23:05:38 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ namespace ft::irc
 			void	accept();
 			void	queue (const int& fd, std::string msg);
 			void	flush();
+			void	ping();
 
 		public:
 			Server (std::string port);
