@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/21 16:52:52 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/21 17:10:29 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 namespace ft::irc
 {
 	class Client; /*	TODO	*/
+	class Channel; /*	TODO	*/
 
 	class Server
 	{
@@ -34,6 +35,7 @@ namespace ft::irc
 			std::vector<pollfd>							_pfds;
 			std::queue<std::pair<int, std::string>>		_sque; // maybe create reply/msg class?
 			std::map<int, Client*>						_clients;
+			std::map<std::string, Channel*>				_channels;
 			const int									_port;
 			int											_lfd;
 
