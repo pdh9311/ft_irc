@@ -6,11 +6,12 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:58:48 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/21 01:55:22 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/21 16:48:36 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "client.hpp"
+#include "../server/server.hpp"
 
 #include <iostream>
 
@@ -18,8 +19,8 @@
 
 namespace ft::irc
 {
-	Client::Client (const int& fd)
-	:	_fd(fd)
+	Client::Client (const int& fd, Server* server)
+	:	_fd(fd), _server(server)
 	{}
 
 	Client::~Client()
@@ -30,16 +31,18 @@ namespace ft::irc
 	void	Client::recv()
 	{
 		int		rs;
-		char	buf[512];
+		char	buf[512 + 1];
 
-		rs = ::recv(_fd, buf, 512, 0);
-		buf[rs] = '\0'; /*	TODO:: proper CRLF detection, potential overflow rn	*/
+		rs = ::recv(_fd, buf, 512, 0); // buffer size is 512 per rfc.
+		buf[rs] = '\0'; /*	TODO:: read buffer and parse command	*/
 		_buf += buf;
 
 		std::cout << "client fd [" << _fd << "] recv, ";
 		std::cout << "buffer content (" << _buf.size() << ")-----" << std::endl;
 		std::cout << _buf << std::endl;
 		std::cout << "----- end of buffer -----" << std::endl;
+
+		_server->queue(_fd, "hello client");
 	}
 
 	const int&	Client::getFD() const

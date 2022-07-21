@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/21 01:11:59 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/21 16:52:52 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define __SERVER_HPP__
 
 #include <vector>
+#include <queue>
 #include <string>
 #include <utility>
 #include <map>
@@ -26,14 +27,19 @@ namespace ft::irc
 
 	class Server
 	{
+		friend class Client;
+		
 		private:
+			
 			std::vector<pollfd>							_pfds;
-			std::vector<std::pair<int, std::string>>	_sque;
+			std::queue<std::pair<int, std::string>>		_sque; // maybe create reply/msg class?
 			std::map<int, Client*>						_clients;
 			const int									_port;
 			int											_lfd;
 
 			void	accept();
+			void	queue (const int& fd, std::string msg);
+			void	flush();
 
 		public:
 			Server (std::string port);
