@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:58:48 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/22 14:38:34 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/22 15:28:55 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 #include <sys/socket.h>
 
-namespace ft::irc
+namespace irc
 {
 	Client::Client (const int& fd, Server* server)
 	:	_fd(fd), _server(server), _last_ping(std::time(0))
@@ -68,7 +68,7 @@ namespace ft::irc
 	// }
 	void	Client::_parse(std::string str)
 	{
-		std::cout << "_parse called for [" << str << "]" << std::endl;
+		// std::cout << "_parse called for [" << str << "]" << std::endl;
 		size_t						cur = 0;
 		size_t						fpos;
 		std::string					prefix;
@@ -92,7 +92,7 @@ namespace ft::irc
 		while (cur != std::string::npos)
 		{
 			while (str[cur] == ' ') cur++;
-			if (str[cur] == ':') // check if this works later
+			if (str[cur] == ':')
 				fpos = std::string::npos;
 			else
 				fpos = str.find(' ', cur);
@@ -101,14 +101,15 @@ namespace ft::irc
 			cur = fpos;
 		}
 
-		std::cout << "prefix: " << prefix << "#" << std::endl;
-		std::cout << "cmd: " << cmd << "#" <<  std::endl;
-		for(int i = 0; i < args.size(); ++i)
-		{
-			std::cout << "arg#" << i << ": " << args[i] << "#" <<  std::endl;
-		}
+		// std::cout << "prefix: " << prefix << "#" << std::endl;
+		// std::cout << "cmd: " << cmd << "#" <<  std::endl;
+		// for(int i = 0; i < args.size(); ++i)
+		// {
+		// 	std::cout << "arg#" << i << ": " << args[i] << "#" <<  std::endl;
+		// }
 
-		_cmds.push_back(Command(prefix, cmd, args));
+		// _cmds.push_back(Command(prefix, cmd, args));
+
 	}
 
 	int	Client::parse()

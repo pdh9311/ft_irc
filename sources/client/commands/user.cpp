@@ -1,0 +1,4 @@
+namespace irc::cmd
+{
+	user()
+}

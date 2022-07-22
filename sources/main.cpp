@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 14:08:16 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/21 01:30:36 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/22 15:28:53 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	main(int argc, char** argv)
 		return (0);
 	}
 
-	ft::irc::Server	serv(argv[1]);
+	irc::Server	serv(argv[1]);
 
 	serv.initialize();
 	serv.run();

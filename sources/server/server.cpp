@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:39:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/22 14:02:21 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/22 15:34:08 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,17 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <cerrno>
 
 #include <unistd.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <fcntl.h>
 
-namespace ft::irc
+namespace irc
 {
 	Server::Server(std::string port)
-	:	_port(ft::stoi(port))
+	:	_port(irc::stoi(port))
 	{}
 
 	Server::~Server()
@@ -52,7 +53,10 @@ namespace ft::irc
 		DBG(-1, listen(sock, 42), "listen");
 
 		_lfd = sock;
-		_pfds.push_back({_lfd, POLLIN, 0});
+		pfd.fd = _lfd;
+		pfd.events = POLLIN;
+		pfd.revents = 0;
+		_pfds.push_back(pfd);
 	}
 
 	void	Server::queue(const int& fd, std::string msg)
@@ -99,7 +103,12 @@ namespace ft::irc
 		{
 			std::cout << "new connection accepted" << std::endl;
 
-			_pfds.push_back({sock, POLLIN, 0});
+			pollfd	pfd;
+			pfd.fd = sock;
+			pfd.events = POLLIN;
+			pfd.revents = 0;
+
+			_pfds.push_back(pfd);
 			if (!(_clients.insert(std::make_pair(sock, new Client(sock, this))).second))
 				PE("failed inserting client to _clients.");
 

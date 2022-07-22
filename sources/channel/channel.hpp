@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 17:08:35 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/21 17:43:47 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/22 15:28:54 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include <vector>
 
-namespace ft::irc
+namespace irc
 {
 	class Channel
 	{

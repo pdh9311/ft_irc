@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/21 23:05:38 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/22 15:28:59 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 #include <poll.h>
 
-namespace ft::irc
+namespace irc
 {
 	class Client; /*	TODO	*/
 	class Channel; /*	TODO	*/
@@ -33,7 +33,7 @@ namespace ft::irc
 		private:
 			
 			std::vector<pollfd>							_pfds;
-			std::queue<std::pair<int, std::string>>		_sque; // maybe create reply/msg class?
+			std::queue<std::pair<int, std::string> >	_sque; // maybe create reply/msg class?
 			std::map<int, Client*>						_clients;
 			std::map<std::string, Channel*>				_channels;
 			const int									_port;

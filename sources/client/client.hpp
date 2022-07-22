@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:47:58 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/22 14:29:05 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/22 15:28:56 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 #include <unistd.h>
 
-namespace ft::irc
+namespace irc
 {
 	class Server;
 
