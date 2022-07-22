@@ -6,7 +6,7 @@
 #    By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/22 23:04:25 by minsunki          #+#    #+#              #
-#    Updated: 2022/07/22 15:43:23 by minsunki         ###   ########seoul.kr   #
+#    Updated: 2022/07/22 15:55:59 by minsunki         ###   ########seoul.kr   #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME		=	ft_irc
 
 SRCF		=	sources
 SRCF_B		=	$(SRCF)/bonus
-# INCF		=	includes
+INCF		=	sources
 
 FIL_M		=	main \
 				server/Server \
@@ -31,8 +31,10 @@ SRCS_B		=	$(addsuffix _bonus.cpp, $(addprefix $(SRCF_B)/, $(FIL_M) $(FIL_B)))
 OBJS_M		=	$(SRCS_M:.cpp=.o)
 OBJS_B		=	$(SRCS_B:.cpp=.o)
 
+# INC			=	$(foreach d, $(INCF), -I$d)
+
 CC			=	c++
-CFLAGS		=	-O3 -Wall -Wextra -std=c++98 -pedantic # Werror omitted for now.
+CFLAGS		=	-I$(INCF) -O3 -Wall -Wextra -std=c++98 -pedantic # Werror omitted for now.
 
 RM			=	rm -f
 
@@ -40,10 +42,10 @@ RM			=	rm -f
 			$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME)		:	$(OBJS_M)
-			$(CC) $(OBJS_M) $(CFLAG) $(CFLAG_EXT) -o $(NAME)
+			$(CC) $(OBJS_M) $(CFLAGS) $(CFLAG_EXT) -o $(NAME)
 
 bonus		:	$(OBJS_B)
-			$(CC) $(OBJS_B) $(CFLAG) $(CFLAG_EXT) -o $(NAME)
+			$(CC) $(OBJS_B) $(CFLAGS) $(CFLAG_EXT) -o $(NAME)
 
 clean		:
 			$(RM) $(OBJS_M) $(OBJS_B)

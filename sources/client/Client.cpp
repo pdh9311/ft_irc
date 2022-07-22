@@ -6,13 +6,13 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:58:48 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/22 15:42:55 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/22 15:56:38 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include "Command.hpp"
-#include "../server/Server.hpp"
+#include "server/Server.hpp"
 
 #include <iostream>
 #include <ctime>

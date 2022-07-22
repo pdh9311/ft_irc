@@ -1,4 +1,12 @@
-namespace irc::cmd
+#include "cmd.hpp"
+
+namespace irc
 {
-	user()
+	namespace cmd
+	{
+		user()
+		{
+
+		}
+	}
 }
