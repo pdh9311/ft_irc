@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:58:48 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/22 14:21:47 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/22 14:38:34 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,11 +87,15 @@ namespace ft::irc
 
 		fpos = str.find(' ', cur);
 		cmd = str.substr(cur, fpos - cur);
+		cur = fpos;
 
 		while (cur != std::string::npos)
 		{
 			while (str[cur] == ' ') cur++;
-			fpos = str.find(' ', cur);
+			if (str[cur] == ':') // check if this works later
+				fpos = std::string::npos;
+			else
+				fpos = str.find(' ', cur);
 			// arg = str.substr(cur, fpos - cur);
 			args.push_back(str.substr(cur, fpos - cur));
 			cur = fpos;
