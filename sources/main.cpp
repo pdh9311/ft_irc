@@ -6,11 +6,11 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 14:08:16 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/22 15:28:53 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/22 15:43:07 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server/server.hpp"
+#include "server/Server.hpp"
 #include "util.hpp"
 #include <iostream>
 #include <string>
