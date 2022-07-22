@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:39:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/22 01:08:43 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/22 14:02:21 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ namespace ft::irc
 
 		while (1)
 		{
-			if (std::time(0) - last_ping > 1)	/*	TODO:: proper config class	*/
+			if (std::time(0) - last_ping > 60)	/*	TODO:: proper config class	*/
 				this->ping(), last_ping = std::time(0);
 
 			_pfds.reserve(42);

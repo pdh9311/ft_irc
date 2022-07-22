@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:47:58 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/21 23:17:13 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/22 14:29:05 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define __CLIENT_HPP__
 
 #include <string>
+#include <vector>
 
 #include <unistd.h>
 
@@ -21,25 +22,37 @@ namespace ft::irc
 {
 	class Server;
 
+	class Command;
+
 	class Client
 	{
+		friend class Server;
+		
 		private:
 			const int		_fd;
-			Server* 		_server;
-			time_t			_last_ping;
-			std::string		_buf;
-			std::string		_nick;
+			Server*		 	_server; // is this the right const?
+			time_t			_last_ping; // initialized up to here
 
+			std::vector<Command>	_cmds;
+			std::string				_buf;
+			std::string				_nick;
+
+			void	_parse(std::string str);
+			int		parse();
+			
 		public:
 			Client (const int& fd, Server* server);
 			virtual	~Client();
 
 			void	recv();
 
-			const int&		getFD() const;
-			const time_t&	getLastPing() const;
+			const int&				getFD() const;
+			const time_t&			getLastPing() const;
+			// std::vector<Command>&	getCommands();
 
-			void	setLastPing(const time_t& time);
+			// void	setLastPing(const time_t& time);
+
+
 	};
 }
 
