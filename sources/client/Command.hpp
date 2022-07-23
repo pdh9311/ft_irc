@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   command.hpp                                        :+:      :+:    :+:   */
+/*   Command.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 17:45:07 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/22 15:28:57 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/23 22:37:00 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@ namespace irc
 	// 	{"WHOIS", WHOIS},
 	// 	{"QUIT", QUIT}
 	// };
+	class Server;
+	class Client;
+	
 	class Command
 	{
 		public:
@@ -41,22 +44,38 @@ namespace irc
 			// 	WHO, WHOIS, WHOWAS,
 			// 	KILL, PING, PONG, ERROR
 			// };
+			typedef	void (*fp)(Command&);
+			typedef	std::map<std::string, fp>	hashmap_t;
+			static hashmap_t					build_hashmap();
+			static hashmap_t					hashmap;
 
 		private:
-			const std::string				_prefix;
-			const std::string				_command;
-			// const std::string				_commandstr;
-			// const unsigned short			_command;
-			const std::vector<std::string>	_args;
-				
+			Client*						_client;
+			Server*						_server;
+			int							_result;
+			fp							_func;
+			std::string					_prefix;
+			std::string					_command;
+			std::vector<std::string>	_args;
+			
+
+			void	parse(const std::string& str);
+			void	setFunc();
 
 		public:
 
-			Command(const std::string& p, const std::string& c,
-											const std::vector<std::string>& a);
+			Command(Client* client, Server* server, const std::string cstr);
 			virtual	~Command();
 
-			
+			void	run();
+
+			Client*							getClient();
+			Server*							getServer();
+			const std::string&				getPrefix();
+			const std::string&				getCommand();
+			const std::vector<std::string>&	getArgs();
+		
+		private:
 	};
 }
 

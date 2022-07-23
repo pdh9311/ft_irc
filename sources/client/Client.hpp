@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.hpp                                         :+:      :+:    :+:   */
+/*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:47:58 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/22 15:28:56 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/23 21:55:09 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,10 @@ namespace irc
 			Server*		 	_server; // is this the right const?
 			time_t			_last_ping; // initialized up to here
 
-			std::vector<Command>	_cmds;
-			std::string				_buf;
-			std::string				_nick;
+			// std::vector<Command>	_cmds;
+			std::string		_buf;
+			std::string		_nick;
+			std::string		_last_nick;
 
 			void	_parse(std::string str);
 			int		parse();
@@ -52,6 +53,7 @@ namespace irc
 
 			// void	setLastPing(const time_t& time);
 
+			void	setNick(const std::string& str);
 
 	};
 }

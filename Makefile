@@ -6,7 +6,7 @@
 #    By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/22 23:04:25 by minsunki          #+#    #+#              #
-#    Updated: 2022/07/22 15:55:59 by minsunki         ###   ########seoul.kr   #
+#    Updated: 2022/07/23 22:00:23 by minsunki         ###   ########seoul.kr   #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ FIL_M		=	main \
 				server/Server \
 				client/Client \
 				client/Command \
+				client/cmds/connection \
 				util \
 				debug
 

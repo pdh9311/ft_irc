@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:58:48 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/22 15:56:38 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/23 22:42:36 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,32 @@
 #include <ctime>
 
 #include <sys/socket.h>
+
+namespace irc
+{
+	int	Client::parse()
+	{
+		int		ret = 0;
+		size_t	cur = 0;
+		size_t	fpos;
+		
+		while ((fpos = _buf.find('\r', cur)) != std::string::npos)
+		{
+			++ret;
+			// _parse(_buf.substr(cur, fpos - cur));
+			Command	cmd(this, _server, _buf.substr(cur, fpos - cur));
+			cmd.run();
+			cur = fpos + 2;
+		}
+
+		_buf.erase(0, _buf.find_last_of('\n') + 2); // why + 2?
+		
+		// std::cout << "buffer after parse" << std::endl;
+		// std::cout << _buf << std::endl;
+		// std::cout << "EOB" << std::endl;
+		return (ret);
+	}
+}
 
 namespace irc
 {
@@ -66,70 +92,14 @@ namespace irc
 	// {
 	// 	_last_ping = time;
 	// }
-	void	Client::_parse(std::string str)
+	// void	Client::_parse(std::string str)
+	// {
+	
+	// }
+
+	void	Client::setNick(const std::string& str)
 	{
-		// std::cout << "_parse called for [" << str << "]" << std::endl;
-		size_t						cur = 0;
-		size_t						fpos;
-		std::string					prefix;
-		std::string					cmd;
-		// std::string					arg;
-		std::vector<std::string>	args;
-
-		if (str[cur] == ':') // has prefix
-		{
-			fpos = str.find(' ', ++cur);
-			prefix = str.substr(cur, fpos - cur);
-			cur = fpos;
-		} // is message with only prefix valid? 
-
-		while (str[cur] == ' ') cur++;
-
-		fpos = str.find(' ', cur);
-		cmd = str.substr(cur, fpos - cur);
-		cur = fpos;
-
-		while (cur != std::string::npos)
-		{
-			while (str[cur] == ' ') cur++;
-			if (str[cur] == ':')
-				fpos = std::string::npos;
-			else
-				fpos = str.find(' ', cur);
-			// arg = str.substr(cur, fpos - cur);
-			args.push_back(str.substr(cur, fpos - cur));
-			cur = fpos;
-		}
-
-		// std::cout << "prefix: " << prefix << "#" << std::endl;
-		// std::cout << "cmd: " << cmd << "#" <<  std::endl;
-		// for(int i = 0; i < args.size(); ++i)
-		// {
-		// 	std::cout << "arg#" << i << ": " << args[i] << "#" <<  std::endl;
-		// }
-
-		// _cmds.push_back(Command(prefix, cmd, args));
-
-	}
-
-	int	Client::parse()
-	{
-		int		ret = 0;
-		size_t	cur = 0;
-		size_t	fpos;
-		
-		while ((fpos = _buf.find('\r', cur)) != std::string::npos)
-		{
-			++ret;
-			_parse(_buf.substr(cur, fpos - cur));
-			cur = fpos + 2;
-		}
-
-		_buf.erase(0, _buf.find_last_of('\n') + 2); // why + 2?
-		
-		// std::cout << "buffer after parse" << std::endl;
-		// std::cout << _buf << std::endl;
-		// std::cout << "EOB" << std::endl;
-		return (ret);
+		_last_nick = _nick;
+		_nick = str;
 	}
 }

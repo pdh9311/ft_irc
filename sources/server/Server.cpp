@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:39:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/22 15:56:47 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/23 21:04:39 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,38 +25,33 @@
 #include <netdb.h>
 #include <fcntl.h>
 
+// private funcs
 namespace irc
 {
-	Server::Server(std::string port)
-	:	_port(irc::stoi(port))
-	{}
 
-	Server::~Server()
+	void	Server::accept()
 	{
-		close(_lfd); // check if this can somehow cause problems?
-	}
+		int	sock;
 
-	void	Server::initialize()
-	{
-		int			sock;
-		sockaddr_in	sin;
-		protoent	*pe;
-		pollfd		pfd;
+		sock = -1;
+		while ((sock = ::accept(_lfd, NULL, NULL)) != -1)
+		{
+			std::cout << "new connection accepted" << std::endl;
 
-		pe = static_cast<protoent*>(DBGV(NULL, getprotobyname("tcp"), "getprotobyname"));
-		sock = DBG(-1, socket(PF_INET, SOCK_STREAM, pe->p_proto), "socket");
-		fcntl(sock, F_SETFL, O_NONBLOCK);
-		sin.sin_family = AF_INET;
-		sin.sin_addr.s_addr = INADDR_ANY;
-		sin.sin_port = htons(_port);
-		DBG(-1, bind(sock, reinterpret_cast<sockaddr*>(&sin), sizeof(sin)), "bind");
-		DBG(-1, listen(sock, 42), "listen");
+			pollfd	pfd;
+			pfd.fd = sock;
+			pfd.events = POLLIN;
+			pfd.revents = 0;
 
-		_lfd = sock;
-		pfd.fd = _lfd;
-		pfd.events = POLLIN;
-		pfd.revents = 0;
-		_pfds.push_back(pfd);
+			_pfds.push_back(pfd);
+			if (!(_clients.insert(std::make_pair(sock, new Client(sock, this))).second))
+				PE("failed inserting client to _clients.");
+
+			std::cout << "current client #:" << _clients.size() << std::endl;
+		}
+
+		if (errno != EWOULDBLOCK)
+			DBG_OFS((69 - 61), "accept");
 	}
 
 	void	Server::queue(const int& fd, std::string msg)
@@ -93,30 +88,41 @@ namespace irc
 			it++;
 		}
 	}
+}
 
-	void	Server::accept()
+// public funcs
+namespace irc
+{
+	Server::Server(std::string port)
+	:	_port(irc::stoi(port))
+	{}
+
+	Server::~Server()
 	{
-		int	sock;
+		close(_lfd); // check if this can somehow cause problems?
+	}
 
-		sock = -1;
-		while ((sock = ::accept(_lfd, NULL, NULL)) != -1)
-		{
-			std::cout << "new connection accepted" << std::endl;
+	void	Server::initialize()
+	{
+		int			sock;
+		sockaddr_in	sin;
+		protoent	*pe;
+		pollfd		pfd;
 
-			pollfd	pfd;
-			pfd.fd = sock;
-			pfd.events = POLLIN;
-			pfd.revents = 0;
+		pe = static_cast<protoent*>(DBGV(NULL, getprotobyname("tcp"), "getprotobyname"));
+		sock = DBG(-1, socket(PF_INET, SOCK_STREAM, pe->p_proto), "socket");
+		fcntl(sock, F_SETFL, O_NONBLOCK);
+		sin.sin_family = AF_INET;
+		sin.sin_addr.s_addr = INADDR_ANY;
+		sin.sin_port = htons(_port);
+		DBG(-1, bind(sock, reinterpret_cast<sockaddr*>(&sin), sizeof(sin)), "bind");
+		DBG(-1, listen(sock, 42), "listen");
 
-			_pfds.push_back(pfd);
-			if (!(_clients.insert(std::make_pair(sock, new Client(sock, this))).second))
-				PE("failed inserting client to _clients.");
-
-			std::cout << "current client #:" << _clients.size() << std::endl;
-		}
-
-		if (errno != EWOULDBLOCK)
-			DBG_OFS((69 - 61), "accept");
+		_lfd = sock;
+		pfd.fd = _lfd;
+		pfd.events = POLLIN;
+		pfd.revents = 0;
+		_pfds.push_back(pfd);
 	}
 
 	void	Server::run()
@@ -148,8 +154,11 @@ namespace irc
 						continue;
 					if (!(pfd.revents & POLLIN))
 						PE("poll revent is set wrong");
-
-					_clients[pfd.fd]->recv();
+						
+					if (_clients.count(pfd.fd))
+						_clients[pfd.fd]->recv();
+					else
+						PE("tried to recv on non-existant client")
 				}
 			}
 
