@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/23 21:55:07 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/24 00:39:27 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ namespace irc
 			int											_lfd;
 
 			void	accept();
-			void	queue (const int& fd, std::string msg);
 			void	flush();
 			void	ping();
 
@@ -48,6 +47,7 @@ namespace irc
 			Server (std::string port);
 			virtual	~Server();
 
+			void	queue (const int& fd, std::string msg);
 			void	initialize();
 			void	run();
 

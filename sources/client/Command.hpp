@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 17:45:07 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/23 22:37:00 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/24 00:35:06 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ namespace irc
 			// 	WHO, WHOIS, WHOWAS,
 			// 	KILL, PING, PONG, ERROR
 			// };
-			typedef	void (*fp)(Command&);
+			typedef	void (*fp)(Command*);
 			typedef	std::map<std::string, fp>	hashmap_t;
 			static hashmap_t					build_hashmap();
 			static hashmap_t					hashmap;
@@ -52,7 +52,7 @@ namespace irc
 		private:
 			Client*						_client;
 			Server*						_server;
-			int							_result;
+			std::string					_result;
 			fp							_func;
 			std::string					_prefix;
 			std::string					_command;
@@ -75,7 +75,8 @@ namespace irc
 			const std::string&				getCommand();
 			const std::vector<std::string>&	getArgs();
 		
-		private:
+			void	setResult(const std::string& rstr);
+			
 	};
 }
 

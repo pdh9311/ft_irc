@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:58:48 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/23 22:42:36 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/24 00:48:06 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ namespace irc
 {
 	int	Client::parse()
 	{
+		std::cout << "client::parse" << std::endl;
 		int		ret = 0;
 		size_t	cur = 0;
 		size_t	fpos;
@@ -31,6 +32,7 @@ namespace irc
 		{
 			++ret;
 			// _parse(_buf.substr(cur, fpos - cur));
+			std::cout << _buf.substr(cur, fpos - cur) << std::endl;
 			Command	cmd(this, _server, _buf.substr(cur, fpos - cur));
 			cmd.run();
 			cur = fpos + 2;
@@ -74,7 +76,7 @@ namespace irc
 		// std::cout << "buffer content (" << _buf.size() << ")-----" << std::endl;
 		// std::cout << _buf << std::endl;
 		// std::cout << "----- end of buffer -----" << std::endl;
-		_server->queue(_fd, "001");
+		// _server->queue(_fd, "001");
 		// _server->queue(_fd, "hello client");
 	}
 
@@ -86,6 +88,11 @@ namespace irc
 	const time_t&	Client::getLastPing() const
 	{
 		return (_last_ping);
+	}
+
+	const std::string&	Client::getNick() const
+	{
+		return (_nick);
 	}
 
 	// void	Client::setLastPing(const time_t& time)

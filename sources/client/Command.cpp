@@ -3,27 +3,72 @@
 #include "server/Server.hpp"
 #include "client/cmds/cmds.hpp"
 
+#include <iostream>
+
 namespace irc
 {
 	Command::hashmap_t	Command::build_hashmap()
 	{
-		Command::hashmap_t	_ht;
-		/*	connection	*/
-		_ht["USER"] 	= cmd::user;
-		_ht["NICK"] 	= cmd::nick;
-		_ht["SERVER"]	= cmd::server;
-		_ht["OPER"]		= cmd::oper;
-		_ht["QUIT"]		= cmd::quit;
-		_ht["SQUIT"]	= cmd::squit;
+		Command::hashmap_t	ht;
+		/*	Connection Registration	*/
+		ht["USER"] 		= cmd::user;
+		ht["NICK"] 		= cmd::nick;
+		ht["SERVER"]	= cmd::server;
+		ht["OPER"]		= cmd::oper;
+		ht["QUIT"]		= cmd::quit;
+		ht["SQUIT"]		= cmd::squit;
 
-		/*	blabla	*/
+		/*	Channel operations	*/
+		// ht["JOIN"]		= cmd::join;
+		// ht["PART"]		= cmd::part;
+		// ht["MODE"]		= cmd::mode;
+		// ht["TOPIC"]		= cmd::topic;
+		// ht["NAMES"]		= cmd::names;
+		// ht["LIST"]		= cmd::list;
+		// ht["INVITE"]	= cmd::invite;
+		// ht["KICK"]		= cmd::kick;
+	
+		/*	Server queries and commands	*/
+		// ht["VERSION"]	= cmd::version;
+		// ht["STATS"]		= cmd::stats;
+		// ht["LINKS"]		= cmd::links;
+		// ht["TIME"]		= cmd::time;
+		// ht["CONNECT"]	= cmd::connect;
+		// ht["TRACE"]		= cmd::trace;
+		// ht["ADMIN"]		= cmd::admin;
+		// ht["INFO"]		= cmd::info;
 
-		return (_ht);
+		/*	Sending messages	*/
+		// ht["PRIVMSG"]	= cmd::privmsg;
+		// ht["NOTICE"]	= cmd::notice;
+
+		/*	User-based queries	*/
+		// ht["WHO"]		= cmd::who;
+		// ht["WHOIS"]		= cmd::whois;
+		// ht["WHOWAS"]	= cmd::whowas;
+
+		/*	Miscellaneous messages	*/
+		// ht["KILL"]		= cmd::kill;
+		// ht["PING"]		= cmd::ping;
+		// ht["PONG"]		= cmd::pong;
+		// ht["ERROR"]		= cmd::error;
+
+		/*	Optional messages	*/ 
+		// ht["AWAY"]		= cmd::away;
+		// ht["REHASH"]	= cmd::rehash;
+		// ht["RESTART"]	= cmd::restart;
+		// ht["SUMMON"]	= cmd::summon;
+		// ht["USERS"]		= cmd::users;
+		// ht["WALLOPS"]	= cmd::operwall;
+		// ht["USERHOST"]	= cmd::userhost;
+		// ht["ISON"]		= cmd::ison;
+
+		return (ht);
 	}
 
 	void	Command::parse(const std::string& str)
 	{
-	// std::cout << "_parse called for [" << str << "]" << std::endl;
+		std::cout << "command::parse called for [" << str << "]" << std::endl;
 		size_t	cur = 0;
 		size_t	fpos;
 		// std::string					prefix;
@@ -80,7 +125,7 @@ namespace irc
 namespace irc
 {
 	Command::Command(Client* c, Server* s, const std::string cstr)
-	:	_client(c), _server(s), _result(0), _func(0)
+	:	_client(c), _server(s), _result(""), _func(0)
 	{
 		this->parse(cstr);
 		// if (Command::hashmap.empty())
@@ -93,38 +138,40 @@ namespace irc
 
 	void	Command::run()
 	{
-		if (this->_func) // do we need default action?
-			this->_func(*this);
-		
-		// std::map<std::string, fp>::iterator fit = _ht.find(_command);
-		// if (fit != _ht.end())
-		// {
-		// 	(fit->second)(*this);
-		// }
+		std::cout << "command::run" << std::endl;
+		if (_func) // do we need default action?
+			this->_func(this);
+		if (!_result.empty()) // check default action for invalid cmd
+			_server->queue(_client->getFD(), _result);	
 	}
 
 	Client*	Command::getClient()
 	{
-		return (this->_client);
+		return (_client);
 	}
 
 	Server*	Command::getServer()
 	{
-		return (this->_server);
+		return (_server);
 	}
 
 	const std::string&	Command::getPrefix()
 	{
-		return (this->_prefix);
+		return (_prefix);
 	}
 
 	const std::string&	Command::getCommand()
 	{
-		return (this->_command);
+		return (_command);
 	}
 
 	const std::vector<std::string>&	Command::getArgs()
 	{
-		return (this->_args);
+		return (_args);
+	}
+
+	void	Command::setResult(const std::string& rstr)
+	{
+		_result = rstr;
 	}
 }

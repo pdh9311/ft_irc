@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:39:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/23 21:04:39 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/24 00:40:14 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,24 +52,6 @@ namespace irc
 
 		if (errno != EWOULDBLOCK)
 			DBG_OFS((69 - 61), "accept");
-	}
-
-	void	Server::queue(const int& fd, std::string msg)
-	{
-		_sque.push(std::make_pair(fd, msg + "\r\n"));
-	}
-
-	void	Server::flush()
-	{
-		while (_sque.size())
-		{
-			int&			fd = _sque.front().first;
-			std::string&	msg = _sque.front().second;
-
-			/*	TODO make better send function	*/
-			send(fd, &msg[0], msg.size(), 0);
-			_sque.pop();
-		}
 	}
 
 	void	Server::ping()
@@ -123,6 +105,25 @@ namespace irc
 		pfd.events = POLLIN;
 		pfd.revents = 0;
 		_pfds.push_back(pfd);
+	}
+
+	void	Server::queue(const int& fd, std::string msg)
+	{
+		std::cout << "queuing msg [" << msg << "]" << std::endl;
+		_sque.push(std::make_pair(fd, msg + "\r\n"));
+	}
+
+	void	Server::flush()
+	{
+		while (_sque.size())
+		{
+			int&			fd = _sque.front().first;
+			std::string&	msg = _sque.front().second;
+
+			/*	TODO make better send function	*/
+			send(fd, &msg[0], msg.size(), 0);
+			_sque.pop();
+		}
 	}
 
 	void	Server::run()
