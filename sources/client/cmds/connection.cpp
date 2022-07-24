@@ -1,17 +1,7 @@
 #include "cmds.hpp"
-
-/*
-  4.1.1 Password message ...................................   14
-         4.1.2 Nickname message ...................................   14
-         4.1.3 User message .......................................   15
-         4.1.4 Server message .....................................   16
-         4.1.5 Operator message ...................................   17
-         4.1.6 Quit message .......................................   17
-         4.1.7 Server Quit message ...........
-		 */
-
-
-#include <iostream>
+#include "client/Command.hpp"
+#include "client/Client.hpp"
+#include "server/Server.hpp"
 
 namespace irc
 {

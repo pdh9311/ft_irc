@@ -19,49 +19,49 @@ namespace irc
 		ht["SQUIT"]		= cmd::squit;
 
 		/*	Channel operations	*/
-		// ht["JOIN"]		= cmd::join;
-		// ht["PART"]		= cmd::part;
-		// ht["MODE"]		= cmd::mode;
-		// ht["TOPIC"]		= cmd::topic;
-		// ht["NAMES"]		= cmd::names;
-		// ht["LIST"]		= cmd::list;
-		// ht["INVITE"]	= cmd::invite;
-		// ht["KICK"]		= cmd::kick;
+		ht["JOIN"]		= cmd::join;
+		ht["PART"]		= cmd::part;
+		ht["MODE"]		= cmd::mode;
+		ht["TOPIC"]		= cmd::topic;
+		ht["NAMES"]		= cmd::names;
+		ht["LIST"]		= cmd::list;
+		ht["INVITE"]	= cmd::invite;
+		ht["KICK"]		= cmd::kick;
 	
 		/*	Server queries and commands	*/
-		// ht["VERSION"]	= cmd::version;
-		// ht["STATS"]		= cmd::stats;
-		// ht["LINKS"]		= cmd::links;
-		// ht["TIME"]		= cmd::time;
-		// ht["CONNECT"]	= cmd::connect;
-		// ht["TRACE"]		= cmd::trace;
-		// ht["ADMIN"]		= cmd::admin;
-		// ht["INFO"]		= cmd::info;
+		ht["VERSION"]	= cmd::version;
+		ht["STATS"]		= cmd::stats;
+		ht["LINKS"]		= cmd::links;
+		ht["TIME"]		= cmd::time;
+		ht["CONNECT"]	= cmd::connect;
+		ht["TRACE"]		= cmd::trace;
+		ht["ADMIN"]		= cmd::admin;
+		ht["INFO"]		= cmd::info;
 
 		/*	Sending messages	*/
-		// ht["PRIVMSG"]	= cmd::privmsg;
-		// ht["NOTICE"]	= cmd::notice;
+		ht["PRIVMSG"]	= cmd::privmsg;
+		ht["NOTICE"]	= cmd::notice;
 
 		/*	User-based queries	*/
-		// ht["WHO"]		= cmd::who;
-		// ht["WHOIS"]		= cmd::whois;
-		// ht["WHOWAS"]	= cmd::whowas;
+		ht["WHO"]		= cmd::who;
+		ht["WHOIS"]		= cmd::whois;
+		ht["WHOWAS"]	= cmd::whowas;
 
 		/*	Miscellaneous messages	*/
-		// ht["KILL"]		= cmd::kill;
-		// ht["PING"]		= cmd::ping;
-		// ht["PONG"]		= cmd::pong;
-		// ht["ERROR"]		= cmd::error;
+		ht["KILL"]		= cmd::kill;
+		ht["PING"]		= cmd::ping;
+		ht["PONG"]		= cmd::pong;
+		ht["ERROR"]		= cmd::error;
 
 		/*	Optional messages	*/ 
-		// ht["AWAY"]		= cmd::away;
-		// ht["REHASH"]	= cmd::rehash;
-		// ht["RESTART"]	= cmd::restart;
-		// ht["SUMMON"]	= cmd::summon;
-		// ht["USERS"]		= cmd::users;
-		// ht["WALLOPS"]	= cmd::operwall;
-		// ht["USERHOST"]	= cmd::userhost;
-		// ht["ISON"]		= cmd::ison;
+		ht["AWAY"]		= cmd::away;
+		ht["REHASH"]	= cmd::rehash;
+		ht["RESTART"]	= cmd::restart;
+		ht["SUMMON"]	= cmd::summon;
+		ht["USERS"]		= cmd::users;
+		ht["WALLOPS"]	= cmd::wallops;
+		ht["USERHOST"]	= cmd::userhost;
+		ht["ISON"]		= cmd::ison;
 
 		return (ht);
 	}
