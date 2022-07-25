@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:39:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 16:09:24 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/25 16:18:21 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ namespace irc
 
 		while (_dque.size())
 		{
-			int	fd = _dque.front();
+			int	fd = *(_dque.begin());
 			pfds_t::iterator it = _pfds.begin();
 			while (++it != _pfds.end())
 				if (it->fd == fd)
@@ -140,7 +140,7 @@ namespace irc
 				PE("something went terribly wrong with clients");
 			delete cit->second;
 			_clients.erase(cit);
-			_dque.pop();
+			_dque.erase(_dque.begin());
 		}
 	}
 
@@ -190,7 +190,7 @@ namespace irc
 	{
 		// queue clients to be removed since vector.erase will ruin iterators
 		// if we need to send something to client before termination, this is a good time to do so
-		_dque.push(client->getFD());
+		_dque.insert(client->getFD());
 		// delete queue will be flushed after sque
 	}
 

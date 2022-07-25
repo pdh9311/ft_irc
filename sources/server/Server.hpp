@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 16:02:37 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/25 16:17:31 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <vector>
 #include <queue>
+#include <set>
 #include <string>
 #include <utility>
 #include <map>
@@ -32,7 +33,7 @@ namespace irc
 		public:
 			typedef std::vector<pollfd>							pfds_t;
 			typedef std::queue<std::pair<int, std::string> >	sque_t;
-			typedef std::queue<int>								dque_t;
+			typedef std::set<int>								dque_t;
 			typedef	std::map<int, Client*>						clients_t;
 			typedef std::map<std::string, Channel*>				channels_t;
 		private:

@@ -6,13 +6,14 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:58:48 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 16:01:53 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/25 16:21:28 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include "Command.hpp"
 #include "server/Server.hpp"
+#include "debug.hpp"
 
 #include <iostream>
 #include <ctime>
@@ -63,9 +64,16 @@ namespace irc
 		int		rs;
 		char	buf[512 + 1];
 
-		rs = ::recv(_fd, buf, 512, 0); // buffer size is 512 per rfc.
-		if (rs == 0)	/* TODO:: socket is closed. kill client?	*/
+		rs = ::recv(_fd, buf, 512, 0), DBG(-1, rs, "recv");
+		// no need to check EWOULDBLOCK since we polled
+		// buffer size is 512 per rfc.
+		
+		if (rs == 0)
+		{
+			_server->rmclient(this);
 			return ;
+		}
+
 		buf[rs] = '\0'; /*	TODO:: read buffer and parse command	*/
 		_buf += buf;
 
