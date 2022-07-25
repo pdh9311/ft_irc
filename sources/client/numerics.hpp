@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   replies.hpp                                        :+:      :+:    :+:   */
+/*   numerics.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 13:56:44 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 14:16:45 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/25 16:45:36 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,22 +44,22 @@ namespace irc
 	#define	ERR_USERDISABLED		446
 	#define	ERR_NOTREGISTERED		451
 	#define	ERR_NEEDMOREPARAMS		461
-	#define	ERR_ALREADYREGISTERD	462
-	#define	ERR_NOPERFORHOST		463
-	#define	ERR_PASSWDISMATCH		464
+	#define	ERR_ALREADYREGISTRED	462 // REGISTRED is per RFC
+	#define	ERR_NOPERMFORHOST		463
+	#define	ERR_PASSWDMISMATCH		464
 	#define	ERR_YOUREBANNEDCREEP	465
 	#define	ERR_KEYSET				467
 	#define	ERR_CHANNELISFULL		471
 	#define	ERR_UNKNOWNMODE			472
 	#define	ERR_INVITEONLYCHAN		473
 	#define	ERR_BANNEDFROMCHAN		474
-	#define	ERR_BADCHENNELKEY		475
+	#define	ERR_BADCHANNELKEY		475
 	#define	ERR_NOPRIVILEGES		481
 	#define	ERR_CHANOPRIVSNEEDED	482
 	#define	ERR_CANTKILLSERVER		483
 	#define	ERR_NOOPERHOST			491
 	#define	ERR_UMODEUNKNOWNFLAG	501
-	#define	ERR_USERDONTMATCH		502
+	#define	ERR_USERSDONTMATCH		502
 
 	/*	Command responses	*/
 	#define	RPL_NONE				300

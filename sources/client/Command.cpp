@@ -178,7 +178,7 @@ namespace irc
 		_result = rstr;
 	}
 
-	void	Command::setResult(const short& rcode)
+	void	Command::setResult(const short& rcode, const std::string s1)
 	{
 		// _result = std::to_string(rcode) + " ";
 		// std::to_string
@@ -188,8 +188,7 @@ namespace irc
 			case ERR_NOSUCHNICK:
 				_result = _client->getNick() + " :No such nick/channel"; break ;
 			// case ERR_NOSUCHSERVER:	//	TODO:: _server->getName()
-			// 	_result = _server->getName() + " :No such server";
-				// break ;
+			// 	_result = _server->getName() + " :No such server"; break ;
 			case ERR_NOSUCHCHANNEL:
 				_result = _args[0] + ":No such channel"; break ;
 				// check if prefix on chan name needs to be removed.
@@ -219,15 +218,13 @@ namespace irc
 			case ERR_NOMOTD:
 				_result = ":MOTD File is missing"; break ;
 			// case ERR_NOADMININFO:
-				// _result = _server->getName() + " :No administrative info available";
-				// break ; 
+				// _result = _server->getName() + " :No administrative info available"; break ;
 			case ERR_FILEERROR:
 				_result = ":File error doing " + _args[0] + " on " + _args[1]; break ;
 			case ERR_NONICKNAMEGIVEN:
 				_result = "No nickname given"; break ;
 			case ERR_ERRONEUSNICKNAME:
 				_result = _args[0] + " :Erroneus nickname"; break ;
-				break ;
 			case ERR_NICKNAMEINUSE:
 				_result = _args[0] + " :Nickname is already in use"; break ;
 			case ERR_NICKCOLLISION:
@@ -238,6 +235,99 @@ namespace irc
 				_result = _args[0] + " :You're not on that channel"; break ;
 			case ERR_USERONCHANNEL:
 				_result = _args[0] + " " + _args[1] + " :is already on channel"; break ;
+			case ERR_NOLOGIN:
+				_result = _args[0] + " :User not logged in"; break ;
+			case ERR_SUMMONDISABLED:
+				_result = ":SUMMON has been disabled"; break ;
+			case ERR_USERDISABLED:
+				_result = ":USERS has been disabled"; break ;
+			case ERR_NOTREGISTERED:
+				_result = ":You have not registered"; break ;
+			case ERR_NEEDMOREPARAMS:
+				_result = _command + " :Not enough parameters"; break ;
+			case ERR_ALREADYREGISTRED:
+				_result = ":You may not reregister"; break ;
+			case ERR_NOPERMFORHOST:
+				_result = ":Your host isn't among the privileged"; break ;
+			case ERR_PASSWDMISMATCH:
+				_result = ":Password incorrect"; break ;
+			case ERR_YOUREBANNEDCREEP:
+				_result = ":You are banned from this server"; break ;
+			case ERR_KEYSET:
+				_result = _args[0] + " :Channel key already set"; break ;
+			case ERR_CHANNELISFULL:
+				_result = _args[0] + " :Cannot join channel (+l)"; break ;
+			case ERR_UNKNOWNMODE: 
+				_result = s1 + " :is unknown mode char to me"; break ;
+			case ERR_INVITEONLYCHAN:
+				_result = _args[0] + " :Cannot join channel (+i)"; break ;
+			case ERR_BANNEDFROMCHAN:
+				_result = _args[0] + " :Cannot join channel (+b)"; break ;
+			case ERR_BADCHANNELKEY:
+				_result = _args[0] + " :Cannot join channel (+k)"; break ;
+			case ERR_NOPRIVILEGES:
+				_result = _args[0] + ":Permission Denied- You're not an IRC operator"; break ;
+			case ERR_CHANOPRIVSNEEDED:
+				_result = _args[0] + " :You're not channel operator"; break ;
+			case ERR_CANTKILLSERVER:
+				_result = ":You cant kill a server!"; break ;
+			case ERR_NOOPERHOST:
+				_result = ":No O-lines for your host"; break ;
+			case ERR_UMODEUNKNOWNFLAG:
+				_result = ":Unknown MODE FLAG"; break ;
+			case ERR_USERSDONTMATCH:
+				_result = "Cant change mode for other users"; break ;
+
+			case RPL_NONE:
+				_result = ":this is a good place for an easteregg"; break ;
+			case RPL_USERHOST:
+				_result = s1; break ;
+			case RPL_ISON:
+				_result = s1; break ;
+			case RPL_AWAY:
+				_result = _args[0] + " :" + s1; break ;
+			case RPL_UNAWAY:
+				_result = ":You are no longer marked as being away"; break ;
+			case RPL_NOWAWAY:
+				_result = ":You have been marked as being away"; break ;
+			case RPL_WHOISUSER:
+				_result = s1; break ;
+			case RPL_WHOISSERVER:
+				_result = s1; break ;
+			case RPL_WHOISOPERATOR:
+				_result = s1 + " :is an IRC operator"; break ;
+			case RPL_WHOISIDLE:
+				_result = s1 + " :seconds idle"; break ;
+			case RPL_ENDOFWHOIS:
+				_result = s1 + " :End of /WHOIS list"; break ;
+			case RPL_WHOISCHANNELS:
+				_result = s1;
+			case RPL_WHOWASUSER:
+				_result = s1;
+			case RPL_ENDOFWHOWAS:
+				_result = s1 + " :End of WHOWAS"; break ;
+			case RPL_LISTSTART:
+				_result = "Channel :Users Name"; break ;
+			case RPL_LIST:
+				_result = s1; break ;
+			case RPL_LISTEND:
+				_result = ":End of /LIST"; break ;
+			case RPL_CHANNELMODEIS:
+				_result = s1; break ;
+			case RPL_NOTOPIC:
+				_result = _args[0] + " :No topic is set"; break ;
+			case RPL_TOPIC:
+				_result = _args[0] + " :" + s1; break ;
+			case RPL_INVITING:
+				_result = _args[1] + " " + _args[0]; break ;
+			case RPL_SUMMONING:
+				_result = _args[0] + " :Summoning user to IRC"; break ;
+			// case RPL_VERSION:
+			// 	_result = _server->getVersion(); break ;
+			case RPL_WHOREPLY:
+				_result = s1; break ;
+			case RPL_ENDOFWHO:
+				_result = s1 + " :End of /WHO list"; break ;
 			default:
 				_result = "unknown command or not implemented yet. please check Command.cpp";
 		}

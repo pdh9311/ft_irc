@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:47:58 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 15:35:27 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/25 16:26:39 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ namespace irc
 		
 		private:
 			const int		_fd;
-			Server*		 	_server; // is this the right const?
+			Server*		 	_server;
 			time_t			_last_ping; // initialized up to here
 
 			// std::vector<Command>	_cmds;

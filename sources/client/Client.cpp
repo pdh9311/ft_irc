@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:58:48 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 16:21:28 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/25 16:25:13 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ namespace irc
 		
 		if (rs == 0)
 		{
+			// check if quit was received, if not, generate appropriate quit message
 			_server->rmclient(this);
 			return ;
 		}

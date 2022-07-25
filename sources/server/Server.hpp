@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 16:17:31 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/25 16:27:08 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 
 namespace irc
 {
-	class Client; /*	TODO	*/
-	class Channel; /*	TODO	*/
+	class Client; 
+	class Channel;
 
 	class Server
 	{
@@ -36,8 +36,8 @@ namespace irc
 			typedef std::set<int>								dque_t;
 			typedef	std::map<int, Client*>						clients_t;
 			typedef std::map<std::string, Channel*>				channels_t;
-		private:
 			
+		private:
 			pfds_t		_pfds;
 			sque_t		_sque; // maybe create reply/msg class?
 			dque_t		_dque;
