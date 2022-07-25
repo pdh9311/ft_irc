@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:39:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/24 00:40:14 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/25 16:09:24 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,24 @@ namespace irc
 			send(fd, &msg[0], msg.size(), 0);
 			_sque.pop();
 		}
+
+		while (_dque.size())
+		{
+			int	fd = _dque.front();
+			pfds_t::iterator it = _pfds.begin();
+			while (++it != _pfds.end())
+				if (it->fd == fd)
+					break ;
+			if (it == _pfds.end())
+				PE("something went terribly wrong with pfds");
+			_pfds.erase(it);
+			clients_t::iterator cit = _clients.find(fd);
+			if (cit == _clients.end())
+				PE("something went terribly wrong with clients");
+			delete cit->second;
+			_clients.erase(cit);
+			_dque.pop();
+		}
 	}
 
 	void	Server::run()
@@ -163,9 +181,31 @@ namespace irc
 				}
 			}
 
-
-			if (_sque.size())
+			if (_sque.size() || _dque.size())
 				this->flush();
 		}
+	}
+
+	void	Server::rmclient(Client* client)
+	{
+		// queue clients to be removed since vector.erase will ruin iterators
+		// if we need to send something to client before termination, this is a good time to do so
+		_dque.push(client->getFD());
+		// delete queue will be flushed after sque
+	}
+
+	// void	Server::rmchannel(Channel* channel)
+	// {
+
+	// }
+
+	const Server::clients_t&	Server::getClients() const
+	{
+		return (_clients);
+	}
+
+	const Server::channels_t&	Server::getChannels() const
+	{
+		return (_channels);
 	}
 }

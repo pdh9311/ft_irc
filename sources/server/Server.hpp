@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/24 00:39:27 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/25 16:02:37 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,21 @@ namespace irc
 	class Server
 	{
 		friend class Client;
-		
+		public:
+			typedef std::vector<pollfd>							pfds_t;
+			typedef std::queue<std::pair<int, std::string> >	sque_t;
+			typedef std::queue<int>								dque_t;
+			typedef	std::map<int, Client*>						clients_t;
+			typedef std::map<std::string, Channel*>				channels_t;
 		private:
 			
-			std::vector<pollfd>							_pfds;
-			std::queue<std::pair<int, std::string> >	_sque; // maybe create reply/msg class?
-			std::map<int, Client*>						_clients;
-			std::map<std::string, Channel*>				_channels;
-			const int									_port;
-			int											_lfd;
+			pfds_t		_pfds;
+			sque_t		_sque; // maybe create reply/msg class?
+			dque_t		_dque;
+			clients_t	_clients;
+			channels_t	_channels;
+			const int	_port;
+			int			_lfd;
 
 			void	accept();
 			void	flush();
@@ -50,7 +56,11 @@ namespace irc
 			void	queue (const int& fd, std::string msg);
 			void	initialize();
 			void	run();
+			void	rmclient(Client* client);
+			// void	rmchannel(Channel* channel);
 
+			const clients_t&	getClients() const;
+			const channels_t&	getChannels() const;
 	};
 }
 

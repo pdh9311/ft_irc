@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:58:48 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/24 00:48:06 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/25 16:01:53 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ namespace irc
 		char	buf[512 + 1];
 
 		rs = ::recv(_fd, buf, 512, 0); // buffer size is 512 per rfc.
-		// if (rs == 0)	/* TODO:: socket is closed. kill client?	*/
-			// void ;
+		if (rs == 0)	/* TODO:: socket is closed. kill client?	*/
+			return ;
 		buf[rs] = '\0'; /*	TODO:: read buffer and parse command	*/
 		_buf += buf;
 
@@ -95,10 +95,10 @@ namespace irc
 		return (_nick);
 	}
 
-	// void	Client::setLastPing(const time_t& time)
-	// {
-	// 	_last_ping = time;
-	// }
+	void	Client::setLastPing(const time_t& time)
+	{
+		_last_ping = time;
+	}
 	// void	Client::_parse(std::string str)
 	// {
 	

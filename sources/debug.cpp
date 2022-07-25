@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 15:30:08 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/22 15:35:37 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/25 16:05:04 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,7 @@ namespace irc
 	
 	void	perror(std::string err, std::string file, int line)
 	{
-		std::cerr << err << std::endl;
-		std::cerr << " (" << file << ", " << line << "): ";
+		std::cerr << err  << " (" << file << ", " << line << ")" << std::endl;;
 		std::exit (1);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:47:58 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/24 00:33:40 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/25 15:35:27 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ namespace irc
 			const std::string&	getNick() const;
 			// std::vector<Command>&	getCommands();
 
-			// void	setLastPing(const time_t& time);
+			void	setLastPing(const time_t& time);
 
 			void	setNick(const std::string& str);
 
