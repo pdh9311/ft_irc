@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:39:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/26 15:02:40 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/26 16:26:38 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,13 @@ namespace irc
 			this->queue(client->getFD(), "PING minsunki");	/*	TODO:: replace placeholder with something fitting	*/
 			it++;
 		}
+	}
+
+	Channel*	Server::createChannel(const std::string& name)
+	{
+		Channel*	channel = new Channel(name);
+		_channels.insert(std::make_pair(name, channel));
+		return (channel);
 	}
 }
 
@@ -184,6 +191,19 @@ namespace irc
 
 			if (_sque.size() || _dque.size())
 				this->flush();
+
+			// destroy empty channels.
+			// channels_t::iterator	it = _channels.begin();
+			// while (it != _channels.end())
+			// {
+			// 	channels_t::iterator tmp = ++it;
+			// 	if (it->second->getClients().empty())
+			// 	{
+			// 		delete it->second;	
+			// 		_channels.erase(it->second->getName());
+			// 	}
+			// 	it = tmp;
+			// }
 		}
 	}
 
@@ -202,13 +222,6 @@ namespace irc
 			PE("Tried to rmchannel that doesn't exist!");
 		delete fit->second;
 		_channels.erase(fit);
-	}
-
-	Channel*	Server::createChannel(const std::string& name)
-	{
-		Channel*	channel = new Channel(name);
-		_channels.insert(std::make_pair(name, channel));
-		return (channel);
 	}
 
 	const Server::clients_t&	Server::getClients() const

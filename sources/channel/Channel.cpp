@@ -6,12 +6,13 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 13:20:00 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/26 14:05:44 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/26 15:42:10 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Channel.hpp"
+#include "channel/Channel.hpp"
 #include "client/Client.hpp"
+#include "debug.hpp"
 
 namespace irc
 {
@@ -42,6 +43,13 @@ namespace irc
 	void	Channel::addClient(const Client* client)
 	{
 		_clients.insert(client->getFD());
+	}
+
+	void	Channel::rmClient(const Client* client)
+	{
+		if (!isMember(client))
+			PE("Tried to Channel::rmClient on non-member client");
+		_clients.erase(client->getFD());
 	}
 
 	const std::string&	Channel::getName() const

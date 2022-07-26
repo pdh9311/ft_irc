@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/26 14:41:11 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/26 16:25:56 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ namespace irc
 			void	accept();
 			void	flush();
 			void	ping();
+			Channel*	createChannel(const std::string& name);
 
 		public:
 			Server (std::string port);
@@ -59,7 +60,6 @@ namespace irc
 			void		run();
 			void		rmclient(Client* client);
 			void		rmchannel(Channel* channel);
-			Channel*	createChannel(const std::string& name);
 			
 			const clients_t&	getClients() const;
 			const channels_t&	getChannels() const;

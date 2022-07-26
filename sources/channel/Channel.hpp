@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 17:08:35 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/26 14:05:26 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/26 15:39:14 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ namespace irc
 			bool	isMember(const Client* client);
 			bool	hasMode(const char c);
 			void	addClient(const Client* client);
+			void	rmClient(const Client* client);
 
 			const std::string&	getName() const;
 			const client_t&		getClients() const;
