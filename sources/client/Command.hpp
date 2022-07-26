@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 17:45:07 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 16:48:31 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/26 14:31:51 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 
 namespace irc
 {
+	#define MAX_PARAMS	16
 	// const static std::map<std::string, short>	cmdtab
 	// {
 	// 	{"PASS", PASS},
@@ -74,9 +75,10 @@ namespace irc
 			const std::string&				getPrefix();
 			const std::string&				getCommand();
 			const std::vector<std::string>&	getArgs();
+			int								getArgC();
 		
 			void	setResult(const std::string& rstr);
-			void	setResult(const short& rcode, const std::string s1);
+			void	setResult(const short& rcode, const std::string s1 = "");
 			
 	};
 }

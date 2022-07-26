@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:39:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 16:18:21 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/26 15:02:40 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "util.hpp"
 #include "debug.hpp"
 #include "client/Client.hpp"
+#include "channel/Channel.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -194,18 +195,41 @@ namespace irc
 		// delete queue will be flushed after sque
 	}
 
-	// void	Server::rmchannel(Channel* channel)
-	// {
+	void	Server::rmchannel(Channel* channel)
+	{
+		channels_t::iterator	fit = _channels.find(channel->getName());
+		if (fit == _channels.end())
+			PE("Tried to rmchannel that doesn't exist!");
+		delete fit->second;
+		_channels.erase(fit);
+	}
 
-	// }
+	Channel*	Server::createChannel(const std::string& name)
+	{
+		Channel*	channel = new Channel(name);
+		_channels.insert(std::make_pair(name, channel));
+		return (channel);
+	}
 
 	const Server::clients_t&	Server::getClients() const
 	{
 		return (_clients);
 	}
 
+	Channel*	Server::getChannel(const std::string& name)
+	{
+		if (hasChannel(name))
+			return (_channels[name]);
+		return (createChannel(name));
+	}
+
 	const Server::channels_t&	Server::getChannels() const
 	{
 		return (_channels);
+	}
+
+	bool	Server::hasChannel(const std::string& name) const
+	{
+		return (_channels.count(name));
 	}
 }

@@ -173,6 +173,11 @@ namespace irc
 		return (_args);
 	}
 
+	int	Command::getArgC()
+	{
+		return (_args.size());
+	}
+
 	void	Command::setResult(const std::string& rstr)
 	{
 		_result = rstr;
@@ -301,9 +306,9 @@ namespace irc
 			case RPL_ENDOFWHOIS:
 				_result = s1 + " :End of /WHOIS list"; break ;
 			case RPL_WHOISCHANNELS:
-				_result = s1;
+				_result = s1; break ;
 			case RPL_WHOWASUSER:
-				_result = s1;
+				_result = s1; break ;
 			case RPL_ENDOFWHOWAS:
 				_result = s1 + " :End of WHOWAS"; break ;
 			case RPL_LISTSTART:

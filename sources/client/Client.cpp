@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:58:48 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 16:25:13 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/26 13:58:12 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,16 @@ namespace irc
 		return (_nick);
 	}
 
+	const Client::mode_t&	Client::getModes() const
+	{
+		return (_modes);
+	}
+
+	bool	Client::hasMode(char c) const
+	{
+		return (_modes.count(c));
+	}
+
 	void	Client::setLastPing(const time_t& time)
 	{
 		_last_ping = time;
@@ -118,4 +128,26 @@ namespace irc
 		_last_nick = _nick;
 		_nick = str;
 	}
+
+	void	Client::setModes(const std::string& modes)
+	{
+		std::string::const_iterator it = modes.begin();
+		while (it != modes.end())
+		{
+			_modes.insert(*it);
+			it++;
+		}
+	}
+
+	void	Client::unsetModes(const std::string& modes)
+	{
+		std::string::const_iterator	it = modes.begin();
+		while (it != modes.end())
+		{
+			_modes.erase(*it);
+			it++;
+		}
+	}
+
+
 }
