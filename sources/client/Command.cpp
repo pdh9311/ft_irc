@@ -116,7 +116,6 @@ namespace irc
 		// }
 
 		// _cmds.push_back(Command(prefix, cmd, args));
-
 	}
 
 	void	Command::setFunc()
@@ -195,7 +194,7 @@ namespace irc
 		_result += to_string(rcode) + " ";
 		_result += _client->getNick() + " ";
 
-		std::cout << _result << std::endl;
+		// std::cout << _result << std::endl;
 		switch (rcode)
 		{
 			case RPL_WELCOME:
@@ -343,6 +342,9 @@ namespace irc
 				_result += s1; break ;
 			case RPL_ENDOFWHO:
 				_result += s1 + " :End of /WHO list"; break ;
+
+			case RPL_UMODEIS:
+				_result += "+" + _client->getModestr(); break ;
 			default:
 				_result += "unknown command or not implemented yet. please check Command.cpp";
 		}

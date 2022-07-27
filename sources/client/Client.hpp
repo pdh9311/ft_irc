@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:47:58 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/27 15:00:38 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/27 18:50:00 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ namespace irc
 			const std::string&	getUserName() const;
 			const std::string&	getRealName() const;
 			const mode_t&		getModes() const;
+			const std::string	getModestr() const;
 			const Channel*		getCChannel() const;
 			bool				hasMode(char c) const;
 
@@ -69,7 +70,9 @@ namespace irc
 			void	setUserName(const std::string& name);
 			void	setRealName(const std::string& name);
 			void	setModes(const std::string& modes);
+			void	setMode(const char c);
 			void	unsetModes(const std::string& modes);
+			void	unsetMode(const char c);
 			void	setCChannel(Channel* channel);
 	};
 }

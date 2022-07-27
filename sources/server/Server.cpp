@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:39:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/27 16:20:18 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/27 19:05:08 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ namespace irc
 
 	void	Server::queue (const int& fd, std::string msg)
 	{
-		std::cout << "queuing msg [" << msg << "]" << std::endl;
+		std::cout << ">> [" << msg << "]" << std::endl;
 		_sque.push(std::make_pair(fd, msg + "\r\n"));
 	}
 
@@ -239,6 +239,18 @@ namespace irc
 		clients_t::const_iterator	fit = _clients.find(fd);
 		if (fit != _clients.end())
 			return (fit->second);
+		return (NULL);
+	}
+
+	Client*	Server::getClient(const std::string& name) const
+	{
+		clients_t::const_iterator	it = _clients.begin();
+		while (it != _clients.end())
+		{
+			if (it->second->getNick() == name)
+				return (it->second);
+			++it;
+		}
 		return (NULL);
 	}
 

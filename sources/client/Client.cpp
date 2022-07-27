@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:58:48 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/27 16:23:57 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/27 19:08:11 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ namespace irc
 		{
 			++ret;
 			// _parse(_buf.substr(cur, fpos - cur));
-			// std::cout << _buf.substr(cur, fpos - cur) << std::endl;
+			std::cout << "<< [" + _buf.substr(cur, fpos - cur) << "]" << std::endl;
 			Command	cmd(this, _server, _buf.substr(cur, fpos - cur));
 			cmd.run();
 			cur = fpos + 2;
@@ -119,6 +119,19 @@ namespace irc
 		return (_modes);
 	}
 
+	const std::string	Client::getModestr() const
+	{
+		std::string				ret;
+		mode_t::const_iterator	it = _modes.begin();
+
+		while (it != _modes.end())
+		{
+			ret += *it;
+			++it;
+		}
+		return (ret);
+	}
+
 	const Channel*	Client::getCChannel() const
 	{
 		return (_cchannel);
@@ -164,6 +177,11 @@ namespace irc
 		}
 	}
 
+	void	Client::setMode(const char c)
+	{
+		_modes.insert(c);
+	}
+
 	void	Client::unsetModes(const std::string& modes)
 	{
 		std::string::const_iterator	it = modes.begin();
@@ -172,6 +190,11 @@ namespace irc
 			_modes.erase(*it);
 			it++;
 		}
+	}
+
+	void	Client::unsetMode(const char c)
+	{
+		_modes.erase(c);
 	}
 
 	void	Client::setCChannel(Channel* channel)

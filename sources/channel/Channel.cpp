@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 13:20:00 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/27 16:09:59 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/27 19:23:27 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,19 @@ namespace irc
 		return (_modes);
 	}
 
+	std::string	Channel::getModestr() const
+	{
+		std::string				ret;
+		mode_t::const_iterator	it = _modes.begin();
+
+		while (it != _modes.end())
+		{
+			ret += *it;
+			++it;
+		}
+		return (ret);
+	}
+
 	std::string	Channel::getMembers() const
 	{
 		std::string	ret;
@@ -114,6 +127,11 @@ namespace irc
 		}
 	}
 
+	void	Channel::setMode(const char c)
+	{
+		_modes.insert(c);
+	}
+
 	void	Channel::unsetModes(const std::string& modes)
 	{
 		std::string::const_iterator	it = modes.begin();
@@ -122,6 +140,11 @@ namespace irc
 			_modes.erase(*it);
 			it++;
 		}
+	}
+
+	void	Channel::unsetMode(const char c)
+	{
+		_modes.erase(c);
 	}
 
 }

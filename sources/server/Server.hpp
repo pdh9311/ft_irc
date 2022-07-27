@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/27 16:25:29 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/27 18:48:07 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ namespace irc
 			
 			const clients_t&	getClients() const;
 			const Client*		getClient(int fd) const;
+			Client*				getClient(const std::string& name) const;
 			const channels_t&	getChannels() const;
 			Channel*			getChannel (const std::string& name);
 			bool				hasChannel (const std::string& name) const;
