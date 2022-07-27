@@ -7,6 +7,7 @@
 
 // #include <string>
 #include <iostream>
+#include <algorithm>
 
 namespace irc
 {
@@ -71,7 +72,7 @@ namespace irc
 
 	void	Command::parse(const std::string& str)
 	{
-		std::cout << "command::parse called for [" << str << "]" << std::endl;
+		// std::cout << "command::parse called for [" << str << "]" << std::endl;
 		size_t	cur = 0;
 		size_t	fpos;
 		// std::string					prefix;
@@ -90,6 +91,9 @@ namespace irc
 
 		fpos = str.find(' ', cur);
 		_command = str.substr(cur, fpos - cur);
+		for (size_t i = 0; i < _command.size(); ++i)
+			_command[i] = std::toupper(_command[i]);
+
 		cur = fpos;
 
 		while (cur != std::string::npos)
