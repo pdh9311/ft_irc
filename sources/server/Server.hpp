@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/26 16:25:56 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/27 16:25:29 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ namespace irc
 			Server (std::string port);
 			virtual	~Server();
 
+			// void		welcome (Client* client);
 			void		queue (const int& fd, std::string msg);
 			void		initialize();
 			void		run();
@@ -62,9 +63,12 @@ namespace irc
 			void		rmchannel(Channel* channel);
 			
 			const clients_t&	getClients() const;
+			const Client*		getClient(int fd) const;
 			const channels_t&	getChannels() const;
-			Channel*			getChannel(const std::string& name);
-			bool				hasChannel(const std::string& name) const;
+			Channel*			getChannel (const std::string& name);
+			bool				hasChannel (const std::string& name) const;
+			const std::string	getName() const;
+			const std::string	getPrefix (const Client* client) const;
 	};
 }
 

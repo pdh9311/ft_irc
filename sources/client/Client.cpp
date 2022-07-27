@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:58:48 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/26 13:58:12 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/27 16:23:57 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ namespace irc
 {
 	int	Client::parse()
 	{
-		std::cout << "client::parse" << std::endl;
+		// std::cout << "client::parse" << std::endl;
 		int		ret = 0;
 		size_t	cur = 0;
 		size_t	fpos;
@@ -33,7 +33,7 @@ namespace irc
 		{
 			++ret;
 			// _parse(_buf.substr(cur, fpos - cur));
-			std::cout << _buf.substr(cur, fpos - cur) << std::endl;
+			// std::cout << _buf.substr(cur, fpos - cur) << std::endl;
 			Command	cmd(this, _server, _buf.substr(cur, fpos - cur));
 			cmd.run();
 			cur = fpos + 2;
@@ -51,7 +51,7 @@ namespace irc
 namespace irc
 {
 	Client::Client (const int& fd, Server* server)
-	:	_fd(fd), _server(server), _last_ping(std::time(0))
+	:	_fd(fd), _server(server), _cchannel(NULL), _last_ping(std::time(0))
 	{}
 
 	Client::~Client()
@@ -104,9 +104,24 @@ namespace irc
 		return (_nick);
 	}
 
+	const std::string&	Client::getUserName() const
+	{
+		return (_user_name);
+	}
+
+	const std::string&	Client::getRealName() const
+	{
+		return (_real_name);
+	}
+
 	const Client::mode_t&	Client::getModes() const
 	{
 		return (_modes);
+	}
+
+	const Channel*	Client::getCChannel() const
+	{
+		return (_cchannel);
 	}
 
 	bool	Client::hasMode(char c) const
@@ -129,6 +144,16 @@ namespace irc
 		_nick = str;
 	}
 
+	void	Client::setUserName(const std::string& name)
+	{
+		_user_name = name;
+	}
+
+	void	Client::setRealName(const std::string& name)
+	{
+		_real_name = name;
+	}
+
 	void	Client::setModes(const std::string& modes)
 	{
 		std::string::const_iterator it = modes.begin();
@@ -149,5 +174,8 @@ namespace irc
 		}
 	}
 
-
+	void	Client::setCChannel(Channel* channel)
+	{
+		_cchannel = channel;
+	}
 }

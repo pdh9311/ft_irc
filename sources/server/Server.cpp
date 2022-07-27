@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:39:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/26 16:26:38 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/27 16:20:18 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ namespace irc
 
 	Channel*	Server::createChannel(const std::string& name)
 	{
-		Channel*	channel = new Channel(name);
+		Channel*	channel = new Channel(this, name);
 		_channels.insert(std::make_pair(name, channel));
 		return (channel);
 	}
@@ -90,6 +90,17 @@ namespace irc
 	Server::~Server()
 	{
 		close(_lfd); // check if this can somehow cause problems?
+	}
+
+	// void	Server::welcome (Client* client)
+	// {
+	// 	// queue(getPrefix(client) + "001" )
+	// }
+
+	void	Server::queue (const int& fd, std::string msg)
+	{
+		std::cout << "queuing msg [" << msg << "]" << std::endl;
+		_sque.push(std::make_pair(fd, msg + "\r\n"));
 	}
 
 	void	Server::initialize()
@@ -113,12 +124,6 @@ namespace irc
 		pfd.events = POLLIN;
 		pfd.revents = 0;
 		_pfds.push_back(pfd);
-	}
-
-	void	Server::queue(const int& fd, std::string msg)
-	{
-		std::cout << "queuing msg [" << msg << "]" << std::endl;
-		_sque.push(std::make_pair(fd, msg + "\r\n"));
 	}
 
 	void	Server::flush()
@@ -193,17 +198,17 @@ namespace irc
 				this->flush();
 
 			// destroy empty channels.
-			// channels_t::iterator	it = _channels.begin();
-			// while (it != _channels.end())
-			// {
-			// 	channels_t::iterator tmp = ++it;
-			// 	if (it->second->getClients().empty())
-			// 	{
-			// 		delete it->second;	
-			// 		_channels.erase(it->second->getName());
-			// 	}
-			// 	it = tmp;
-			// }
+			channels_t::iterator	it = _channels.begin();
+			while (it != _channels.end())
+			{
+				channels_t::iterator tmp = it++;
+
+				if (tmp->second->getClients().empty())
+				{
+					delete tmp->second;	
+					_channels.erase(tmp);
+				}
+			}
 		}
 	}
 
@@ -229,11 +234,12 @@ namespace irc
 		return (_clients);
 	}
 
-	Channel*	Server::getChannel(const std::string& name)
+	const Client*	Server::getClient(int fd) const
 	{
-		if (hasChannel(name))
-			return (_channels[name]);
-		return (createChannel(name));
+		clients_t::const_iterator	fit = _clients.find(fd);
+		if (fit != _clients.end())
+			return (fit->second);
+		return (NULL);
 	}
 
 	const Server::channels_t&	Server::getChannels() const
@@ -241,8 +247,32 @@ namespace irc
 		return (_channels);
 	}
 
+	Channel*	Server::getChannel(const std::string& name)
+	{
+		if (hasChannel(name))
+			return (_channels[name]);
+		return (createChannel(name));
+	}
+
 	bool	Server::hasChannel(const std::string& name) const
 	{
 		return (_channels.count(name));
+	}
+
+	const std::string	Server::getName() const
+	{
+		return ("localhost");
+	}
+
+	const std::string	Server::getPrefix(const Client* client) const
+	{
+		std::string	ret = ":";
+		ret += client->getNick();
+		ret += "!";
+		ret += client->getUserName();
+		ret += "@";
+		ret += getName();
+		ret += " ";
+		return (ret);
 	}
 }

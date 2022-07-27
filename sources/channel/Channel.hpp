@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 17:08:35 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/26 15:39:14 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/27 15:49:50 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 namespace irc
 {
+	class Server;
 	class Client;
 
 	class Channel
@@ -27,12 +28,14 @@ namespace irc
 			typedef std::set<char>	mode_t;
 
 		private:
+			Server*				_server;
 			const std::string	_name;
+			std::string			_topic;
 			client_t			_clients;
 			mode_t				_modes;
 
 		public:
-			Channel(const std::string name);
+			Channel(Server* server, const std::string name);
 			~Channel();
 			
 			bool	isMember(const Client* client);
@@ -41,9 +44,12 @@ namespace irc
 			void	rmClient(const Client* client);
 
 			const std::string&	getName() const;
+			const std::string&	getTopic() const;
 			const client_t&		getClients() const;
 			const mode_t&		getModes() const;
+			std::string			getMembers() const;
 
+			void	setTopic(const std::string& topic);
 			void	setModes(const std::string& modes);
 			void	unsetModes(const std::string& modes);
 	};

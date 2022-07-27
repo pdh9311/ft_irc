@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:47:58 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/26 15:03:11 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/27 15:00:38 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,16 @@ namespace irc
 		private:
 			const int		_fd;
 			Server*		 	_server;
+			Channel*		_cchannel;
 			time_t			_last_ping; // initialized up to here
 
 			// std::vector<Command>	_cmds;
 			std::string		_buf;
 			std::string		_nick;
+			std::string		_user_name;
+			std::string		_real_name;
 			std::string		_last_nick;
 			mode_t			_modes;
-			Channel*		_cchannel;
 
 			// void	_parse(std::string str);
 			int		parse();
@@ -56,15 +58,19 @@ namespace irc
 			const int&			getFD() const;
 			const time_t&		getLastPing() const;
 			const std::string&	getNick() const;
+			const std::string&	getUserName() const;
+			const std::string&	getRealName() const;
 			const mode_t&		getModes() const;
+			const Channel*		getCChannel() const;
 			bool				hasMode(char c) const;
-			// std::vector<Command>&	getCommands();
 
 			void	setLastPing(const time_t& time);
 			void	setNick(const std::string& str);
+			void	setUserName(const std::string& name);
+			void	setRealName(const std::string& name);
 			void	setModes(const std::string& modes);
 			void	unsetModes(const std::string& modes);
-
+			void	setCChannel(Channel* channel);
 	};
 }
 

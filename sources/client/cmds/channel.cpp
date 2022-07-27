@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 15:11:02 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/26 16:23:15 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/27 16:24:31 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ namespace irc
 
 		static const std::vector<std::string>	_split(const std::string& str)
 		{
-			std::cout <<"_split " << str <<std::endl;
+			// std::cout <<"_split " << str <<std::endl;
 			std::vector<std::string>	ret;
 			size_t						cur = 0;
 			size_t						fpos = cur;
@@ -69,11 +69,13 @@ namespace irc
 				{
 					Channel*	channel = cmd->getServer()->getChannel(name.c_str() + 1);
 					channel->addClient(cmd->getClient());
-					// set cchan
+					cmd->getClient()->setCChannel(channel);
 				}
 			}
-
-			std::cout << "current channel#: " << cmd->getServer()->getChannels().size() << std::endl;
+			
+			const Channel*	channel = cmd->getClient()->getCChannel();
+			if (channel && !channel->getTopic().empty())
+				cmd->setResult(RPL_NOTOPIC);
 
 			// return (cmd->setResult(RPL_TPOIC, cmd->getUser->getCChannel()->getTopic()));
 			// size_t	cur = 0;
@@ -129,7 +131,6 @@ namespace irc
 					channel->rmClient(cmd->getClient());
 				}
 			}
-			std::cout << "current channel#: " << cmd->getServer()->getChannels().size() << std::endl;
 		}
 		
 		void	mode	(Command* cmd)

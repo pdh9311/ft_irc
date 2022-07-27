@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 13:56:44 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 16:45:36 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/27 15:14:16 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 namespace irc
 {
+	/*	Command responses	*/
+	#define RPL_WELCOME				001
+	
 	/*	Error responses	*/
 	#define ERR_NOSUCHNICK			401
 	#define	ERR_NOSUCHSERVER		402

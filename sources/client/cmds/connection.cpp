@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 15:11:11 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 16:10:47 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/27 15:19:33 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,31 @@ namespace irc
 		
 		void	user(Command* cmd)
 		{
-			std::cout << "user command called" << std::endl;
-			std::cout << "result will be set to 001 (RPL_WELCOME) for now" << std::endl;
-			std::string	ret = ":localhost 001 " + cmd->getClient()->getNick();
-			cmd->setResult(ret);
+			// std::cout << "user command called" << std::endl;
+			// std::cout << "result will be set to 001 (RPL_WELCOME) for now" << std::endl;
+			// std::string	ret = ":localhost 001 " + cmd->getClient()->getNick();
+			// cmd->setResult(ret);
+			if (cmd->getArgC() < 4)
+				cmd->setResult(ERR_NEEDMOREPARAMS);
+
+			const std::string&	username = cmd->getArgs()[0];
+			const std::string&	realname = cmd->getArgs()[3];
+
+			const Server::clients_t&	clients = cmd->getServer()->getClients();
+			Server::clients_t::const_iterator it = clients.begin();
+
+			while (it != clients.end())
+			{
+				if (it->second->getUserName() == username)
+					cmd->setResult(ERR_ALREADYREGISTRED);
+				++it;
+			}
+			
+			Client*	client = cmd->getClient();
+			client->setUserName(username);
+			client->setRealName(realname);
+			// cmd->getServer()->welcome(client);
+			cmd->setResult(RPL_WELCOME, client->getNick());
 		}
 		
 		void	server(Command* cmd)
