@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Channel.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/26 13:20:00 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/28 12:57:57 by minsunki         ###   ########seoul.kr  */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "channel/Channel.hpp"
 #include "server/Server.hpp"
 #include "client/Client.hpp"
