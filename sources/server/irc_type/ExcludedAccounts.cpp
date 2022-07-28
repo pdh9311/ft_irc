@@ -33,7 +33,7 @@ namespace irc
 		_auth = auth;
 	}
 
-	const int ExcludedAccounts::getPort() const
+	int ExcludedAccounts::getPort() const
 	{
 		return _port;
 	}

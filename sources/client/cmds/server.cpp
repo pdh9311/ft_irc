@@ -17,7 +17,7 @@ namespace irc
 		{
 
 		}
-		
+
 		void	links	(Command* cmd)
 		{
 
@@ -37,7 +37,7 @@ namespace irc
 		{
 
 		}
-		
+
 		void	admin	(Command* cmd)
 		{
 
@@ -45,7 +45,7 @@ namespace irc
 
 		void	info	(Command* cmd)
 		{
-			
+
 		}
 	}
 }

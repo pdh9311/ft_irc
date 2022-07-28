@@ -27,7 +27,7 @@ namespace irc
 		public:
 			Channel(Server* server, const std::string name);
 			~Channel();
-			
+
 			bool	isMember(const Client* client);
 			bool	hasMode(const char c);
 			void	addClient(const Client* client);

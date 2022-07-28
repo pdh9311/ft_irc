@@ -15,7 +15,7 @@ namespace irc
 			ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
 			ERR_CHANNELISFULL               ERR_BADCHANMASK
 			ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
-			RPL_TOPIC	
+			RPL_TOPIC
 		*/
 
 		static const std::vector<std::string>	_split(const std::string& str)
@@ -24,7 +24,7 @@ namespace irc
 			std::vector<std::string>	ret;
 			size_t						cur = 0;
 			size_t						fpos = cur;
-			
+
 			if (str.empty())
 				return (ret);
 
@@ -37,20 +37,20 @@ namespace irc
 					break ;
 				cur = fpos + 1;
 			}
-			
+
 			return (ret);
 		}
-		
-		void	join	(Command* cmd) 
+
+		void	join	(Command* cmd)
 		{
 			// bool	hasKeys = (cmd->getArgC() > 1);
 
 			if (cmd->getArgs().empty())
 				return (cmd->setResult(ERR_NEEDMOREPARAMS));
-			
+
 			const std::vector<std::string>	servers = _split(cmd->getArgs()[0]);
 			// const std::vector<std::string>	keys = (cmd->getArgC() > 1 ? _split(cmd->getArgs()[1]) : )
-			
+
 			for (size_t i = 0; i < servers.size(); ++i)
 			{
 				const std::string&	name = servers[i];
@@ -61,7 +61,7 @@ namespace irc
 					cmd->getClient()->setCChannel(channel);
 				}
 			}
-			
+
 			const Channel*	channel = cmd->getClient()->getCChannel();
 			if (channel && !channel->getTopic().empty())
 				cmd->setResult(RPL_NOTOPIC);
@@ -102,7 +102,7 @@ namespace irc
 		{
 			if (cmd->getArgs().empty())
 				return (cmd->setResult(ERR_NEEDMOREPARAMS));
-			
+
 			const std::vector<std::string>	servers = _split(cmd->getArgs()[0]);
 
 			for (size_t i = 0; i < servers.size(); ++i)
@@ -112,7 +112,7 @@ namespace irc
 				{
 					if (!cmd->getServer()->hasChannel(name.c_str() + 1))
 						return (cmd->setResult(ERR_NOSUCHCHANNEL));
-					
+
 					Channel*	channel = cmd->getServer()->getChannel(name.c_str() + 1);
 
 					if (!channel->isMember(cmd->getClient()))
@@ -121,7 +121,7 @@ namespace irc
 				}
 			}
 		}
-		
+
 		void	mode	(Command* cmd)
 		{
 			if (cmd->getArgC() < 1)
@@ -171,7 +171,7 @@ namespace irc
 				Client*	client = cmd->getServer()->getClient(targ);
 				if (!client)
 					return (cmd->setResult(ERR_NOSUCHNICK));
-				
+
 				if (cmd->getArgC() > 1)
 				{
 					const std::string&	mstr = cmd->getArgs()[1];
@@ -226,7 +226,7 @@ namespace irc
 			// std::cout << cmd->getArgs()[0] << "#" << std::endl;
 			if (cmd->getArgC() > 1)
 				cmd->setResult(ERR_NOSUCHSERVER); // we dun know any servers.
-			
+
 			if (!cmd->getArgC()) // list all channels
 			{
 				const Server::channels_t&	channels = cmd->getServer()->getChannels();
@@ -248,12 +248,12 @@ namespace irc
 
 			}
 		}
-		
+
 		void	invite	(Command* cmd)
 		{
 			if (cmd->getArgC() < 2)
 				return (cmd->setResult(ERR_NEEDMOREPARAMS));
-			
+
 			const std::string&	target = cmd->getArgs()[0];
 			const std::string&	chann = cmd->getArgs()[1];
 

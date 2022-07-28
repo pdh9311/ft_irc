@@ -166,7 +166,7 @@ namespace irc
 
 			if (pr)
 			{
-				int	size = _pfds.size();			
+				int	size = _pfds.size();
 
 				if (_pfds[0].revents)
 					this->accept();
@@ -179,7 +179,7 @@ namespace irc
 						continue;
 					if (!(pfd.revents & POLLIN))
 						PE("poll revent is set wrong");
-						
+
 					if (_clients.count(pfd.fd))
 						_clients[pfd.fd]->recv();
 					else
@@ -198,7 +198,7 @@ namespace irc
 
 				if (tmp->second->getClients().empty())
 				{
-					delete tmp->second;	
+					delete tmp->second;
 					_channels.erase(tmp);
 				}
 			}

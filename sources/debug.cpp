@@ -40,7 +40,7 @@ namespace irc
 		std::cerr << std::strerror(errno) << std::endl;
 		std::exit (1);
 	}
-	
+
 	void	perror(std::string err, std::string file, int line)
 	{
 		std::cerr << err  << " (" << file << ", " << line << ")" << std::endl;;

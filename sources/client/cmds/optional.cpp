@@ -37,7 +37,7 @@ namespace irc
 		{
 
 		}
-		
+
 		void	userhost	(Command* cmd)
 		{
 
@@ -45,7 +45,7 @@ namespace irc
 
 		void	ison	(Command* cmd)
 		{
-			
+
 		}
 	}
 }

@@ -17,13 +17,13 @@ namespace irc
 
 			if (cmd->getClient()->isLoggedIn())
 				return (cmd->setResult(ERR_ALREADYREGISTRED));
-			
+
 			if (pwd == "TODO:: PASSWORD")
 				cmd->getClient()->setStatus(Client::AUTH);
 			else // is this needed?
 				cmd->getClient()->setStatus(Client::PENDING);
 		}
-		
+
 		void	nick(Command* cmd)
 		{
 			// std::cout << "nick command called" << std::endl;
@@ -36,7 +36,7 @@ namespace irc
 			if (cmd->getArgC() < 1)
 				return (cmd->setResult(ERR_NONICKNAMEGIVEN)); // no arg, no nick
 			const std::string&	nick = cmd->getArgs()[0];
-			
+
 			if (!nick.size())
 				return (cmd->setResult(ERR_NONICKNAMEGIVEN));
 			if (nick.size() > 9 || !isNickStr(nick))
@@ -55,7 +55,7 @@ namespace irc
 
 			cmd->getClient()->setNick(cmd->getArgs()[0]);
 		}
-		
+
 		void	user(Command* cmd)
 		{
 			// std::cout << "user command called" << std::endl;
@@ -77,7 +77,7 @@ namespace irc
 					cmd->setResult(ERR_ALREADYREGISTRED);
 				++it;
 			}
-			
+
 			Client*	client = cmd->getClient();
 			client->setUserName(username);
 			client->setRealName(realname);
@@ -85,26 +85,26 @@ namespace irc
 			client->setStatus(Client::LOGGEDIN);
 			cmd->setResult(RPL_WELCOME, client->getNick());
 		}
-		
+
 		void	server(Command* cmd)
 		{
-			
+
 		}
-		
+
 		void	oper(Command* cmd)
 		{
-			
+
 		}
-		
+
 		void	quit(Command* cmd)
 		{
 			// need to broadcast arg[0], the quit message
 			cmd->getServer()->rmclient(cmd->getClient());
 		}
-		
+
 		void	squit(Command* cmd)
 		{
-			
+
 		}
 	}
 }

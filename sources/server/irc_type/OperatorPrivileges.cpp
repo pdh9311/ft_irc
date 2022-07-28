@@ -43,7 +43,7 @@ namespace irc
 		_clazz = clazz;
 	}
 
-	const int OperatorPrivileges::getPort() const
+	int OperatorPrivileges::getPort() const
 	{
 		return _port;
 	}

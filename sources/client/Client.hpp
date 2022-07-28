@@ -26,12 +26,12 @@ namespace irc
 				LOGGEDIN,		// USER command accepted, live client
 				DISCONNECT	// client disconnected, pending for destruction
 			};
-		
+
 		private:
 			const int		_fd;
 			Server*		 	_server;
 			Channel*		_cchannel;
-			time_t			_last_ping; 
+			time_t			_last_ping;
 			char			_status;
 
 			// std::vector<Command>	_cmds;
@@ -44,14 +44,14 @@ namespace irc
 
 			// void	_parse(std::string str);
 			int		parse();
-			
+
 		public:
 			Client (const int& fd, Server* server);
 			virtual	~Client();
 
 			void	recv();
 
-			const char			getStatus() const;
+			char			getStatus() const;
 			const int&			getFD() const;
 			const time_t&		getLastPing() const;
 			const std::string&	getNick() const;

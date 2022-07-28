@@ -94,7 +94,7 @@ namespace irc
 			const Client*	client = _server->getClient(*it);
 			if (!client)
 				PE("Channel is holding invalid fd");
-			ret += "@" + client->getNick() + " "; // TODO:: @ + 
+			ret += "@" + client->getNick() + " "; // TODO:: @ +
 			++it;
 		}
 		return (ret);

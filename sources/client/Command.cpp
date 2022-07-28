@@ -32,7 +32,7 @@ namespace irc
 		ht["LIST"]		= cmd::list;
 		ht["INVITE"]	= cmd::invite;
 		ht["KICK"]		= cmd::kick;
-	
+
 		/*	Server queries and commands	*/
 		ht["VERSION"]	= cmd::version;
 		ht["STATS"]		= cmd::stats;
@@ -58,7 +58,7 @@ namespace irc
 		ht["PONG"]		= cmd::pong;
 		ht["ERROR"]		= cmd::error;
 
-		/*	Optional messages	*/ 
+		/*	Optional messages	*/
 		ht["AWAY"]		= cmd::away;
 		ht["REHASH"]	= cmd::rehash;
 		ht["RESTART"]	= cmd::restart;
@@ -86,7 +86,7 @@ namespace irc
 			fpos = str.find(' ', ++cur);
 			_prefix = str.substr(cur, fpos - cur);
 			cur = fpos;
-		} // is message with only prefix valid? 
+		} // is message with only prefix valid?
 
 		while (str[cur] == ' ') cur++;
 
@@ -128,7 +128,7 @@ namespace irc
 
 		if (!_command.empty() && fit != hashmap.end())
 		{
-			if (_client->getStatus() < Client::AUTH && _command != "PASS") 
+			if (_client->getStatus() < Client::AUTH && _command != "PASS")
 				return ;
 			if (_client->getStatus() < Client::LOGGEDIN &&
 							!(_command == "NICK" || _command == "USER"))
@@ -159,7 +159,7 @@ namespace irc
 		if (_func) // do we need default action?
 			this->_func(this);
 		// if (!_result.empty()) // check default action for invalid cmd
-		// 	_server->queue(_client->getFD(), _result);	
+		// 	_server->queue(_client->getFD(), _result);
 	}
 
 	Client*	Command::getClient()
@@ -297,7 +297,7 @@ namespace irc
 				_result += _args[0] + " :Channel key already set"; break ;
 			case ERR_CHANNELISFULL:
 				_result += _args[0] + " :Cannot join channel (+l)"; break ;
-			case ERR_UNKNOWNMODE: 
+			case ERR_UNKNOWNMODE:
 				_result += s1 + " :is unknown mode char to me"; break ;
 			case ERR_INVITEONLYCHAN:
 				_result += _args[0] + " :Cannot join channel (+i)"; break ;

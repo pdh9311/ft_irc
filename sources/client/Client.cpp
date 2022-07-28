@@ -16,7 +16,7 @@ namespace irc
 		int		ret = 0;
 		size_t	cur = 0;
 		size_t	fpos;
-		
+
 		while ((fpos = _buf.find('\r', cur)) != std::string::npos)
 		{
 			++ret;
@@ -28,7 +28,7 @@ namespace irc
 		}
 
 		_buf.erase(0, _buf.find_last_of('\n') + 2); // why + 2?
-		
+
 		// std::cout << "buffer after parse" << std::endl;
 		// std::cout << _buf << std::endl;
 		// std::cout << "EOB" << std::endl;
@@ -39,7 +39,7 @@ namespace irc
 namespace irc
 {
 	Client::Client (const int& fd, Server* server)
-	:	_fd(fd), _server(server), _cchannel(NULL), 
+	:	_fd(fd), _server(server), _cchannel(NULL),
 		_last_ping(std::time(0)), _status(PENDING)
 	{
 		if (true) // tmp force no password
@@ -59,7 +59,7 @@ namespace irc
 		rs = ::recv(_fd, buf, 512, 0), DBG(-1, rs, "recv");
 		// no need to check EWOULDBLOCK since we polled
 		// buffer size is 512 per rfc.
-		
+
 		if (rs == 0)
 		{
 			// check if quit was received, if not, generate appropriate quit message
@@ -81,7 +81,7 @@ namespace irc
 		// _server->queue(_fd, "hello client");
 	}
 
-	const char	Client::getStatus() const
+	char	Client::getStatus() const
 	{
 		return (_status);
 	}
@@ -150,7 +150,7 @@ namespace irc
 	}
 	// void	Client::_parse(std::string str)
 	// {
-	
+
 	// }
 
 	void	Client::setNick(const std::string& str)

@@ -5,7 +5,7 @@ namespace irc
 {
 	/*	Command responses	*/
 	#define RPL_WELCOME				001
-	
+
 	/*	Error responses	*/
 	#define ERR_NOSUCHNICK			401
 	#define	ERR_NOSUCHSERVER		402

@@ -3,7 +3,7 @@
 // public func
 namespace irc
 {
-	const int ConnectionClasses::getClazz() const
+	int ConnectionClasses::getClazz() const
 	{
 		return _clazz;
 	}
@@ -13,7 +13,7 @@ namespace irc
 		_clazz = clazz;
 	}
 
-	const int ConnectionClasses::getPingFrequency() const
+	int ConnectionClasses::getPingFrequency() const
 	{
 		return _ping_frequency;
 	}
@@ -23,7 +23,7 @@ namespace irc
 		_ping_frequency = ping_frequency;
 	}
 
-	const int ConnectionClasses::getConnectFreq() const
+	int ConnectionClasses::getConnectFreq() const
 	{
 		return _connect_freq;
 	}
@@ -33,7 +33,7 @@ namespace irc
 		_connect_freq = connect_freq;
 	}
 
-	const int ConnectionClasses::getMaxLinks() const
+	int ConnectionClasses::getMaxLinks() const
 	{
 		return _max_links;
 	}
@@ -43,7 +43,7 @@ namespace irc
 		_max_links = max_links;
 	}
 
-	const int ConnectionClasses::getSendQ() const
+	int ConnectionClasses::getSendQ() const
 	{
 		return _sendQ;
 	}
@@ -53,7 +53,7 @@ namespace irc
 		_sendQ = sendQ;
 	}
 
-	const int ConnectionClasses::getLocalLimit() const
+	int ConnectionClasses::getLocalLimit() const
 	{
 		return _local_limit;
 	}
@@ -63,7 +63,7 @@ namespace irc
 		_local_limit = local_limit;
 	}
 
-	const int ConnectionClasses::getGlobalLimit() const
+	int ConnectionClasses::getGlobalLimit() const
 	{
 		return _global_Limit;
 	}

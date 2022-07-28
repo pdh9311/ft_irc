@@ -25,7 +25,7 @@ namespace irc
 				cmd->getServer()->queue(cmd->getClient()->getFD(),
 					cmd->getServer()->getPrefix(cmd->getClient()) + "PONG " + targ);
 		}
-		
+
 		void	pong	(Command* cmd)
 		{
 			const std::string& a1 = cmd->getArgs()[0];
