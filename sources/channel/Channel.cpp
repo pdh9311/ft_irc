@@ -36,11 +36,11 @@ namespace irc
 	void	Channel::addClient(const Client* client)
 	{
 		_clients.insert(client->getFD());
-		_server->queue(client->getFD(), _server->getPrefix(client) + to_string(RPL_NAMREPLY)
+		_server->queue(client->getFD(), _server->getPrefix(client) + " " + to_string(RPL_NAMREPLY)
 										+ " " + client->getNick() + " = #" + getName() + " :" + getMembers());
-		_server->queue(client->getFD(), _server->getPrefix(client) + to_string(RPL_ENDOFNAMES)
+		_server->queue(client->getFD(), _server->getPrefix(client) + " " + to_string(RPL_ENDOFNAMES)
 										+ " " + client->getNick() + " #" + getName() + " :End of /NAMES list");
-		_server->queue(client->getFD(), _server->getPrefix(client) + "JOIN #" + getName());
+		_server->queue(client->getFD(), _server->getPrefix(client) + " JOIN #" + getName());
 	}
 
 	void	Channel::rmClient(const Client* client)
@@ -48,7 +48,7 @@ namespace irc
 		if (!isMember(client))
 			PE("Tried to Channel::rmClient on non-member client");
 		_clients.erase(client->getFD());
-		_server->queue(client->getFD(), _server->getPrefix(client) + "PART #" + getName());
+		_server->queue(client->getFD(), _server->getPrefix(client) + " PART #" + getName());
 	}
 
 	const std::string&	Channel::getName() const

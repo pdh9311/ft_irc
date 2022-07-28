@@ -23,7 +23,7 @@ namespace irc
 			const std::string&	targ = cmd->getArgs()[0];
 			if (cmd->getClient()->getNick() == targ)
 				cmd->getServer()->queue(cmd->getClient()->getFD(),
-					cmd->getServer()->getPrefix(cmd->getClient()) + "PONG " + targ);
+					cmd->getServer()->getPrefix(cmd->getClient()) + " PONG " + targ);
 		}
 
 		void	pong	(Command* cmd)

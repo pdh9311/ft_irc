@@ -6,6 +6,7 @@
 #include <fstream>
 #include <vector>
 
+#include <cstring>
 #include <cstdlib>
 #include <unistd.h>
 
@@ -55,7 +56,7 @@ namespace irc
 			file.getline(buf, BUFFER_SIZE);
 			std::string str(buf);
 
-			if(strchr(CONF_SPECIFY, buf[0]) != 0)
+			if(std::strchr(CONF_SPECIFY, buf[0]) != 0)
 			{
 				_words.clear();
 				_words = colon_split(str);
