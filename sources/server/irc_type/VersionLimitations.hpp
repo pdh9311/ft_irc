@@ -15,15 +15,15 @@ namespace irc
 			std::string _server_mask;
 
 		public:
-			const std::string& get_version_mask();
-			const std::string& get_flags();
-			const std::string& get_server_mask();
+			const std::string& getVersionMask() const;
+			const std::string& getFlags() const;
+			const std::string& getServerMask() const;
 
-			void set_version_mask(std::string& version_mask);
-			void set_flags(std::string& flags);
-			void set_server_mask(std::string& server_mask);
+			void setVersionMask(std::string& version_mask);
+			void setFlags(std::string& flags);
+			void setServerMask(std::string& server_mask);
 
-			void set_member(std::string& version_mask, std::string& flags, std::string& server_mask);
+			void setMember(std::string& version_mask, std::string& flags, std::string& server_mask);
 
 			void print();
 	};

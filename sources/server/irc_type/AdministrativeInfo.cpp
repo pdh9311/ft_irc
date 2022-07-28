@@ -3,33 +3,33 @@
 // public func
 namespace irc
 {
-	const std::string& AdministrativeInfo::get_name()
+	const std::string& AdministrativeInfo::getName() const
 	{
 		return _name;
 	}
-	const std::string& AdministrativeInfo::get_mailing_addr()
+	const std::string& AdministrativeInfo::getMailingAddr() const
 	{
 		return _mailing_addr;
 	}
-	const std::string& AdministrativeInfo::get_other()
+	const std::string& AdministrativeInfo::getOther() const
 	{
 		return _other;
 	}
 
-	void AdministrativeInfo::set_name(std::string &name)
+	void AdministrativeInfo::setName(std::string &name)
 	{
 		_name = name;
 	}
-	void AdministrativeInfo::set_mailing_addr(std::string &password)
+	void AdministrativeInfo::setMailingAddr(std::string &password)
 	{
 		_mailing_addr = password;
 	}
-	void AdministrativeInfo::set_other(std::string &other)
+	void AdministrativeInfo::setOther(std::string &other)
 	{
 		_other = other;
 	}
 
-	void AdministrativeInfo::set_member(std::string &name, std::string &password, std::string &other)
+	void AdministrativeInfo::setMember(std::string &name, std::string &password, std::string &other)
 	{
 		_name = name;
 		_mailing_addr = password;

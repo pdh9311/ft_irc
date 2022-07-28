@@ -15,15 +15,15 @@ namespace irc
 			std::string	_other;          // 2
 
 		public:
-			const std::string& get_name();
-			const std::string& get_mailing_addr();
-			const std::string& get_other();
+			const std::string& getName() const;
+			const std::string& getMailingAddr() const;
+			const std::string& getOther() const;
 
-			void set_name(std::string& name);
-			void set_mailing_addr(std::string& mailing_addr);
-			void set_other(std::string& other);
+			void setName(std::string& name);
+			void setMailingAddr(std::string& mailing_addr);
+			void setOther(std::string& other);
 
-			void set_member(std::string& name, std::string& mailing_addr,
+			void setMember(std::string& name, std::string& mailing_addr,
 				std::string& other);
 
 			void print();

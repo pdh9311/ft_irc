@@ -3,41 +3,41 @@
 // public func
 namespace irc
 {
-	const std::string& DefaultLocalServer::get_host_addr()
+	const std::string& DefaultLocalServer::getHostAddr() const
 	{
 		return _host_addr;
 	}
-	const std::string& DefaultLocalServer::get_password()
+	const std::string& DefaultLocalServer::getPassword() const
 	{
 		return _password;
 	}
-	const std::string& DefaultLocalServer::get_host_name()
+	const std::string& DefaultLocalServer::getHostName() const
 	{
 		return _host_name;
 	}
-	int DefaultLocalServer::get_port()
+	int DefaultLocalServer::getPort() const
 	{
 		return _port;
 	}
 
-	void DefaultLocalServer::set_host_addr(std::string& host_addr)
+	void DefaultLocalServer::setHostAddr(std::string& host_addr)
 	{
 		_host_addr = host_addr;
 	}
-	void DefaultLocalServer::set_password(std::string& password)
+	void DefaultLocalServer::setPassword(std::string& password)
 	{
 		_password = password;
 	}
-	void DefaultLocalServer::set_host_name(std::string& host_name)
+	void DefaultLocalServer::setHostName(std::string& host_name)
 	{
 		_host_name = host_name;
 	}
-	void DefaultLocalServer::set_port(int port)
+	void DefaultLocalServer::setPort(int port)
 	{
 		_port = port;
 	}
 
-	void DefaultLocalServer::set_member(
+	void DefaultLocalServer::setMember(
 		std::string& host_addr, std::string& password,
 		std::string& host_name, int port)
 	{

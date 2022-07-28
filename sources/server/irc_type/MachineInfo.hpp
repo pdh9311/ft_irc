@@ -16,17 +16,17 @@ namespace irc
 			int _port;
 
 		public:
-			const std::string& get_server_name();
-			const std::string& get_ip();
-			const std::string& get_location();
-			int get_port();
+			const std::string& getServerName() const;
+			const std::string& getIp() const;
+			const std::string& getLocation() const;
+			int getPort() const;
 
-			void set_server_name(std::string& server_name);
-			void set_ip(std::string& ip);
-			void set_location(std::string& location);
-			void set_port(int port);
+			void setServerName(std::string& server_name);
+			void setIp(std::string& ip);
+			void setLocation(std::string& location);
+			void setPort(int port);
 
-			void set_member(std::string& server_name, std::string& ip,
+			void setMember(std::string& server_name, std::string& ip,
 							std::string& location, int port);
 			void print();
 	};

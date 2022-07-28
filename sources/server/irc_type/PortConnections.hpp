@@ -16,15 +16,15 @@ namespace irc
 			int			_port;
 
 		public:
-			const std::string& get_ip();
-			const std::string& get_mask();
-			int get_port();
+			const std::string& getIp() const;
+			const std::string& getMask() const;
+			int getPort() const;
 
-			void set_ip(std::string& ip);
-			void set_mask(std::string& mask);
-			void set_port(int port);
+			void setIp(std::string& ip);
+			void setMask(std::string& mask);
+			void setPort(int port);
 
-			void set_member(std::string& ip, std::string& mask, int port);
+			void setMember(std::string& ip, std::string& mask, int port);
 			void print();
 	};
 }

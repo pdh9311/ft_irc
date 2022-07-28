@@ -17,19 +17,19 @@ namespace irc
 			std::string _clazz;
 
 		public:
-			const std::string& get_host_mask();
-			const std::string& get_password();
-			const std::string& get_service_name();
-			const std::string& get_service_type();
-			const std::string& get_clazz();
+			const std::string& getHostMask() const;
+			const std::string& getPassword() const;
+			const std::string& getServiceName() const;
+			const std::string& getServiceType() const;
+			const std::string& getClazz() const;
 
-			void set_host_mask(std::string& host_mask);
-			void set_password(std::string& password);
-			void set_service_name(std::string& service_name);
-			void set_service_type(std::string& service_type);
-			void set_clazz(std::string& clazz);
+			void setHostMask(std::string& host_mask);
+			void setPassword(std::string& password);
+			void setServiceName(std::string& service_name);
+			void setServiceType(std::string& service_type);
+			void setClazz(std::string& clazz);
 
-			void set_member(std::string& host_mask, std::string& password, std::string& service_name,
+			void setMember(std::string& host_mask, std::string& password, std::string& service_name,
 				std::string& service_type, std::string& clazz);
 			void print();
 	};

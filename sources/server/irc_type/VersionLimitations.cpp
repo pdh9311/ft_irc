@@ -3,33 +3,33 @@
 // public func
 namespace irc
 {
-	const std::string& VersionLimitations::get_version_mask()
+	const std::string& VersionLimitations::getVersionMask() const
 	{
 		return _version_mask;
 	}
-	const std::string& VersionLimitations::get_flags()
+	const std::string& VersionLimitations::getFlags() const
 	{
 		return _flags;
 	}
-	const std::string& VersionLimitations::get_server_mask()
+	const std::string& VersionLimitations::getServerMask() const
 	{
 		return _server_mask;
 	}
 
-	void VersionLimitations::set_version_mask(std::string& version_mask)
+	void VersionLimitations::setVersionMask(std::string& version_mask)
 	{
 		_version_mask = version_mask;
 	}
-	void VersionLimitations::set_flags(std::string& flags)
+	void VersionLimitations::setFlags(std::string& flags)
 	{
 		_flags = flags;
 	}
-	void VersionLimitations::set_server_mask(std::string& server_mask)
+	void VersionLimitations::setServerMask(std::string& server_mask)
 	{
 		_server_mask = server_mask;
 	}
 
-	void VersionLimitations::set_member(std::string& version_mask, std::string& flags, std::string& server_mask)
+	void VersionLimitations::setMember(std::string& version_mask, std::string& flags, std::string& server_mask)
 	{
 		_version_mask = version_mask;
 		_flags = flags;

@@ -3,47 +3,47 @@
 // public func
 namespace irc
 {
-	const std::string& ExcludedAccounts::get_host_name()
+	const std::string& ExcludedAccounts::getHostName() const
 	{
 		return _host_name;
 	}
 
-	void ExcludedAccounts::set_host_name(std::string &host_name)
+	void ExcludedAccounts::setHostName(std::string &host_name)
 	{
 		_host_name = host_name;
 	}
 
-	const std::string& ExcludedAccounts::get_time_interval()
+	const std::string& ExcludedAccounts::getTimeInterval() const
 	{
 		return _time_interval;
 	}
 
-	void ExcludedAccounts::set_time_interval(std::string &time_interval)
+	void ExcludedAccounts::setTimeInterval(std::string &time_interval)
 	{
 		_time_interval = time_interval;
 	}
 
-	const std::string& ExcludedAccounts::get_auth()
+	const std::string& ExcludedAccounts::getAuth() const
 	{
 		return _auth;
 	}
 
-	void ExcludedAccounts::set_auth(std::string &auth)
+	void ExcludedAccounts::setAuth(std::string &auth)
 	{
 		_auth = auth;
 	}
 
-	const int ExcludedAccounts::get_port()
+	const int ExcludedAccounts::getPort() const
 	{
 		return _port;
 	}
 
-	void ExcludedAccounts::set_port(int port)
+	void ExcludedAccounts::setPort(int port)
 	{
 		_port = port;
 	}
 
-	void ExcludedAccounts::set_member(
+	void ExcludedAccounts::setMember(
 		std::string host_name, std::string time_interval,
 		std::string auth, int port)
 	{

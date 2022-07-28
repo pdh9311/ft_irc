@@ -15,15 +15,15 @@ namespace irc
 			std::string	_user;
 
 		public:
-			const std::string& get_host_name();
-			const std::string& get_program();
-			const std::string& get_user();
+			const std::string& getHostName() const;
+			const std::string& getProgram() const;
+			const std::string& getUser() const;
 
-			void set_host_name(std::string& host_name);
-			void set_program(std::string& program);
-			void set_user(std::string& user);
+			void setHostName(std::string& host_name);
+			void setProgram(std::string& program);
+			void setUser(std::string& user);
 
-			void set_member(std::string& host_name, std::string& program, std::string& user);
+			void setMember(std::string& host_name, std::string& program, std::string& user);
 			void print();
 	};
 }

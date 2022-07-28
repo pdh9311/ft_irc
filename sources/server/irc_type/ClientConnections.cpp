@@ -3,49 +3,49 @@
 // public func
 namespace irc
 {
-	const std::string& ClientConnections::get_host_addr()
+	const std::string& ClientConnections::getHostAddr() const
 	{
 		return _host_addr;
 	}
-	const std::string& ClientConnections::get_password()
+	const std::string& ClientConnections::getPassword() const
 	{
 		return _password;
 	}
-	const std::string& ClientConnections::get_host_name()
+	const std::string& ClientConnections::getHostName() const
 	{
 		return _host_name;
 	}
-	int ClientConnections::get_port()
+	int ClientConnections::getPort() const
 	{
 		return _port;
 	}
-	const std::string& ClientConnections::get_class()
+	const std::string& ClientConnections::getClazz() const
 	{
 		return _clazz;
 	}
 
-	void ClientConnections::set_host_addr(std::string& host_addr)
+	void ClientConnections::setHostAddr(std::string& host_addr)
 	{
 		_host_addr = host_addr;
 	}
-	void ClientConnections::set_password(std::string& password)
+	void ClientConnections::setPassword(std::string& password)
 	{
 		_password = password;
 	}
-	void ClientConnections::set_host_name(std::string& host_name)
+	void ClientConnections::setHostName(std::string& host_name)
 	{
 		_host_name = host_name;
 	}
-	void ClientConnections::set_port(int port)
+	void ClientConnections::setPort(int port)
 	{
 		_port = port;
 	}
-	void ClientConnections::set_class(std::string& clazz)
+	void ClientConnections::setClazz(std::string& clazz)
 	{
 		_clazz = clazz;
 	}
 
-	void ClientConnections::set_member(std::string& host_addr, std::string& password,
+	void ClientConnections::setMember(std::string& host_addr, std::string& password,
 		std::string& host_name, int port, std::string& clazz)
 	{
 		_host_addr = host_addr;

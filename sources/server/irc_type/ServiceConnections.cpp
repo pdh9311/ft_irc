@@ -3,51 +3,51 @@
 // public func
 namespace irc
 {
-	const std::string& ServiceConnections::get_host_mask()
+	const std::string& ServiceConnections::getHostMask() const
 	{
 		return _host_mask;
 	}
-	const std::string& ServiceConnections::get_password()
+	const std::string& ServiceConnections::getPassword() const
 	{
 		return _password;
 	}
-	const std::string& ServiceConnections::get_service_name()
+	const std::string& ServiceConnections::getServiceName() const
 	{
 		return _service_name;
 	}
-	const std::string& ServiceConnections::get_service_type()
+	const std::string& ServiceConnections::getServiceType() const
 	{
 		return _service_type;
 	}
-	const std::string& ServiceConnections::get_clazz()
+	const std::string& ServiceConnections::getClazz() const
 	{
 		return _clazz;
 	}
 
-	void ServiceConnections::set_host_mask(std::string& host_mask)
+	void ServiceConnections::setHostMask(std::string& host_mask)
 	{
 		_host_mask = host_mask;
 	}
-	void ServiceConnections::set_password(std::string& password)
+	void ServiceConnections::setPassword(std::string& password)
 	{
 		_password = password;
 	}
-	void ServiceConnections::set_service_name(std::string& service_name)
+	void ServiceConnections::setServiceName(std::string& service_name)
 	{
 		_service_name = service_name;
 	}
-	void ServiceConnections::set_service_type(std::string& service_type)
+	void ServiceConnections::setServiceType(std::string& service_type)
 	{
 		_service_type = service_type;
 	}
-	void ServiceConnections::set_clazz(std::string& clazz)
+	void ServiceConnections::setClazz(std::string& clazz)
 	{
 		_clazz = clazz;
 	}
 
-	void ServiceConnections::set_member(std::string& host_mask, std::string& password, std::string& service_name,
+	void ServiceConnections::setMember(std::string& host_mask, std::string& password, std::string& service_name,
 										std::string& service_type, std::string& clazz)
-										{
+	{
 		_host_mask = host_mask;
 		_password = password;
 		_service_name = service_name;

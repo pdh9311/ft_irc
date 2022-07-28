@@ -3,37 +3,37 @@
 // public func
 namespace irc
 {
-	const std::string& PortConnections::get_ip()
+	const std::string& PortConnections::getIp() const
 	{
 		return _ip;
 	}
 
-	const std::string& PortConnections::get_mask()
+	const std::string& PortConnections::getMask() const
 	{
 		return _mask;
 	}
 
-	int PortConnections::get_port()
+	int PortConnections::getPort() const
 	{
 		return _port;
 	}
 
-	void PortConnections::set_ip(std::string& ip)
+	void PortConnections::setIp(std::string& ip)
 	{
 		_ip = ip;
 	}
 
-	void PortConnections::set_mask(std::string& mask)
+	void PortConnections::setMask(std::string& mask)
 	{
 		_mask = mask;
 	}
 
-	void PortConnections::set_port(int port)
+	void PortConnections::setPort(int port)
 	{
 		_port = port;
 	}
 
-	void PortConnections::set_member(std::string& ip, std::string& mask, int port)
+	void PortConnections::setMember(std::string& ip, std::string& mask, int port)
 	{
 		_ip = ip;
 		_mask = mask;

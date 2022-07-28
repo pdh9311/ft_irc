@@ -1,10 +1,13 @@
 #include "Config.hpp"
 
-#include <cstdlib>
-#include <cstring>
-
-#include <unistd.h>
 #include <vector>
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <vector>
+
+#include <cstdlib>
+#include <unistd.h>
 
 // public funcs
 namespace irc
@@ -13,6 +16,24 @@ namespace irc
 	{
 		type_parsing();
 	}
+
+		MachineInfo			Config::get_M()		{ return _machine_info; }
+		AdministrativeInfo	Config::get_A()		{ return _administrative_info; }
+		PortConnections		Config::get_P()		{ return _port_connections; }
+		ConnectionClasses	Config::get_Y()		{ return _connection_classes; }
+		ClientConnections	Config::get_Ii()	{ return _client_connections; }
+		OperatorPrivileges	Config::get_O()		{ return _operator_privileges; }
+		RestrictLines		Config::get_R()		{ return _restrict_lines; }
+		ExcludedAccounts	Config::get_Kk()	{ return _excluded_accounts; }
+		ServerConnections	Config::get_CcN()	{ return _server_connections; }
+		DenyAutoConnections	Config::get_D()		{ return _deny_auto_connections; }
+		HubConnections		Config::get_H()		{ return _hub_connections; }
+		LeafConnections		Config::get_L()		{ return _leaf_connections; }
+		VersionLimitations	Config::get_V()		{ return _version_limitations;}
+		// ExcludedMachines	Config::get_Q()		{ return _excluded_machine; }
+		ServiceConnections	Config::get_S()		{ return _service_connections; }
+		BounceServer 		Config::get_B()		{ return _bounce_server; }
+		DefaultLocalServer	Config::get_U()		{ return _default_local_server; }
 }
 
 // private funcs
@@ -20,26 +41,21 @@ namespace irc
 {
 	void Config::type_parsing()
 	{
-		// char	dir[512];
-		// getcwd(dir, sizeof(dir));
-		// std::string	dirpath = dir;
-		// std::string filepath = dirpath + "/irc.conf";
 		std::ifstream file(FILE_NAME);
 		std::string s;
 		char buf[BUFFER_SIZE];
 
-		// std::cout << filepath << std::endl;
 		if (!file.is_open())
 		{
 			std::cout << "file not found" << std::endl;
 			return ;
 		}
-		while (file)
+		while (!file.eof())
 		{
 			file.getline(buf, BUFFER_SIZE);
 			std::string str(buf);
 
-			if(std::strchr(CONF_SPECIFY, buf[0]) != 0)
+			if(strchr(CONF_SPECIFY, buf[0]) != 0)
 			{
 				_words.clear();
 				_words = colon_split(str);
@@ -82,19 +98,18 @@ namespace irc
 					case 'U':
 						default_local_server(); break;
 				}
-				std::cout << buf <<std:: endl;
 			}
 		}
 	}
 
 	void Config::administrative_info()
 	{
-		_administrative_info.set_member(_words[1], _words[2], _words[3]);
+		_administrative_info.setMember(_words[1], _words[2], _words[3]);
 	}
 
 	void Config::connection_classes()
 	{
-		_connection_classes.set_member(
+		_connection_classes.setMember(
 			std::atoi(_words[1].c_str()),
 			std::atoi(_words[2].c_str()),
 			std::atoi(_words[3].c_str()),
@@ -107,7 +122,7 @@ namespace irc
 
 	void Config::operator_privileges()
 	{
-		_operator_privileges.set_member(
+		_operator_privileges.setMember(
 			_words[1],
 			_words[2],
 			_words[3],
@@ -117,17 +132,17 @@ namespace irc
 
 	void Config::excluded_accounts()
 	{
-		_excluded_accounts.set_member(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()));
+		_excluded_accounts.setMember(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()));
 	}
 
 	void Config::deny_auto_connections()
 	{
-		_deny_auto_connections.set_member(_words[1], _words[2], _words[3], _words[4]);
+		_deny_auto_connections.setMember(_words[1], _words[2], _words[3], _words[4]);
 	}
 
 	void Config::leaf_connections()
 	{
-		_leaf_connections.set_member(_words[1], _words[3], std::atoi(_words[4].c_str()));
+		_leaf_connections.setMember(_words[1], _words[3], std::atoi(_words[4].c_str()));
 	}
 
 	//void Config::ExcludedMachines()
@@ -137,49 +152,49 @@ namespace irc
 	// 	_words = colon_split(str);
 	// while (_words.size() < MAX_LEN)
 	// 		_words.push_back("");
-	// 	_machine_info.set_member(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()));
+	// 	_machine_info.setMember(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()));
 	// }
 
 	void Config::bounce_server()
 	{
-		_bounce_server.set_member(_words[1],  _words[3], std::atoi(_words[4].c_str()));
+		_bounce_server.setMember(_words[1],  _words[3], std::atoi(_words[4].c_str()));
 	}
 	////////////////////////////////////////////////////////////////////////////////////////
 	void Config::machine_information()
 	{
-		_machine_info.set_member(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()));
+		_machine_info.setMember(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()));
 	}
 	void Config::port_connections()
 	{
-		_port_connections.set_member(_words[1], _words[3], std::atoi(_words[4].c_str()));
+		_port_connections.setMember(_words[1], _words[3], std::atoi(_words[4].c_str()));
 	}
 	void Config::client_connections()
 	{
-		_client_connections.set_member(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()), _words[5]);
+		_client_connections.setMember(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()), _words[5]);
 	}
 	void Config::restrict_lines()
 	{
-		_restrict_lines.set_member(_words[1], _words[2], _words[3]);
+		_restrict_lines.setMember(_words[1], _words[2], _words[3]);
 	}
 	void Config::server_connections()
 	{
-		_server_connections.set_member(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()), _words[5]);
+		_server_connections.setMember(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()), _words[5]);
 	}
 	void Config::hub_connections()
 	{
-		_hub_connections.set_member(_words[1], _words[2]);
+		_hub_connections.setMember(_words[1], _words[2]);
 	}
 	void Config::version_limitations()
 	{
-		_version_limitations.set_member(_words[1], _words[2], _words[3]);
+		_version_limitations.setMember(_words[1], _words[2], _words[3]);
 	}
 	void Config::service_connections()
 	{
-		_service_connections.set_member(_words[1], _words[2], _words[3], _words[4], _words[5]);
+		_service_connections.setMember(_words[1], _words[2], _words[3], _words[4], _words[5]);
 	}
 	void Config::default_local_server()
 	{
-		_default_local_server.set_member(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()));
+		_default_local_server.setMember(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()));
 	}
 
 	std::vector<std::string> Config::colon_split(std::string& str)

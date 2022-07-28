@@ -15,19 +15,19 @@ namespace irc
 			std::string _server_name;
 			std::string _server_class;
 		public:
-			const std::string& get_denied_server_mask();
-			void set_denied_server_mask(std::string& denied_server_mask);
+			const std::string& getDeniedServerMask() const;
+			void setDeniedServerMask(std::string& denied_server_mask);
 
-			const std::string& get_denied_class();
-			void set_denied_class(std::string& denied_class);
+			const std::string& getDeniedClass() const;
+			void setDeniedClass(std::string& denied_class);
 
-			const std::string& get_server_name();
-			void set_server_name(std::string& server_name);
+			const std::string& getServerName() const;
+			void setServerName(std::string& server_name);
 
-			const std::string& get_server_class();
-			void set_server_class(std::string& server_class);
+			const std::string& getServerClass() const;
+			void setServerClass(std::string& server_class);
 
-			void set_member(
+			void setMember(
 				std::string denied_server_mask,
 				std::string denied_class,
 				std::string server_name,

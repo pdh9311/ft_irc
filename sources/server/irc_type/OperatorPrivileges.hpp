@@ -14,31 +14,31 @@ namespace irc
 			std::string _password;
 			std::string _nickname;
 			int _port; // NOT USED
-			std::string _class;
+			std::string _clazz;
 
 		public:
 
-			const std::string& get_host_name();
-			void set_host_name(std::string& _host_name);
+			const std::string& getHostName() const;
+			void setHostName(std::string& host_name);
 
-			const std::string& get_password();
-			void set_password(std::string& _password);
+			const std::string& getPassword() const;
+			void setPassword(std::string& password);
 
-			const std::string& get_nickname();
-			void set_nickname(std::string& _nickname);
+			const std::string& getNickname() const;
+			void setNickname(std::string& nickname);
 
-			const std::string& get_class();
-			void set_class(std::string& _class);
+			const std::string& getClazz() const;
+			void setClazz(std::string& clazz);
 
-			const int get_port();
-			void set_port(int _port);
+			const int getPort() const;
+			void setPort(int port);
 
-			void set_member(
-				std::string _host_name,
-				std::string _password,
-				std::string _nickname,
-				int _port,
-				std::string _class
+			void setMember(
+				std::string host_name,
+				std::string password,
+				std::string nickname,
+				int port,
+				std::string clazz
 			);
 			void print();
 	};

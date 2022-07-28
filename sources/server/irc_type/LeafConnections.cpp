@@ -3,44 +3,44 @@
 // public func
 namespace irc
 {
-	const std::string& LeafConnections::get_server_mask()
+	const std::string& LeafConnections::getServerMask() const
 	{
 		return _server_mask;
 	}
 
-	void LeafConnections::set_server_mask(std::string &_server_mask)
+	void LeafConnections::setServerMask(std::string &server_mask)
 	{
-		_server_mask = _server_mask;
+		_server_mask = server_mask;
 	}
 
-	const std::string& LeafConnections::get_server_name()
+	const std::string& LeafConnections::getServerName() const
 	{
 		return _server_name;
 	}
 
-	void LeafConnections::set_server_name(std::string &_server_name)
+	void LeafConnections::setServerName(std::string &server_name)
 	{
-		_server_name = _server_name;
+		_server_name = server_name;
 	}
 
-	const int LeafConnections::get_max_depth()
+	const int LeafConnections::getMaxDepth() const
 	{
 		return _max_depth;
 	}
 
-	void LeafConnections::set_max_depth(int _max_depth)
+	void LeafConnections::setMaxDepth(int max_depth)
 	{
-		_max_depth = _max_depth;
+		_max_depth = max_depth;
 	}
 
-	void LeafConnections::set_member(
-			std::string _server_mask,
-			std::string _server_name,
-			int _max_depth)
+	void LeafConnections::setMember(
+			std::string server_mask,
+			std::string server_name,
+			int max_depth)
 	{
-			_server_mask  =  _server_mask;
-			_server_name  =  _server_name;
-			_max_depth    =  _max_depth;
+			_server_mask  =  server_mask;
+			_server_name  =  server_name;
+			_max_depth    =  max_depth;
 	}
 
 	void LeafConnections::print()

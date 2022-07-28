@@ -3,33 +3,33 @@
 // public func
 namespace irc
 {
-	const std::string& RestrictLines::get_host_name()
+	const std::string& RestrictLines::getHostName() const
 	{
 		return _host_name;
 	}
-	const std::string& RestrictLines::get_program()
+	const std::string& RestrictLines::getProgram() const
 	{
 		return _program;
 	}
-	const std::string& RestrictLines::get_user()
+	const std::string& RestrictLines::getUser() const
 	{
 		return _user;
 	}
 
-	void RestrictLines::set_host_name(std::string& host_name)
+	void RestrictLines::setHostName(std::string& host_name)
 	{
 		_host_name = host_name;
 	}
-	void RestrictLines::set_program(std::string& program)
+	void RestrictLines::setProgram(std::string& program)
 	{
 		_program = program;
 	}
-	void RestrictLines::set_user(std::string& user)
+	void RestrictLines::setUser(std::string& user)
 	{
 		_user = user;
 	}
 
-	void RestrictLines::set_member(std::string& host_name, std::string& program, std::string& user)
+	void RestrictLines::setMember(std::string& host_name, std::string& program, std::string& user)
 	{
 		_host_name = host_name;
 		_program = program;

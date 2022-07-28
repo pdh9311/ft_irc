@@ -17,19 +17,19 @@ namespace irc
 			int _port;
 		public:
 
-		const std::string& get_host_name();
-		void set_host_name(std::string& host_name);
+		const std::string& getHostName() const;
+		void setHostName(std::string& host_name);
 
-		const std::string& get_time_interval();
-		void set_time_interval(std::string& time_interval);
+		const std::string& getTimeInterval() const;
+		void setTimeInterval(std::string& time_interval);
 
-		const std::string& get_auth();
-		void set_auth(std::string& auth);
+		const std::string& getAuth() const;
+		void setAuth(std::string& auth);
 
-		const int get_port();
-		void set_port(int port);
+		const int getPort() const;
+		void setPort(int port);
 
-		void set_member(
+		void setMember(
 			std::string host_name,
 			std::string time_interval,
 			std::string auth,

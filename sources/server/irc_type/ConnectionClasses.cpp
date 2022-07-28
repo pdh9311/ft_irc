@@ -3,77 +3,77 @@
 // public func
 namespace irc
 {
-	const int ConnectionClasses::get_class()
+	const int ConnectionClasses::getClazz() const
 	{
 		return _clazz;
 	}
 
-	void ConnectionClasses::set_class(int clazz)
+	void ConnectionClasses::setClazz(int clazz)
 	{
 		_clazz = clazz;
 	}
 
-	const int ConnectionClasses::get_ping_frequency()
+	const int ConnectionClasses::getPingFrequency() const
 	{
 		return _ping_frequency;
 	}
 
-	void ConnectionClasses::set_ping_frequency(int ping_frequency)
+	void ConnectionClasses::setPingFrequency(int ping_frequency)
 	{
 		_ping_frequency = ping_frequency;
 	}
 
-	const int ConnectionClasses::get_connect_freq()
+	const int ConnectionClasses::getConnectFreq() const
 	{
 		return _connect_freq;
 	}
 
-	void ConnectionClasses::set_connect_freq(int connect_freq)
+	void ConnectionClasses::setConnectFreq(int connect_freq)
 	{
 		_connect_freq = connect_freq;
 	}
 
-	const int ConnectionClasses::get_max_links()
+	const int ConnectionClasses::getMaxLinks() const
 	{
 		return _max_links;
 	}
 
-	void ConnectionClasses::set_max_links(int max_links)
+	void ConnectionClasses::setMaxLinks(int max_links)
 	{
 		_max_links = max_links;
 	}
 
-	const int ConnectionClasses::get_sendQ()
+	const int ConnectionClasses::getSendQ() const
 	{
 		return _sendQ;
 	}
 
-	void ConnectionClasses::set_sendQ(int sendQ)
+	void ConnectionClasses::setSendQ(int sendQ)
 	{
 		_sendQ = sendQ;
 	}
 
-	const int ConnectionClasses::get_local_limit()
+	const int ConnectionClasses::getLocalLimit() const
 	{
 		return _local_limit;
 	}
 
-	void ConnectionClasses::set_local_limit(int local_limit)
+	void ConnectionClasses::setLocalLimit(int local_limit)
 	{
 		_local_limit = local_limit;
 	}
 
-	const int ConnectionClasses::get_global_Limit()
+	const int ConnectionClasses::getGlobalLimit() const
 	{
 		return _global_Limit;
 	}
 
-	void ConnectionClasses::set_global_Limit(int global_Limit)
+	void ConnectionClasses::setGlobalLimit(int global_Limit)
 	{
 		_global_Limit = global_Limit;
 	}
 
-	void ConnectionClasses::set_member(
+	void ConnectionClasses::setMember(
 				int	clazz,         int ping_frequency,
 				int connect_freq,  int max_links,
 				int sendQ,         int local_limit,

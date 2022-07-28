@@ -3,47 +3,47 @@
 // public func
 namespace irc
 {
-	const std::string& MachineInfo::get_server_name()
+	const std::string& MachineInfo::getServerName() const
 	{
 		return _server_name;
 	}
 
-	const std::string& MachineInfo::get_ip()
+	const std::string& MachineInfo::getIp() const
 	{
 		return _ip;
 	}
 
-	const std::string& MachineInfo::get_location()
+	const std::string& MachineInfo::getLocation() const
 	{
 		return _location;
 	}
 
-	int MachineInfo::get_port()
+	int MachineInfo::getPort() const
 	{
 		return _port;
 	}
 
-	void MachineInfo::set_server_name(std::string& server_name)
+	void MachineInfo::setServerName(std::string& server_name)
 	{
 		_server_name = server_name;
 	}
 
-	void MachineInfo::set_ip(std::string& ip)
+	void MachineInfo::setIp(std::string& ip)
 	{
 		_ip = ip;
 	}
 
-	void MachineInfo::set_location(std::string& location)
+	void MachineInfo::setLocation(std::string& location)
 	{
 		_location = location;
 	}
 
-	void MachineInfo::set_port(int port)
+	void MachineInfo::setPort(int port)
 	{
 		_port = port;
 	}
 
-	void MachineInfo::set_member(std::string& server_name, std::string& ip,
+	void MachineInfo::setMember(std::string& server_name, std::string& ip,
 									std::string& location, int port)
 	{
 		_server_name = server_name;
