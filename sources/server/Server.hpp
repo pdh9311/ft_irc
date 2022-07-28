@@ -14,7 +14,7 @@
 
 namespace irc
 {
-	class Client; 
+	class Client;
 	class Channel;
 	class Config;
 
@@ -54,7 +54,7 @@ namespace irc
 			void		run();
 			void		rmclient(Client* client);
 			void		rmchannel(Channel* channel);
-			
+
 			const clients_t&	getClients() const;
 			const Client*		getClient(int fd) const;
 			Client*				getClient(const std::string& name) const;

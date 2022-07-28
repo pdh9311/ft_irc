@@ -23,7 +23,7 @@ namespace irc
 		_server_name = server_name;
 	}
 
-	const int LeafConnections::getMaxDepth() const
+	int LeafConnections::getMaxDepth() const
 	{
 		return _max_depth;
 	}

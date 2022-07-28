@@ -21,7 +21,7 @@ namespace irc
 		const std::string& getServerName() const;
 		void setServerName(std::string& server_name);
 
-		const int getPort() const;
+		int getPort() const;
 		void setPort(int port);
 
 		void setMember(

@@ -9,7 +9,7 @@ namespace irc
 	{
 		int					ret;
 		std::istringstream	ss(str);
-		
+
 		ss >> ret;
 		return (ret);
 	}

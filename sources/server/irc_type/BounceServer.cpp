@@ -23,7 +23,7 @@ namespace irc
 		_server_name = server_name;
 	}
 
-	const int BounceServer::getPort() const
+	int BounceServer::getPort() const
 	{
 		return _port;
 	}

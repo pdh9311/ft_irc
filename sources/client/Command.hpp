@@ -21,7 +21,7 @@ namespace irc
 	// };
 	class Server;
 	class Client;
-	
+
 	class Command
 	{
 		public:
@@ -46,7 +46,7 @@ namespace irc
 			std::string					_prefix;
 			std::string					_command;
 			std::vector<std::string>	_args;
-			
+
 
 			void	parse(const std::string& str);
 			void	setFunc();
@@ -67,10 +67,10 @@ namespace irc
 
 			void	queue(const std::string msg);
 			void	queue(const short& rcods, const std::string msg);
-		
+
 			void	setResult(const std::string& rstr);
 			void	setResult(const short& rcode, const std::string s1 = "");
-			
+
 	};
 }
 

@@ -19,6 +19,8 @@
 #include "irc_type/BounceServer.hpp"
 #include "irc_type/DefaultLocalServer.hpp"
 
+#include <vector>
+
 # define BUFFER_SIZE 512
 # define FILE_NAME "irc.conf"
 # define MAX_LEN 10

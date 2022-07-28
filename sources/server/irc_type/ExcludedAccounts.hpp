@@ -26,7 +26,7 @@ namespace irc
 		const std::string& getAuth() const;
 		void setAuth(std::string& auth);
 
-		const int getPort() const;
+		int getPort() const;
 		void setPort(int port);
 
 		void setMember(

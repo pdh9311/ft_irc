@@ -28,13 +28,13 @@ namespace irc
 			int _global_Limit;
 
 		public:
-			const int getClazz() const;
-			const int getPingFrequency() const;
-			const int getConnectFreq() const;
-			const int getMaxLinks() const;
-			const int getSendQ() const;
-			const int getLocalLimit() const;
-			const int getGlobalLimit() const;
+			int getClazz() const;
+			int getPingFrequency() const;
+			int getConnectFreq() const;
+			int getMaxLinks() const;
+			int getSendQ() const;
+			int getLocalLimit() const;
+			int getGlobalLimit() const;
 
 			void setClazz(int clazz);
 			void setPingFrequency(int ping_frequency);

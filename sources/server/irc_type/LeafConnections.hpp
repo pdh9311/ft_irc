@@ -20,7 +20,7 @@ namespace irc
 			const std::string& getServerName() const;
 			void setServerName(std::string& server_name);
 
-			const int getMaxDepth() const;
+			int getMaxDepth() const;
 			void setMaxDepth(int max_depth);
 
 			void setMember(

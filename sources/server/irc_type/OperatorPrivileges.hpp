@@ -30,7 +30,7 @@ namespace irc
 			const std::string& getClazz() const;
 			void setClazz(std::string& clazz);
 
-			const int getPort() const;
+			int getPort() const;
 			void setPort(int port);
 
 			void setMember(
