@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 13:20:00 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/27 19:23:27 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 12:57:57 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,11 @@ namespace irc
 	void	Channel::unsetMode(const char c)
 	{
 		_modes.erase(c);
+	}
+
+	void	Channel::inviteMember(Client* client)
+	{
+		_invites.insert(client->getFD());
 	}
 
 }

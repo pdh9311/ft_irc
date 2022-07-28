@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 17:08:35 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/27 19:22:52 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 12:57:14 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ namespace irc
 		public:
 			typedef std::set<int>	client_t;
 			typedef std::set<char>	mode_t;
+			typedef std::set<int>	invite_t;
 
 		private:
 			Server*				_server;
@@ -33,6 +34,7 @@ namespace irc
 			std::string			_topic;
 			client_t			_clients;
 			mode_t				_modes;
+			invite_t			_invites;
 
 		public:
 			Channel(Server* server, const std::string name);
@@ -55,6 +57,7 @@ namespace irc
 			void	setMode(const char c);
 			void	unsetModes(const std::string& modes);
 			void	unsetMode(const char c);
+			void	inviteMember(Client* client);
 	};
 }
 
