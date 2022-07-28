@@ -6,12 +6,14 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/27 18:48:07 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 13:15:23 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef __SERVER_HPP__
 #define __SERVER_HPP__
+
+#include "server/Config.hpp"
 
 #include <vector>
 #include <queue>
@@ -26,6 +28,7 @@ namespace irc
 {
 	class Client; 
 	class Channel;
+	class Config;
 
 	class Server
 	{
@@ -36,7 +39,8 @@ namespace irc
 			typedef std::set<int>								dque_t;
 			typedef	std::map<int, Client*>						clients_t;
 			typedef std::map<std::string, Channel*>				channels_t;
-			
+			// Config												conf;
+
 		private:
 			pfds_t		_pfds;
 			sque_t		_sque; // maybe create reply/msg class?
