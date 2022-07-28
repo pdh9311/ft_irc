@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 15:11:02 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/27 19:27:11 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 12:53:46 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,7 +214,16 @@ namespace irc
 
 		void	topic	(Command* cmd)
 		{
+			if (!cmd->getArgC())
+				cmd->setResult(ERR_NEEDMOREPARAMS);
+			const std::string&	name = cmd->getArgs()[0];
+			if (!cmd->getServer()->hasChannel(name))
+				return (cmd->setResult(ERR_NOSUCHCHANNEL));
 
+			Channel*		channel = cmd->getServer()->getChannel(name);
+			if (channel->getTopic().empty())
+				return (cmd->setResult(RPL_NOTOPIC));
+			return (cmd->setResult(RPL_TOPIC, channel->getTopic()));
 		}
 
 		void	names	(Command* cmd)
