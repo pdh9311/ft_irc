@@ -243,7 +243,6 @@ namespace irc
 		*/
 		void	info	(Command* cmd)
 		{
-			Server*						server = cmd->getServer();
 			std::vector<std::string>	args = cmd->getArgs();
 			std::string					msg;
 
