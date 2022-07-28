@@ -34,6 +34,8 @@ namespace irc
 		ht["KICK"]		= cmd::kick;
 
 		/*	Server queries and commands	*/
+		ht["MOTD"]		= cmd::motd;
+		ht["LUSERS"]	= cmd::lusers;
 		ht["VERSION"]	= cmd::version;
 		ht["STATS"]		= cmd::stats;
 		ht["LINKS"]		= cmd::links;

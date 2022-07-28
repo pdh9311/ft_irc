@@ -6,7 +6,7 @@
 namespace irc
 {
 	class Command;
-	
+
 	namespace cmd
 	{
 		/*	connection.cpp	*/
@@ -29,6 +29,8 @@ namespace irc
 		void	kick	(Command* cmd);
 
 		/*	server.cpp	*/
+		void	motd	(Command* cmd);
+		void	lusers	(Command* cmd);
 		void	version	(Command* cmd);
 		void	stats	(Command* cmd);
 		void	links	(Command* cmd);
