@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/28 14:36:08 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 15:16:38 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ namespace irc
 			virtual	~Server();
 
 			// void		welcome (Client* client);
+			void		queue (const Client* client, std::string msg);
 			void		queue (const int& fd, std::string msg);
 			void		initialize();
 			void		run();

@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:39:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/27 19:05:08 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 15:17:21 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,11 @@ namespace irc
 	// {
 	// 	// queue(getPrefix(client) + "001" )
 	// }
+
+	void	Server::queue (const Client* client, std::string msg)
+	{
+		queue(client->getFD(), msg);
+	}
 
 	void	Server::queue (const int& fd, std::string msg)
 	{

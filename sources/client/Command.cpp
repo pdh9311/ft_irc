@@ -105,7 +105,10 @@ namespace irc
 			else
 				fpos = str.find(' ', cur);
 			// arg = str.substr(cur, fpos - cur);
-			_args.push_back(str.substr(cur, fpos - cur));
+			// std::cout << fpos << ',' << cur << std::endl;
+			std::string	tmp = str.substr(cur, fpos - cur);
+			if (!tmp.empty())
+				_args.push_back(str.substr(cur, fpos - cur));
 			cur = fpos;
 		}
 
