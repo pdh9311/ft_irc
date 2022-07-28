@@ -24,37 +24,30 @@ namespace irc
 			Server*		server = cmd->getServer();
 			Client*		client = cmd->getClient();
 
-			std::string	prefix = server->getPrefix(client);
-			std::string	rcode;	// to_string(rcode) + " ";
-			std::string	nick = " " + client->getNick() + " ";
-
 			std::string	msg;
 
-			msg = prefix + to_string(RPL_MOTDSTART) + nick;
-			msg += ":- " + server->getName() + " Message of the day - ";
-			server->queue(client->getFD(), msg);
-
+			msg = ":- " + server->getName() + " Message of the day - ";
+			cmd->queue(RPL_MOTDSTART, msg);
 
 			std::ifstream	file("motd.txt");
 			char			buf[510];
 			if (!file.is_open())
 			{
-				msg = prefix + to_string(ERR_NOMOTD) + nick;
-				msg += ":MOTD File is missing";
+				msg = ":MOTD File is missing";
+				cmd->queue(ERR_NOMOTD, msg);
 				return ;
 			}
 			while (!file.eof())
 			{
 				file.getline(buf, sizeof(buf));
-				msg = prefix + to_string(RPL_MOTD) + nick;
-				msg += ": - ";
+				msg = ": - ";
 				msg += buf;
-				server->queue(client->getFD(), msg);
+				cmd->queue(RPL_MOTD, msg);
 			}
-			msg = prefix + to_string(RPL_MOTD) + nick;
-			msg += ":End of MOTD command";
-			server->queue(client->getFD(), msg);
+			msg = ":End of MOTD command";
+			cmd->queue(RPL_ENDOFMOTD, msg);
 		}
+
 		/*
 			Command: LUSERS
 			Parameters: [ <mask> [ <target> ] ]
