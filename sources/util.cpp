@@ -23,6 +23,13 @@ namespace irc
 		return (ss.str());
 	}
 
+	std::string	toString(const int& x)
+	{
+		std::stringstream	ss;
+		ss << x;
+		return (ss.str());
+	}
+
 	bool	isLetterC(const char c)
 	{
 		return (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z'));

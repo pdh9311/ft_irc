@@ -4,7 +4,10 @@
 #include "server/Server.hpp"
 #include "client/numerics.hpp"
 #include "util.hpp"
+
+#include <vector>
 #include <fstream>
+#include <ctime>
 
 namespace irc
 {
@@ -22,8 +25,6 @@ namespace irc
 		void	motd	(Command* cmd)
 		{
 			Server*		server = cmd->getServer();
-			Client*		client = cmd->getClient();
-
 			std::string	msg;
 
 			msg = ":- " + server->getName() + " Message of the day - ";
@@ -61,7 +62,36 @@ namespace irc
 		*/
 		void	lusers	(Command* cmd)
 		{
+			Server*						server = cmd->getServer();
+			std::vector<std::string>	args = cmd->getArgs();
+			std::string					msg;
 
+			if (args.size() != 0)
+			{
+				msg = args[0];
+				msg += " :No such server";
+				cmd->queue(ERR_NOSUCHSERVER, msg);
+				return ;
+			}
+			msg = ": Three are ";
+			msg+= toString(server->getClients().size());	// TODO
+			msg += " and <integer> services on 1 servers";
+			cmd->queue(RPL_LUSERCLIENT, msg);
+
+			msg =  "<integer> :operator(s) online";	// TODO
+			cmd->queue(RPL_LUSEROP, msg);
+
+			msg = "<integer> :unknown connection(s)";	// TODO
+			cmd->queue(RPL_LUSERUNKNOWN, msg);
+
+			msg = server->getChannels().size();
+			msg += " :channels formed";
+			cmd->queue(RPL_LUSERCHANNELS, msg);
+
+			msg = ":I have ";
+			msg += toString(server->getClients().size());	// TODO
+			msg += " clients and 1 servers";
+			cmd->queue(RPL_LUSERME, msg);
 		}
 
 		/*
@@ -78,7 +108,21 @@ namespace irc
 		*/
 		void	version	(Command* cmd)
 		{
+			Server*						server = cmd->getServer();
+			std::vector<std::string>	args = cmd->getArgs();
+			std::string					msg;
 
+			if (args.size() != 0)
+			{
+				msg = args[0];
+				msg += " :No such server";
+				cmd->queue(ERR_NOSUCHSERVER, msg);
+				return ;
+			}
+			msg = "version 0.0.1.<debuglevel> ";	// TODO
+			msg += server->getName();
+			msg += " :ft_irc server (Member: donpark, sunbchoi, minsunki)";
+			cmd->queue(RPL_VERSION, msg);
 		}
 
 		void	stats	(Command* cmd)
@@ -105,7 +149,25 @@ namespace irc
 		*/
 		void	time	(Command* cmd)
 		{
+			Server*						server = cmd->getServer();
+			std::vector<std::string>	args = cmd->getArgs();
+			std::string					msg;
 
+			if (args.size() != 0)
+			{
+				msg = args[0];
+				msg += " :No such server";
+				cmd->queue(ERR_NOSUCHSERVER, msg);
+				return ;
+			}
+			time_t	t = std::time(0);
+			char buf[100];
+
+			std::strftime(buf, sizeof(buf), "%c\n", localtime(&t));
+			msg = server->getName();
+			msg += " :";
+			msg += buf;
+			cmd->queue(RPL_TIME, msg);
 		}
 
 		void	connect	(Command* cmd)
@@ -135,7 +197,33 @@ namespace irc
 		*/
 		void	admin	(Command* cmd)
 		{
+			Server*						server = cmd->getServer();
+			std::vector<std::string>	args = cmd->getArgs();
+			std::string					msg;
 
+			if (args.size() != 0)
+			{
+				msg = args[0];
+				msg += " :No such server";
+				cmd->queue(ERR_NOSUCHSERVER, msg);
+				return ;
+			}
+
+			msg = server->getName();
+			msg += " :Administrative info";
+			cmd->queue(RPL_ADMINME, msg);
+
+			msg = "Member: donpark, sunbchoi, minsunki";
+			cmd->queue(RPL_ADMINLOC1, msg);
+
+			msg = "Name: Donghyeon Park, Sunbin Choi, Minsung Kim";
+			cmd->queue(RPL_ADMINLOC2, msg);
+
+			msg = "Email:\n";
+			msg += "- donpark@student.42seoul.kr\n";
+			msg += "- sunbchoi@student.42seoul.kr\n";
+			msg += "- minsunki@student.42seoul.kr";
+			cmd->queue(RPL_ADMINEMAIL, msg);
 		}
 
 		/*
@@ -155,6 +243,23 @@ namespace irc
 		*/
 		void	info	(Command* cmd)
 		{
+			Server*						server = cmd->getServer();
+			std::vector<std::string>	args = cmd->getArgs();
+			std::string					msg;
+
+			if (args.size() != 0)
+			{
+				msg = args[0];
+				msg += " :No such server";
+				cmd->queue(ERR_NOSUCHSERVER, msg);
+				return ;
+			}
+
+			msg = "FT_IRC : donpark, sunbchoi, minsunki";
+			cmd->queue(RPL_INFO, msg);
+
+			msg = ":End of INFO list";
+			cmd->queue(RPL_ENDOFINFO, msg);
 
 		}
 	}
