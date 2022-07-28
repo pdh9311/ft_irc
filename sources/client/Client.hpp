@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:47:58 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/27 18:50:00 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 14:14:43 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,20 @@ namespace irc
 
 		public:
 			typedef std::set<char>	mode_t;
+			enum client_stats
+			{
+				PENDING,	// tcp/ip connection accepted
+				AUTH,		// password accepted
+				LOGGEDIN,		// USER command accepted, live client
+				DISCONNECT	// client disconnected, pending for destruction
+			};
 		
 		private:
 			const int		_fd;
 			Server*		 	_server;
 			Channel*		_cchannel;
-			time_t			_last_ping; // initialized up to here
+			time_t			_last_ping; 
+			char			_status;
 
 			// std::vector<Command>	_cmds;
 			std::string		_buf;
@@ -55,6 +63,7 @@ namespace irc
 
 			void	recv();
 
+			const char			getStatus() const;
 			const int&			getFD() const;
 			const time_t&		getLastPing() const;
 			const std::string&	getNick() const;
@@ -64,6 +73,7 @@ namespace irc
 			const std::string	getModestr() const;
 			const Channel*		getCChannel() const;
 			bool				hasMode(char c) const;
+			bool				isLoggedIn() const;
 
 			void	setLastPing(const time_t& time);
 			void	setNick(const std::string& str);
@@ -74,6 +84,7 @@ namespace irc
 			void	unsetModes(const std::string& modes);
 			void	unsetMode(const char c);
 			void	setCChannel(Channel* channel);
+			void	setStatus(const char status);
 	};
 }
 

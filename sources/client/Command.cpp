@@ -15,6 +15,7 @@ namespace irc
 	{
 		Command::hashmap_t	ht;
 		/*	Connection Registration	*/
+		ht["PASS"]		= cmd::pass;
 		ht["USER"] 		= cmd::user;
 		ht["NICK"] 		= cmd::nick;
 		ht["SERVER"]	= cmd::server;
@@ -123,7 +124,14 @@ namespace irc
 		hashmap_t::iterator fit = hashmap.find(_command);
 
 		if (!_command.empty() && fit != hashmap.end())
+		{
+			if (_client->getStatus() < Client::AUTH && _command != "PASS") 
+				return ;
+			if (_client->getStatus() < Client::LOGGEDIN &&
+							!(_command == "NICK" || _command == "USER"))
+				return ;
 			_func = fit->second;
+		}
 	}
 
 }

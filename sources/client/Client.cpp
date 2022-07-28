@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:58:48 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/27 19:08:11 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 14:14:38 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,12 @@ namespace irc
 namespace irc
 {
 	Client::Client (const int& fd, Server* server)
-	:	_fd(fd), _server(server), _cchannel(NULL), _last_ping(std::time(0))
-	{}
+	:	_fd(fd), _server(server), _cchannel(NULL), 
+		_last_ping(std::time(0)), _status(PENDING)
+	{
+		if (true) // tmp force no password
+			_status = AUTH;
+	}
 
 	Client::~Client()
 	{
@@ -87,6 +91,11 @@ namespace irc
 		// std::cout << "----- end of buffer -----" << std::endl;
 		// _server->queue(_fd, "001");
 		// _server->queue(_fd, "hello client");
+	}
+
+	const char	Client::getStatus() const
+	{
+		return (_status);
 	}
 
 	const int&	Client::getFD() const
@@ -140,6 +149,11 @@ namespace irc
 	bool	Client::hasMode(char c) const
 	{
 		return (_modes.count(c));
+	}
+
+	bool	Client::isLoggedIn() const
+	{
+		return (_status == LOGGEDIN);
 	}
 
 	void	Client::setLastPing(const time_t& time)
@@ -200,5 +214,10 @@ namespace irc
 	void	Client::setCChannel(Channel* channel)
 	{
 		_cchannel = channel;
+	}
+
+	void	Client::setStatus(const char status)
+	{
+		_status = status;
 	}
 }

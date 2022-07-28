@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 15:11:08 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 15:11:09 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 14:11:00 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ namespace irc
 	namespace cmd
 	{
 		/*	connection.cpp	*/
+		void	pass	(Command* cmd);
 		void	nick	(Command* cmd);
 		void	user	(Command* cmd);
 		void	server	(Command* cmd);

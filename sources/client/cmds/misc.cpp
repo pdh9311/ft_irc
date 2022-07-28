@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 15:11:14 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/25 16:10:50 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 15:00:45 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,13 @@ namespace irc
 
 		void	ping	(Command* cmd)
 		{
-			// client should not call ping command. Ignore?
+			// client should not call ping command. Ignore? nvm, irssi sends ping
+			if (cmd->getArgC() < 1)
+				return ; // ping won't send ERR_NEEDMOREPARAMS
+			const std::string&	targ = cmd->getArgs()[0];
+			if (cmd->getClient()->getNick() == targ)
+				cmd->getServer()->queue(cmd->getClient()->getFD(),
+					cmd->getServer()->getPrefix(cmd->getClient()) + "PONG " + targ);
 		}
 		
 		void	pong	(Command* cmd)
