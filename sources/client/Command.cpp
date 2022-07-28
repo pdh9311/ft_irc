@@ -160,8 +160,8 @@ namespace irc
 		// std::cout << "command::run" << std::endl;
 		if (_func) // do we need default action?
 			this->_func(this);
-		// if (!_result.empty()) // check default action for invalid cmd
-		// 	_server->queue(_client->getFD(), _result);
+		if (!_result.empty()) // check default action for invalid cmd
+			_server->queue(_client->getFD(), _result);
 	}
 
 	Client*	Command::getClient()
@@ -218,7 +218,7 @@ namespace irc
 	{
 		// _result = std::to_string(rcode) + " ";
 		// std::to_string
-		_result = _server->getPrefix(_client);
+		_result = _server->getPrefix(_client) + " ";
 		_result += to_string(rcode) + " ";
 		_result += _client->getNick() + " ";
 
