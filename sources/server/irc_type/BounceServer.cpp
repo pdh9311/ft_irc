@@ -8,9 +8,9 @@ namespace irc
 		return _class_host_mask;
 	}
 
-	void BounceServer::set_class_host_mask(std::string &_class_host_mask)
+	void BounceServer::set_class_host_mask(std::string &class_host_mask)
 	{
-		_class_host_mask = _class_host_mask;
+		_class_host_mask = class_host_mask;
 	}
 
 	const std::string& BounceServer::get_server_name()
@@ -18,9 +18,9 @@ namespace irc
 		return _server_name;
 	}
 
-	void BounceServer::set_server_name(std::string &_server_name)
+	void BounceServer::set_server_name(std::string &server_name)
 	{
-		_server_name = _server_name;
+		_server_name = server_name;
 	}
 
 	const int BounceServer::get_port()
@@ -28,19 +28,19 @@ namespace irc
 		return _port;
 	}
 
-	void BounceServer::set_port(int _port)
+	void BounceServer::set_port(int port)
 	{
-		_port = _port;
+		_port = port;
 	}
 
 	void BounceServer::set_member(
-		std::string _class_host_mask,
-		std::string _server_name,
-		int _port)
+		std::string class_host_mask,
+		std::string server_name,
+		int port)
 	{
-		_class_host_mask  =   _class_host_mask;
-		_server_name    =   _server_name;
-		_port    =   _port;
+		_class_host_mask  =   class_host_mask;
+		_server_name    =   server_name;
+		_port    =   port;
 	}
 	void BounceServer::print()
 	{

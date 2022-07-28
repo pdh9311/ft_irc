@@ -19,12 +19,12 @@ namespace irc
 			const std::string& get_mailing_addr();
 			const std::string& get_other();
 
-			void set_name(std::string& _name);
-			void set_mailing_addr(std::string& _mailing_addr);
-			void set_other(std::string& _other);
+			void set_name(std::string& name);
+			void set_mailing_addr(std::string& mailing_addr);
+			void set_other(std::string& other);
 
-			void set_member(std::string& _name, std::string& _mailing_addr,
-				std::string& _other);
+			void set_member(std::string& name, std::string& mailing_addr,
+				std::string& other);
 
 			void print();
 	};

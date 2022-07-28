@@ -19,7 +19,7 @@ namespace irc
 	class ConnectionClasses
 	{
 		private:
-			int	_class;           // 0
+			int	_clazz;           // 0
 			int _ping_frequency;
 			int _connect_freq;
 			int _max_links;
@@ -36,22 +36,22 @@ namespace irc
 			const int get_local_limit();
 			const int get_global_Limit();
 
-			void set_class(int _class);
-			void set_ping_frequency(int _ping_frequency);
-			void set_connect_freq(int _connect_freq);
-			void set_max_links(int _max_links);
-			void set_sendQ(int _sendQ);
-			void set_local_limit(int _local_limit);
-			void set_global_Limit(int _global_Limit);
+			void set_class(int clazz);
+			void set_ping_frequency(int ping_frequency);
+			void set_connect_freq(int connect_freq);
+			void set_max_links(int max_links);
+			void set_sendQ(int sendQ);
+			void set_local_limit(int local_limit);
+			void set_global_Limit(int global_Limit);
 
 			void set_member(
-				int	_class,
-				int _ping_frequency,
-				int _connect_freq,
-				int _max_links,
-				int _sendQ,
-				int _local_limit,
-				int _global_Limit
+				int	clazz,
+				int ping_frequency,
+				int connect_freq,
+				int max_links,
+				int sendQ,
+				int local_limit,
+				int global_Limit
 			);
 			void print();
 	};

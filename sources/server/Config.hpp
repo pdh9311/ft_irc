@@ -37,6 +37,9 @@
 
 # define BUFFER_SIZE 512
 # define FILE_NAME "irc.conf"
+# define MAX_LEN 10
+
+# define CONF_SPECIFY "MAPYIiORKkCcNDHLVQSBU"
 
 namespace irc
 {
@@ -67,23 +70,23 @@ namespace irc
 			std::vector<std::string> _words;
 
 			void type_parsing();
-			void machine_information(const char* s);
-			void administrative_info(const char* s);
-			void port_connections(const char* s);
-			void connection_classes(const char* s);
-			void client_connections(const char* s);
-			void operator_privileges(const char* s);
-			void restrict_lines(const char* s);
-			void excluded_accounts(const char* s);
-			void server_connections(const char* s);
-			void deny_auto_connections(const char* s);
-			void hub_connections(const char* s);
-			void leaf_connections(const char* s);
-			void version_limitations(const char* s);
-			//	ExcludedMachines(const char* s);
-			void service_connections(const char* s);
-			void bounce_server(const char* s);
-			void default_local_server(const char* s);
+			void machine_information();
+			void administrative_info();
+			void port_connections();
+			void connection_classes();
+			void client_connections();
+			void operator_privileges();
+			void restrict_lines();
+			void excluded_accounts();
+			void server_connections();
+			void deny_auto_connections();
+			void hub_connections();
+			void leaf_connections();
+			void version_limitations();
+			//	ExcludedMachines();
+			void service_connections();
+			void bounce_server();
+			void default_local_server();
 
 			std::vector<std::string> colon_split(std::string& str);
 		public:

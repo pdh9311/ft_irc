@@ -8,9 +8,9 @@ namespace irc
 		return _host_name;
 	}
 
-	void ExcludedAccounts::set_host_name(std::string &_host_name)
+	void ExcludedAccounts::set_host_name(std::string &host_name)
 	{
-		_host_name = _host_name;
+		_host_name = host_name;
 	}
 
 	const std::string& ExcludedAccounts::get_time_interval()
@@ -18,9 +18,9 @@ namespace irc
 		return _time_interval;
 	}
 
-	void ExcludedAccounts::set_time_interval(std::string &_time_interval)
+	void ExcludedAccounts::set_time_interval(std::string &time_interval)
 	{
-		_time_interval = _time_interval;
+		_time_interval = time_interval;
 	}
 
 	const std::string& ExcludedAccounts::get_auth()
@@ -28,9 +28,9 @@ namespace irc
 		return _auth;
 	}
 
-	void ExcludedAccounts::set_auth(std::string &_auth)
+	void ExcludedAccounts::set_auth(std::string &auth)
 	{
-		_auth = _auth;
+		_auth = auth;
 	}
 
 	const int ExcludedAccounts::get_port()
@@ -38,19 +38,19 @@ namespace irc
 		return _port;
 	}
 
-	void ExcludedAccounts::set_port(int _port)
+	void ExcludedAccounts::set_port(int port)
 	{
-		_port = _port;
+		_port = port;
 	}
 
 	void ExcludedAccounts::set_member(
-		std::string _host_name, std::string _time_interval,
-		std::string _auth, int _port)
+		std::string host_name, std::string time_interval,
+		std::string auth, int port)
 	{
-		_host_name      = _host_name;
-		_time_interval  = _time_interval;
-		_auth           = _auth;
-		_port           = _port;
+		_host_name      = host_name;
+		_time_interval  = time_interval;
+		_auth           = auth;
+		_port           = port;
 	}
 
 	void ExcludedAccounts::print()

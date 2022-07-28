@@ -8,9 +8,9 @@ namespace irc
 		return _denied_server_mask;
 	}
 
-	void DenyAutoConnections::set_denied_server_mask(std::string &_denied_server_mask)
+	void DenyAutoConnections::set_denied_server_mask(std::string &denied_server_mask)
 	{
-		_denied_server_mask = _denied_server_mask;
+		_denied_server_mask = denied_server_mask;
 	}
 
 	const std::string& DenyAutoConnections::get_denied_class()
@@ -18,9 +18,9 @@ namespace irc
 		return _denied_class;
 	}
 
-	void DenyAutoConnections::set_denied_class(std::string &_denied_class)
+	void DenyAutoConnections::set_denied_class(std::string &denied_class)
 	{
-		_denied_class = _denied_class;
+		_denied_class = denied_class;
 	}
 
 	const std::string& DenyAutoConnections::get_server_name()
@@ -28,9 +28,9 @@ namespace irc
 		return _server_name;
 	}
 
-	void DenyAutoConnections::set_server_name(std::string &_server_name)
+	void DenyAutoConnections::set_server_name(std::string &server_name)
 	{
-		_server_name = _server_name;
+		_server_name = server_name;
 	}
 
 	const std::string& DenyAutoConnections::get_server_class()
@@ -38,21 +38,21 @@ namespace irc
 		return _server_class;
 	}
 
-	void DenyAutoConnections::set_server_class(std::string &_server_class)
+	void DenyAutoConnections::set_server_class(std::string &server_class)
 	{
-		_server_class = _server_class;
+		_server_class = server_class;
 	}
 
 	void DenyAutoConnections::set_member(
-			std::string _denied_server_mask,
-			std::string _denied_class,
-			std::string _server_name,
-			std::string _server_class)
+			std::string denied_server_mask,
+			std::string denied_class,
+			std::string server_name,
+			std::string server_class)
 	{
-		_denied_server_mask   =    _denied_server_mask;
-		_denied_class         =    _denied_class;
-		_server_name          =    _server_name;
-		_server_class         =    _server_class;
+		_denied_server_mask   =    denied_server_mask;
+		_denied_class         =    denied_class;
+		_server_name          =    server_name;
+		_server_class         =    server_class;
 	}
 
 	void DenyAutoConnections::print()

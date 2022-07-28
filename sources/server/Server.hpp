@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:34:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/28 15:16:38 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 15:32:55 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ namespace irc
 			typedef std::set<int>								dque_t;
 			typedef	std::map<int, Client*>						clients_t;
 			typedef std::map<std::string, Channel*>				channels_t;
-			// Config												conf;
+			Config												conf;
 
 		private:
 			pfds_t		_pfds;

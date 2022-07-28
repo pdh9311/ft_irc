@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 17:45:07 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/26 14:31:51 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 15:52:25 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,9 @@ namespace irc
 			const std::string&				getCommand();
 			const std::vector<std::string>&	getArgs();
 			int								getArgC();
+
+			void	queue(const std::string msg);
+			void	queue(const short& rcods, const std::string msg);
 		
 			void	setResult(const std::string& rstr);
 			void	setResult(const short& rcode, const std::string s1 = "");

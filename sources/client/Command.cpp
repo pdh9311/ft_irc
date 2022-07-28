@@ -158,8 +158,8 @@ namespace irc
 		// std::cout << "command::run" << std::endl;
 		if (_func) // do we need default action?
 			this->_func(this);
-		if (!_result.empty()) // check default action for invalid cmd
-			_server->queue(_client->getFD(), _result);	
+		// if (!_result.empty()) // check default action for invalid cmd
+		// 	_server->queue(_client->getFD(), _result);	
 	}
 
 	Client*	Command::getClient()
@@ -190,6 +190,21 @@ namespace irc
 	int	Command::getArgC()
 	{
 		return (_args.size());
+	}
+
+	void	Command::queue(const std::string msg) // messages w/o code
+	{
+		_server->queue(_client, msg);
+	}
+
+	void	Command::queue(const short& rcode, const std::string msg)
+	{
+		std::string	str = _server->getPrefix(_client) + " ";
+		str += (to_string(rcode) + " ");
+		str += (_client->getNick() + " ");
+		str += msg;
+
+		_server->queue(_client, str);
 	}
 
 	void	Command::setResult(const std::string& rstr)

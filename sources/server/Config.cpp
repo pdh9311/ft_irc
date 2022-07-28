@@ -1,6 +1,10 @@
 #include "Config.hpp"
 
 #include <cstdlib>
+#include <cstring>
+
+#include <unistd.h>
+#include <vector>
 
 // public funcs
 namespace irc
@@ -16,10 +20,15 @@ namespace irc
 {
 	void Config::type_parsing()
 	{
+		// char	dir[512];
+		// getcwd(dir, sizeof(dir));
+		// std::string	dirpath = dir;
+		// std::string filepath = dirpath + "/irc.conf";
 		std::ifstream file(FILE_NAME);
 		std::string s;
 		char buf[BUFFER_SIZE];
 
+		// std::cout << filepath << std::endl;
 		if (!file.is_open())
 		{
 			std::cout << "file not found" << std::endl;
@@ -28,60 +37,63 @@ namespace irc
 		while (file)
 		{
 			file.getline(buf, BUFFER_SIZE);
-			switch (buf[0])
+			std::string str(buf);
 
+			if(std::strchr(CONF_SPECIFY, buf[0]) != 0)
 			{
-				case 'M':
-					machine_information(buf); break;
-				case 'A':
-					administrative_info(buf); break;
-				case 'P':
-					port_connections(buf); break;
-				case 'Y':
-					connection_classes(buf); break;
-				case 'I': case 'i':
-					client_connections(buf); break;
-				case 'O':
-					operator_privileges(buf); break;
-				case 'R':
-					restrict_lines(buf); break;
-				case 'K': case 'k':
-					excluded_accounts(buf); break;
-				case 'C': case 'c': case 'N':
-					server_connections(buf); break;
-				case 'D':
-					deny_auto_connections(buf); break;
-				case 'H':
-					hub_connections(buf); break;
-				case 'L':
-					leaf_connections(buf); break;
-				case 'V':
-					version_limitations(buf); break;
-				// case 'Q':
-				// 	excluded_machines(buf); break; // NOT FORMAT
-				case 'S':
-					service_connections(buf); break;
-				case 'B':
-					bounce_server(buf); break;
-				case 'U':
-					default_local_server(buf); break;
+				_words.clear();
+				_words = colon_split(str);
+				while (_words.size() < MAX_LEN)
+					_words.push_back("");
+				switch (buf[0])
+				{
+					case 'M':
+						machine_information(); break;
+					case 'A':
+						administrative_info(); break;
+					case 'P':
+						port_connections(); break;
+					case 'Y':
+						connection_classes(); break;
+					case 'I': case 'i':
+						client_connections(); break;
+					case 'O':
+						operator_privileges(); break;
+					case 'R':
+						restrict_lines(); break;
+					case 'K': case 'k':
+						excluded_accounts(); break;
+					case 'C': case 'c': case 'N':
+						server_connections(); break;
+					case 'D':
+						deny_auto_connections(); break;
+					case 'H':
+						hub_connections(); break;
+					case 'L':
+						leaf_connections(); break;
+					case 'V':
+						version_limitations(); break;
+					// case 'Q':
+					// 	excluded_machines(); break; // NOT FORMAT
+					case 'S':
+						service_connections(); break;
+					case 'B':
+						bounce_server(); break;
+					case 'U':
+						default_local_server(); break;
+				}
+				std::cout << buf <<std:: endl;
 			}
 		}
 	}
 
-	void Config::administrative_info(const char* s)
+	void Config::administrative_info()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_administrative_info.set_member(_words[1], _words[2], _words[3]);
 	}
 
-	void Config::connection_classes(const char* s)
+	void Config::connection_classes()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_connection_classes.set_member(
 			std::atoi(_words[1].c_str()),
 			std::atoi(_words[2].c_str()),
@@ -93,11 +105,8 @@ namespace irc
 	}
 
 
-	void Config::operator_privileges(const char* s)
+	void Config::operator_privileges()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_operator_privileges.set_member(
 			_words[1],
 			_words[2],
@@ -106,107 +115,70 @@ namespace irc
 			_words[5]);
 	}
 
-	void Config::excluded_accounts(const char* s)
+	void Config::excluded_accounts()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_excluded_accounts.set_member(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()));
 	}
 
-	void Config::deny_auto_connections(const char* s)
+	void Config::deny_auto_connections()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_deny_auto_connections.set_member(_words[1], _words[2], _words[3], _words[4]);
 	}
 
-	void Config::leaf_connections(const char* s)
+	void Config::leaf_connections()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_leaf_connections.set_member(_words[1], _words[3], std::atoi(_words[4].c_str()));
 	}
 
-	//void Config::ExcludedMachines(const char* s)
+	//void Config::ExcludedMachines()
 	// {
 	// 	std::string str(s);
 	// 	_words.clear();
 	// 	_words = colon_split(str);
+	// while (_words.size() < MAX_LEN)
+	// 		_words.push_back("");
 	// 	_machine_info.set_member(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()));
 	// }
 
-	void Config::bounce_server(const char* s)
+	void Config::bounce_server()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_bounce_server.set_member(_words[1],  _words[3], std::atoi(_words[4].c_str()));
 	}
 	////////////////////////////////////////////////////////////////////////////////////////
-	void Config::machine_information(const char* s)
+	void Config::machine_information()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_machine_info.set_member(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()));
 	}
-	void Config::port_connections(const char* s)
+	void Config::port_connections()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_port_connections.set_member(_words[1], _words[3], std::atoi(_words[4].c_str()));
 	}
-	void Config::client_connections(const char* s)
+	void Config::client_connections()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_client_connections.set_member(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()), _words[5]);
 	}
-	void Config::restrict_lines(const char* s)
+	void Config::restrict_lines()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_restrict_lines.set_member(_words[1], _words[2], _words[3]);
 	}
-	void Config::server_connections(const char* s)
+	void Config::server_connections()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_server_connections.set_member(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()), _words[5]);
 	}
-	void Config::hub_connections(const char* s)
+	void Config::hub_connections()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_hub_connections.set_member(_words[1], _words[2]);
 	}
-	void Config::version_limitations(const char* s)
+	void Config::version_limitations()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_version_limitations.set_member(_words[1], _words[2], _words[3]);
 	}
-	void Config::service_connections(const char* s)
+	void Config::service_connections()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_service_connections.set_member(_words[1], _words[2], _words[3], _words[4], _words[5]);
 	}
-	void Config::default_local_server(const char* s)
+	void Config::default_local_server()
 	{
-		std::string str(s);
-		_words.clear();
-		_words = colon_split(str);
 		_default_local_server.set_member(_words[1], _words[2], _words[3], std::atoi(_words[4].c_str()));
 	}
 

@@ -6,7 +6,7 @@
 /*   By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 01:39:13 by minsunki          #+#    #+#             */
-/*   Updated: 2022/07/28 15:17:21 by minsunki         ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 15:54:00 by minsunki         ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,6 @@ namespace irc
 		ret += client->getUserName();
 		ret += "@";
 		ret += getName();
-		ret += " ";
 		return (ret);
 	}
 }
