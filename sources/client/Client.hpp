@@ -29,7 +29,7 @@ namespace irc
 
 		private:
 			const int		_fd;
-			Server*		 	_server;
+			Server*			_server;
 			Channel*		_cchannel;
 			time_t			_last_ping;
 			char			_status;
@@ -51,7 +51,7 @@ namespace irc
 
 			void	recv();
 
-			char			getStatus() const;
+			char				getStatus() const;
 			const int&			getFD() const;
 			const time_t&		getLastPing() const;
 			const std::string&	getNick() const;
