@@ -20,18 +20,13 @@ namespace irc
 		while ((fpos = _buf.find('\r', cur)) != std::string::npos)
 		{
 			++ret;
-			// _parse(_buf.substr(cur, fpos - cur));
 			std::cout << "<< [" + _buf.substr(cur, fpos - cur) << "]" << std::endl;
 			Command	cmd(this, _server, _buf.substr(cur, fpos - cur));
 			cmd.run();
 			cur = fpos + 2;
 		}
 
-		_buf.erase(0, _buf.find_last_of('\n') + 2); // why + 2?
-
-		// std::cout << "buffer after parse" << std::endl;
-		// std::cout << _buf << std::endl;
-		// std::cout << "EOB" << std::endl;
+		_buf.erase(0, _buf.find_last_of('\n') + 2);
 		return (ret);
 	}
 }
@@ -57,28 +52,18 @@ namespace irc
 		char	buf[512 + 1];
 
 		rs = ::recv(_fd, buf, 512, 0), DBG(-1, rs, "recv");
-		// no need to check EWOULDBLOCK since we polled
-		// buffer size is 512 per rfc.
 
 		if (rs == 0)
 		{
 			// check if quit was received, if not, generate appropriate quit message
-			_server->rmclient(this);
+			_server->rmClient(this);
 			return ;
 		}
 
-		buf[rs] = '\0'; /*	TODO:: read buffer and parse command	*/
+		buf[rs] = '\0';
 		_buf += buf;
 
-		// if (_buf.find("\r\n")) // end of a cmd, parse
 		this->parse();
-
-		// std::cout << "client fd [" << _fd << "] recv, ";
-		// std::cout << "buffer content (" << _buf.size() << ")-----" << std::endl;
-		// std::cout << _buf << std::endl;
-		// std::cout << "----- end of buffer -----" << std::endl;
-		// _server->queue(_fd, "001");
-		// _server->queue(_fd, "hello client");
 	}
 
 	char	Client::getStatus() const
@@ -148,10 +133,6 @@ namespace irc
 	{
 		_last_ping = time;
 	}
-	// void	Client::_parse(std::string str)
-	// {
-
-	// }
 
 	void	Client::setNick(const std::string& str)
 	{

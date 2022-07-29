@@ -25,22 +25,23 @@ namespace irc
 		sock = -1;
 		while ((sock = ::accept(_lfd, NULL, NULL)) != -1)
 		{
-			std::cout << "new connection accepted" << std::endl;
-
+			Client*	client = new Client(sock, this);
 			pollfd	pfd;
+
 			pfd.fd = sock;
 			pfd.events = POLLIN;
 			pfd.revents = 0;
 
 			_pfds.push_back(pfd);
-			if (!(_clients.insert(std::make_pair(sock, new Client(sock, this))).second))
+			if (!(_clients.insert(std::make_pair(sock, client)).second))
 				PE("failed inserting client to _clients.");
-
-			std::cout << "current client #:" << _clients.size() << std::endl;
+			
+			if (_pass.empty())
+				client->setStatus(Client::AUTH);
 		}
 
 		if (errno != EWOULDBLOCK)
-			DBG_OFS((69 - 61), "accept");
+			DBG_OFS((44 - 26), "accept");
 	}
 
 	void	Server::ping()
@@ -52,32 +53,39 @@ namespace irc
 		{
 			Client*&	client = it->second;
 
-			if (ct - client->getLastPing() >= 5)	/*	TODO:: make proper config class	*/
-				(void)client; // client is not responding to ping. kill?
+			if (client->getStatus() == Client::PENDING)
+				continue ;
+			if (ct - client->getLastPing() >= conf.get_Y().getPingFrequency() * 3)	// give 3 times to try
+				rmClient(client);
 
-			this->queue(client->getFD(), "PING minsunki");	/*	TODO:: replace placeholder with something fitting	*/
+			this->queue(client->getFD(), "PING " + client->getNick());
 			it++;
 		}
-	}
-
-	Channel*	Server::createChannel(const std::string& name)
-	{
-		Channel*	channel = new Channel(this, name);
-		_channels.insert(std::make_pair(name, channel));
-		return (channel);
 	}
 }
 
 // public funcs
 namespace irc
 {
-	Server::Server(std::string port)
-	:	_port(irc::stoi(port))
+	Server::Server(const std::string port, const std::string pass)
+	:	_port(irc::stoi(port)), _pass(pass)
 	{}
 
-	Server::~Server()
+	Server::~Server() // do we need graceful exit?
 	{
-		close(_lfd); // check if this can somehow cause problems?
+		while (!_channels.empty())
+		{
+			delete _channels.begin()->second;
+			_channels.erase(_channels.begin());
+		}
+
+		while (!_clients.empty())
+		{
+			delete _clients.begin()->second;
+			_clients.erase(_clients.begin());
+		}
+
+		close(_lfd); 
 	}
 
 	// void	Server::welcome (Client* client)
@@ -126,7 +134,6 @@ namespace irc
 			int&			fd = _sque.front().first;
 			std::string&	msg = _sque.front().second;
 
-			/*	TODO make better send function	*/
 			send(fd, &msg[0], msg.size(), 0);
 			_sque.pop();
 		}
@@ -134,6 +141,18 @@ namespace irc
 		while (_dque.size())
 		{
 			int	fd = *(_dque.begin());
+
+			channels_t::iterator	chit = _channels.begin();
+			while (chit != _channels.end())
+			{
+				channels_t::iterator	tmp = chit++;
+				Channel*	channel = tmp->second;
+
+				if (channel->isMember(fd) && channel->getSize() == 1)
+					delete tmp->second;
+				_channels.erase(tmp);
+			}
+
 			pfds_t::iterator it = _pfds.begin();
 			while (++it != _pfds.end())
 				if (it->fd == fd)
@@ -141,6 +160,7 @@ namespace irc
 			if (it == _pfds.end())
 				PE("something went terribly wrong with pfds");
 			_pfds.erase(it);
+
 			clients_t::iterator cit = _clients.find(fd);
 			if (cit == _clients.end())
 				PE("something went terribly wrong with clients");
@@ -152,26 +172,28 @@ namespace irc
 
 	void	Server::run()
 	{
-		time_t	last_ping = 0;
-		int		pr;
+		const int	ptime = conf.get_Y().getPingFrequency();
+		time_t		last_ping = 0;
+		int			pr;
+
+		std::cout << "irc server started. Port: [" << _port << "] passwd: [" << _pass << "]" << std::endl;
 
 		while (1)
 		{
-			if (std::time(0) - last_ping > 60)	/*	TODO:: proper config class	*/
+			if (std::time(0) - last_ping > ptime)
 				this->ping(), last_ping = std::time(0);
 
 			_pfds.reserve(42);
-			pr = poll(&_pfds[0], _pfds.size(), 1000), DBG(-1, pr, "poll");
+			pr = poll(&_pfds[0], _pfds.size(), ptime * 1004), DBG(-1, pr, "poll");
 
+			if (_pfds[0].revents)
+				this->accept();
 
 			if (pr)
 			{
-				int	size = _pfds.size();
+				size_t	size = _pfds.size();
 
-				if (_pfds[0].revents)
-					this->accept();
-
-				for (int i = 1; i < size; ++i)
+				for (size_t i = 1; i < size; ++i)
 				{
 					pollfd& pfd = _pfds[i];
 
@@ -179,7 +201,6 @@ namespace irc
 						continue;
 					if (!(pfd.revents & POLLIN))
 						PE("poll revent is set wrong");
-
 					if (_clients.count(pfd.fd))
 						_clients[pfd.fd]->recv();
 					else
@@ -195,7 +216,6 @@ namespace irc
 			while (it != _channels.end())
 			{
 				channels_t::iterator tmp = it++;
-
 				if (tmp->second->getClients().empty())
 				{
 					delete tmp->second;
@@ -205,7 +225,7 @@ namespace irc
 		}
 	}
 
-	void	Server::rmclient(Client* client)
+	void	Server::rmClient(Client* client)
 	{
 		// queue clients to be removed since vector.erase will ruin iterators
 		// if we need to send something to client before termination, this is a good time to do so
@@ -213,13 +233,22 @@ namespace irc
 		// delete queue will be flushed after sque
 	}
 
-	void	Server::rmchannel(Channel* channel)
+	void	Server::rmChannel(Channel* channel)
 	{
 		channels_t::iterator	fit = _channels.find(channel->getName());
 		if (fit == _channels.end())
-			PE("Tried to rmchannel that doesn't exist!");
+			PE("Tried to rmChannel that doesn't exist!");
 		delete fit->second;
 		_channels.erase(fit);
+	}
+
+	Channel*	Server::addChannel(std::string name)
+	{
+		if (name[0] == '#' || name[0] == '&')
+			name = name.substr(1, std::string::npos);
+		Channel*	channel = new Channel(this, name);
+		_channels.insert(std::make_pair(name, channel));
+		return (channel);
 	}
 
 	const Server::clients_t&	Server::getClients() const
@@ -252,21 +281,25 @@ namespace irc
 		return (_channels);
 	}
 
-	Channel*	Server::getChannel(const std::string& name)
+	Channel*	Server::getChannel(std::string name)
 	{
+		if (name[0] == '#' || name[0] == '&')
+			name = name.substr(1, std::string::npos);
 		if (hasChannel(name))
 			return (_channels[name]);
-		return (createChannel(name));
+		return (NULL);
 	}
 
-	bool	Server::hasChannel(const std::string& name) const
+	bool	Server::hasChannel(std::string name) const
 	{
+		if (name[0] == '#' || name[0] == '&')
+			name = name.substr(1, std::string::npos);
 		return (_channels.count(name));
 	}
 
 	const std::string	Server::getName() const
-	{
-		return ("localhost");
+	{	
+		return ("localhost");//(conf.get_B().getServerName());
 	}
 
 	const std::string	Server::getPrefix(const Client* client) const

@@ -29,6 +29,7 @@ namespace irc
 			~Channel();
 
 			bool	isMember(const Client* client);
+			bool	isMember(const int fd);
 			bool	hasMode(const char c);
 			void	addClient(const Client* client);
 			void	rmClient(const Client* client);
@@ -39,6 +40,7 @@ namespace irc
 			const mode_t&		getModes() const;
 			std::string			getModestr() const;
 			std::string			getMembers() const;
+			size_t				getSize() const;
 
 			void	setTopic(const std::string& topic);
 			void	setModes(const std::string& modes);

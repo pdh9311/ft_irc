@@ -25,7 +25,12 @@ namespace irc
 
 	bool	Channel::isMember(const Client* client)
 	{
-		return (_clients.count(client->getFD()));
+		return (isMember(client->getFD()));
+	}
+
+	bool	Channel::isMember(const int fd)
+	{
+		return (_clients.count(fd));
 	}
 
 	bool	Channel::hasMode(const char c)
@@ -98,6 +103,11 @@ namespace irc
 			++it;
 		}
 		return (ret);
+	}
+
+	size_t	Channel::getSize() const
+	{
+		return (_clients.size());
 	}
 
 	void	Channel::setTopic(const std::string& topic)

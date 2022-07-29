@@ -78,17 +78,13 @@ namespace irc
 		// std::cout << "command::parse called for [" << str << "]" << std::endl;
 		size_t	cur = 0;
 		size_t	fpos;
-		// std::string					prefix;
-		// std::string					cmd;
-		// // std::string					arg;
-		// std::vector<std::string>	args;
 
 		if (str[cur] == ':') // has prefix
 		{
 			fpos = str.find(' ', ++cur);
 			_prefix = str.substr(cur, fpos - cur);
 			cur = fpos;
-		} // is message with only prefix valid?
+		}
 
 		while (str[cur] == ' ') cur++;
 
@@ -106,22 +102,12 @@ namespace irc
 				fpos = std::string::npos;
 			else
 				fpos = str.find(' ', cur);
-			// arg = str.substr(cur, fpos - cur);
-			// std::cout << fpos << ',' << cur << std::endl;
+
 			std::string	tmp = str.substr(cur, fpos - cur);
 			if (!tmp.empty())
 				_args.push_back(str.substr(cur, fpos - cur));
 			cur = fpos;
 		}
-
-		// std::cout << "prefix: " << prefix << "#" << std::endl;
-		// std::cout << "cmd: " << cmd << "#" <<  std::endl;
-		// for(int i = 0; i < args.size(); ++i)
-		// {
-		// 	std::cout << "arg#" << i << ": " << args[i] << "#" <<  std::endl;
-		// }
-
-		// _cmds.push_back(Command(prefix, cmd, args));
 	}
 
 	void	Command::setFunc()
@@ -147,8 +133,6 @@ namespace irc
 	:	_client(c), _server(s), _result(""), _func(0)
 	{
 		this->parse(cstr);
-		// if (Command::hashmap.empty())
-		// 	Command::hashmap = build_hashmap();
 		this->setFunc();
 	}
 
@@ -158,9 +142,9 @@ namespace irc
 	void	Command::run()
 	{
 		// std::cout << "command::run" << std::endl;
-		if (_func) // do we need default action?
+		if (_func)
 			this->_func(this);
-		if (!_result.empty()) // check default action for invalid cmd
+		if (!_result.empty()) // obsolete, left for compatibility
 			_server->queue(_client->getFD(), _result);
 	}
 
@@ -209,15 +193,13 @@ namespace irc
 		_server->queue(_client, str);
 	}
 
-	void	Command::setResult(const std::string& rstr)
+	void	Command::setResult(const std::string& rstr) // obsolete
 	{
 		_result = rstr;
 	}
 
-	void	Command::setResult(const short& rcode, const std::string s1)
+	void	Command::setResult(const short& rcode, const std::string s1) //obsolete
 	{
-		// _result = std::to_string(rcode) + " ";
-		// std::to_string
 		_result = _server->getPrefix(_client) + " ";
 		_result += to_string(rcode) + " ";
 		_result += _client->getNick() + " ";

@@ -43,59 +43,30 @@ namespace irc
 
 		void	join	(Command* cmd)
 		{
-			// bool	hasKeys = (cmd->getArgC() > 1);
-
-			if (cmd->getArgs().empty())
+			if (!cmd->getArgC())
 				return (cmd->setResult(ERR_NEEDMOREPARAMS));
 
 			const std::vector<std::string>	servers = _split(cmd->getArgs()[0]);
-			// const std::vector<std::string>	keys = (cmd->getArgC() > 1 ? _split(cmd->getArgs()[1]) : )
+			Client*	cli;
+			Server*	serv;
 
 			for (size_t i = 0; i < servers.size(); ++i)
 			{
 				const std::string&	name = servers[i];
 				if (name[0] == '#')
 				{
-					Channel*	channel = cmd->getServer()->getChannel(name.c_str() + 1);
-					channel->addClient(cmd->getClient());
-					cmd->getClient()->setCChannel(channel);
+					Channel*	chan = serv->getChannel(name);
+					if (!chan)
+						chan = serv->addChannel(name);
+					chan->addClient(cmd->getClient());
+					cmd->getClient()->setCChannel(chan);
 				}
 			}
 
-			const Channel*	channel = cmd->getClient()->getCChannel();
-			if (channel && !channel->getTopic().empty())
-				cmd->setResult(RPL_NOTOPIC);
-
-			// return (cmd->setResult(RPL_TPOIC, cmd->getUser->getCChannel()->getTopic()));
-			// size_t	cur = 0;
-			// size_t	fpos = cur;
-
-			// while ((fpos = servers.find(',', cur)) != std::string::npos)
-			// {
-			// 	std::string	name = servers.substr(cur, fpos - cur);
-			// 	std::cout << "name: " << name << std::endl;
-			// 	if (name[0] == '#')
-			// 	{
-			// 		Channel*	channel = cmd->getServer()->getChannel(name.c_str() + 1);
-			// 		channel->addClient(cmd->getClient());
-			// 		// set client's cchan to channel
-			// 	}
-			// 	cur = fpos;
-			// }
-
-			// cur = 0;
-			// fpos = cur;
-
-			// while ((fpos = ))
-			// for (int i = 0; i < MAX_PARAMS; ++i)
-			// {
-			// 	const std::string&	cur = cmd->getArgs()[i];
-			// 	if (cur[0] != '#')
-			// 		break ;
-			// 	Channel*	channel = cmd->getServer()->getChannel(cur.c_str() + 1);
-			// 	channel->addClient(cmd->getClient());
-			// 	return (cmd->setResult(RPL_TOPIC));
-			// }
+			const Channel*	chan = cli->getCChannel();
+			if (chan && not chan->getTopic().empty())
+				cmd->queue(RPL_NOTOPIC, ":No topic is set");
+			// cmd->queue(RPL_TOPIC, )
 		}
 
 		void	part	(Command* cmd)

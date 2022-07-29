@@ -99,7 +99,7 @@ namespace irc
 		void	quit(Command* cmd)
 		{
 			// need to broadcast arg[0], the quit message
-			cmd->getServer()->rmclient(cmd->getClient());
+			cmd->getServer()->rmClient(cmd->getClient());
 		}
 
 		void	squit(Command* cmd)

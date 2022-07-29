@@ -23,7 +23,7 @@ namespace irc
 			{
 				PENDING,	// tcp/ip connection accepted
 				AUTH,		// password accepted
-				LOGGEDIN,		// USER command accepted, live client
+				LOGGEDIN,	// USER command accepted, live client
 				DISCONNECT	// client disconnected, pending for destruction
 			};
 
@@ -33,16 +33,14 @@ namespace irc
 			Channel*		_cchannel;
 			time_t			_last_ping;
 			char			_status;
-
-			// std::vector<Command>	_cmds;
 			std::string		_buf;
 			std::string		_nick;
 			std::string		_user_name;
 			std::string		_real_name;
 			std::string		_last_nick;
 			mode_t			_modes;
+			bool			_is_local;
 
-			// void	_parse(std::string str);
 			int		parse();
 
 		public:
@@ -51,7 +49,7 @@ namespace irc
 
 			void	recv();
 
-			char			getStatus() const;
+			char				getStatus() const;
 			const int&			getFD() const;
 			const time_t&		getLastPing() const;
 			const std::string&	getNick() const;
