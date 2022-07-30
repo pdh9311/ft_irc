@@ -5,6 +5,28 @@
 
 namespace irc
 {
+	std::vector<std::string>	split(const std::string& str, char delim)
+	{
+		std::vector<std::string>	ret;
+		size_t						cur = 0;
+		size_t						fpos = cur;
+
+		if (str.empty())
+			return (ret);
+		
+		while (1)
+		{
+			fpos = str.find(delim, cur);
+			std::string	tok = str.substr(cur, fpos - cur);
+			if (tok.size())
+				ret.push_back(tok);
+			if (fpos == std::string::npos)
+				break ;
+			cur = fpos + 1;
+		}
+		return (ret);
+	}
+
 	int	stoi(const std::string& str)
 	{
 		int					ret;

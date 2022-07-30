@@ -15,12 +15,30 @@ namespace irc
 namespace irc
 {
 	Channel::Channel(Server* server, const std::string name)
-	:	_server(server), _name(name), _topic("")
-	{}
+	:	_server(server)
+	{
+		_is_local = true;
+		if (name[0] == '#' || name[0] == '&')
+		{
+			_name = name.substr(1);
+			_is_local = (name[0] == '#');
+		}
+		else
+			_name = name;
+	}
 
 	Channel::~Channel()
 	{
-		// do something with _clients?
+		clients_t::iterator	it = _clients.begin();
+		
+		while (it != _clients.end())
+		{
+			Client*	cli = _server->getClient(*it);
+			if (!cli)
+				PE("Channel had ghost client (Channel destructor)");
+			_server->queue(*it, "PART " + getFName());
+			++it;
+		}
 	}
 
 	bool	Channel::isMember(const Client* client)
@@ -41,11 +59,11 @@ namespace irc
 	void	Channel::addClient(const Client* client)
 	{
 		_clients.insert(client->getFD());
-		_server->queue(client->getFD(), _server->getPrefix(client) + " " + to_string(RPL_NAMREPLY)
-										+ " " + client->getNick() + " = #" + getName() + " :" + getMembers());
-		_server->queue(client->getFD(), _server->getPrefix(client) + " " + to_string(RPL_ENDOFNAMES)
-										+ " " + client->getNick() + " #" + getName() + " :End of /NAMES list");
-		_server->queue(client->getFD(), _server->getPrefix(client) + " JOIN #" + getName());
+
+		const std::string	prefix = _server->getPrefix(client) + " ";
+		client->queue(prefix + to_string(RPL_NAMREPLY) + " " + client->getNick() + " = " + getFName() + " :" + getMembers());
+		client->queue(prefix + to_string(RPL_ENDOFNAMES) + " " + client->getNick() + " " + getFName() + " :End of /NAMES list");
+		client->queue(prefix + "JOIN " + getFName());
 	}
 
 	void	Channel::rmClient(const Client* client)
@@ -53,7 +71,7 @@ namespace irc
 		if (!isMember(client))
 			PE("Tried to Channel::rmClient on non-member client");
 		_clients.erase(client->getFD());
-		_server->queue(client->getFD(), _server->getPrefix(client) + " PART #" + getName());
+		client->queue(_server->getPrefix(client) + " PART " + getFName());
 	}
 
 	const std::string&	Channel::getName() const
@@ -61,17 +79,22 @@ namespace irc
 		return (_name);
 	}
 
+	const std::string	Channel::getFName() const
+	{
+		return (_is_local ? "#" : "&") + getName();
+	}
+
 	const std::string&	Channel::getTopic() const
 	{
 		return (_topic);
 	}
 
-	const Channel::client_t&	Channel::getClients() const
+	const Channel::clients_t&	Channel::getClients() const
 	{
 		return (_clients);
 	}
 
-	const Channel::mode_t&	Channel::getModes() const
+	const Channel::modes_t&	Channel::getModes() const
 	{
 		return (_modes);
 	}
@@ -79,7 +102,7 @@ namespace irc
 	std::string	Channel::getModestr() const
 	{
 		std::string				ret;
-		mode_t::const_iterator	it = _modes.begin();
+		modes_t::const_iterator	it = _modes.begin();
 
 		while (it != _modes.end())
 		{
@@ -93,7 +116,7 @@ namespace irc
 	{
 		std::string	ret;
 
-		client_t::const_iterator	it = _clients.begin();
+		clients_t::const_iterator	it = _clients.begin();
 		while (it != _clients.end())
 		{
 			const Client*	client = _server->getClient(*it);

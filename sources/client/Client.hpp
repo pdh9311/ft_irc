@@ -39,7 +39,6 @@ namespace irc
 			std::string		_real_name;
 			std::string		_last_nick;
 			mode_t			_modes;
-			bool			_is_local;
 
 			int		parse();
 
@@ -48,6 +47,7 @@ namespace irc
 			virtual	~Client();
 
 			void	recv();
+			void	queue(std::string msg) const;
 
 			char				getStatus() const;
 			const int&			getFD() const;

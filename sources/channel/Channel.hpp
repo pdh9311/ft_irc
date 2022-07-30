@@ -12,17 +12,18 @@ namespace irc
 	class Channel
 	{
 		public:
-			typedef std::set<int>	client_t;
-			typedef std::set<char>	mode_t;
-			typedef std::set<int>	invite_t;
+			typedef std::set<int>	clients_t;
+			typedef std::set<char>	modes_t;
+			typedef std::set<int>	invites_t;
 
 		private:
-			Server*				_server;
-			const std::string	_name;
-			std::string			_topic;
-			client_t			_clients;
-			mode_t				_modes;
-			invite_t			_invites;
+			Server*		_server;
+			std::string	_name;
+			bool		_is_local;
+			std::string	_topic;
+			clients_t	_clients;
+			modes_t		_modes;
+			invites_t	_invites;
 
 		public:
 			Channel(Server* server, const std::string name);
@@ -35,9 +36,10 @@ namespace irc
 			void	rmClient(const Client* client);
 
 			const std::string&	getName() const;
+			const std::string	getFName() const;
 			const std::string&	getTopic() const;
-			const client_t&		getClients() const;
-			const mode_t&		getModes() const;
+			const clients_t&	getClients() const;
+			const modes_t&		getModes() const;
 			std::string			getModestr() const;
 			std::string			getMembers() const;
 			size_t				getSize() const;

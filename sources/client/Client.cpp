@@ -66,6 +66,11 @@ namespace irc
 		this->parse();
 	}
 
+	void	Client::queue(std::string msg) const
+	{
+		_server->queue(_fd, msg);
+	}
+
 	char	Client::getStatus() const
 	{
 		return (_status);

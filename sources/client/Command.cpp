@@ -180,7 +180,7 @@ namespace irc
 
 	void	Command::queue(const std::string msg) // messages w/o code
 	{
-		_server->queue(_client, msg);
+		_client->queue(msg);
 	}
 
 	void	Command::queue(const short& rcode, const std::string msg)
@@ -190,7 +190,24 @@ namespace irc
 		str += (_client->getNick() + " ");
 		str += msg;
 
-		_server->queue(_client, str);
+		_client->queue(str);
+	}
+
+	void	Command::queue(const short& rcode)
+	{
+		std::string str = _server->getPrefix(_client) + " ";
+		str += (to_string(rcode) + " ");
+		str += (_client->getNick() + " ");
+		
+		switch (rcode)
+		{
+			case ERR_NEEDMOREPARAMS:
+				str += (getCommand() + " :Not enough parameters");
+				break ;
+			
+		}
+
+		_client->queue(str);
 	}
 
 	void	Command::setResult(const std::string& rstr) // obsolete

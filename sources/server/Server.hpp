@@ -58,10 +58,10 @@ namespace irc
 			Channel*	addChannel(std::string name);
 
 			const clients_t&	getClients() const;
-			const Client*		getClient(int fd) const;
+			Client*				getClient(int fd) const;
 			Client*				getClient(const std::string& name) const;
 			const channels_t&	getChannels() const;
-			Channel*			getChannel (std::string name);
+			Channel*			getChannel (std::string name) const;
 			bool				hasChannel (std::string name) const;
 			const std::string	getName() const;
 			const std::string	getPrefix (const Client* client) const;

@@ -6,7 +6,7 @@
 #    By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/22 23:04:25 by minsunki          #+#    #+#              #
-#    Updated: 2022/07/28 13:14:58 by minsunki         ###   ########seoul.kr   #
+#    Updated: 2022/07/30 15:14:21 by minsunki         ###   ########seoul.kr   #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,14 @@ FIL_M		=	main \
 				server/irc_type/VersionLimitations \
 				client/Client \
 				client/Command \
-				client/cmds/channel \
+				client/cmds/channel/invite \
+				client/cmds/channel/join \
+				client/cmds/channel/kick \
+				client/cmds/channel/list \
+				client/cmds/channel/mode \
+				client/cmds/channel/names \
+				client/cmds/channel/part \
+				client/cmds/channel/topic\
 				client/cmds/connection \
 				client/cmds/misc \
 				client/cmds/optional \

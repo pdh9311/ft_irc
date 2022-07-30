@@ -256,7 +256,7 @@ namespace irc
 		return (_clients);
 	}
 
-	const Client*	Server::getClient(int fd) const
+	Client*	Server::getClient(int fd) const
 	{
 		clients_t::const_iterator	fit = _clients.find(fd);
 		if (fit != _clients.end())
@@ -281,19 +281,19 @@ namespace irc
 		return (_channels);
 	}
 
-	Channel*	Server::getChannel(std::string name)
+	Channel*	Server::getChannel(std::string name) const
 	{
 		if (name[0] == '#' || name[0] == '&')
-			name = name.substr(1, std::string::npos);
+			name = name.substr(1);
 		if (hasChannel(name))
-			return (_channels[name]);
+			return (_channels.find(name)->second);
 		return (NULL);
 	}
 
 	bool	Server::hasChannel(std::string name) const
 	{
 		if (name[0] == '#' || name[0] == '&')
-			name = name.substr(1, std::string::npos);
+			name = name.substr(1);
 		return (_channels.count(name));
 	}
 
