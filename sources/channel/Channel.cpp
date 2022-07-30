@@ -25,6 +25,7 @@ namespace irc
 		}
 		else
 			_name = name;
+		_modes.insert('n');
 	}
 
 	Channel::~Channel()
@@ -41,17 +42,27 @@ namespace irc
 		}
 	}
 
-	bool	Channel::isMember(const Client* client)
+	void	Channel::broadcast(const Client* client, const std::string msg) const
+	{
+
+	}
+
+	bool	Channel::isInvited(const Client* client) const
+	{
+		return (_invites.count(client->getFD()));
+	}
+
+	bool	Channel::isMember(const Client* client) const
 	{
 		return (isMember(client->getFD()));
 	}
 
-	bool	Channel::isMember(const int fd)
+	bool	Channel::isMember(const int fd) const
 	{
 		return (_clients.count(fd));
 	}
 
-	bool	Channel::hasMode(const char c)
+	bool	Channel::hasMode(const char c) const 
 	{
 		return (_modes.count(c));
 	}
@@ -59,6 +70,8 @@ namespace irc
 	void	Channel::addClient(const Client* client)
 	{
 		_clients.insert(client->getFD());
+		if (_invites.count(client->getFD()))
+			_invites.erase(client->getFD());
 
 		const std::string	prefix = _server->getPrefix(client) + " ";
 		client->queue(prefix + to_string(RPL_NAMREPLY) + " " + client->getNick() + " = " + getFName() + " :" + getMembers());
@@ -87,6 +100,11 @@ namespace irc
 	const std::string&	Channel::getTopic() const
 	{
 		return (_topic);
+	}
+
+	const std::string&	Channel::getKey() const
+	{
+		return (_key);
 	}
 
 	const Channel::clients_t&	Channel::getClients() const
@@ -131,6 +149,22 @@ namespace irc
 	size_t	Channel::getSize() const
 	{
 		return (_clients.size());
+	}
+
+	const size_t&	Channel::getMaxClient() const
+	{
+		return (_max_client);
+	}
+
+
+	void	Channel::setMaxClient(size_t max)
+	{
+		_max_client = max;
+	}
+
+	void	Channel::setKey(const std::string& key)
+	{
+		_key = key;
 	}
 
 	void	Channel::setTopic(const std::string& topic)
