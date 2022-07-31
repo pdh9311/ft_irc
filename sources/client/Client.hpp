@@ -29,7 +29,7 @@ namespace irc
 
 		private:
 			const int		_fd;
-			Server*		 	_server;
+			Server*			_server;
 			Channel*		_cchannel;
 			time_t			_last_ping;
 			char			_status;

@@ -114,6 +114,7 @@ namespace irc
 		pe = static_cast<protoent*>(DBGV(NULL, getprotobyname("tcp"), "getprotobyname"));
 		sock = DBG(-1, socket(PF_INET, SOCK_STREAM, pe->p_proto), "socket");
 		fcntl(sock, F_SETFL, O_NONBLOCK);
+		std::memset(&sin, 0, sizeof(sin));	// 구조체 초기화 필요함.(sockaddr과 sockaddr_in 크기를 맞추기 위해서 sockaddr_in에 zero 배열이 있는데 이 배열을 0으로 만들어줘야 하기때문에 값을 대입하기 전에 0으로 초기화기 필요함.)
 		sin.sin_family = AF_INET;
 		sin.sin_addr.s_addr = INADDR_ANY;
 		sin.sin_port = htons(_port);

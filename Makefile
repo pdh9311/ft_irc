@@ -1,16 +1,4 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: minsunki <minsunki@student.42seoul.kr>     +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/04/22 23:04:25 by minsunki          #+#    #+#              #
-#    Updated: 2022/07/30 15:14:21 by minsunki         ###   ########seoul.kr   #
-#                                                                              #
-# **************************************************************************** #
-
-NAME		=	ft_irc
+NAME		=	ircserv
 
 SRCF		=	sources
 SRCF_B		=	$(SRCF)/bonus
@@ -56,7 +44,7 @@ FIL_M		=	main \
 				util \
 				debug
 
-FIL_B		=	
+FIL_B		=
 
 SRCS_M		=	$(addsuffix .cpp, $(addprefix $(SRCF)/, $(FIL_M)))
 SRCS_B		=	$(addsuffix _bonus.cpp, $(addprefix $(SRCF_B)/, $(FIL_M) $(FIL_B)))

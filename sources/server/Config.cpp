@@ -18,23 +18,23 @@ namespace irc
 		type_parsing();
 	}
 
-		MachineInfo			Config::get_M()		{ return _machine_info; }
-		AdministrativeInfo	Config::get_A()		{ return _administrative_info; }
-		PortConnections		Config::get_P()		{ return _port_connections; }
-		ConnectionClasses	Config::get_Y()		{ return _connection_classes; }
-		ClientConnections	Config::get_Ii()	{ return _client_connections; }
-		OperatorPrivileges	Config::get_O()		{ return _operator_privileges; }
-		RestrictLines		Config::get_R()		{ return _restrict_lines; }
-		ExcludedAccounts	Config::get_Kk()	{ return _excluded_accounts; }
-		ServerConnections	Config::get_CcN()	{ return _server_connections; }
-		DenyAutoConnections	Config::get_D()		{ return _deny_auto_connections; }
-		HubConnections		Config::get_H()		{ return _hub_connections; }
-		LeafConnections		Config::get_L()		{ return _leaf_connections; }
-		VersionLimitations	Config::get_V()		{ return _version_limitations;}
-		// ExcludedMachines	Config::get_Q()		{ return _excluded_machine; }
-		ServiceConnections	Config::get_S()		{ return _service_connections; }
-		BounceServer 		Config::get_B()		{ return _bounce_server; }
-		DefaultLocalServer	Config::get_U()		{ return _default_local_server; }
+		MachineInfo			Config::get_M() const	{ return _machine_info; }
+		AdministrativeInfo	Config::get_A() const	{ return _administrative_info; }
+		PortConnections		Config::get_P() const	{ return _port_connections; }
+		ConnectionClasses	Config::get_Y() const	{ return _connection_classes; }
+		ClientConnections	Config::get_Ii() const	{ return _client_connections; }
+		OperatorPrivileges	Config::get_O() const	{ return _operator_privileges; }
+		RestrictLines		Config::get_R() const	{ return _restrict_lines; }
+		ExcludedAccounts	Config::get_Kk() const	{ return _excluded_accounts; }
+		ServerConnections	Config::get_CcN() const	{ return _server_connections; }
+		DenyAutoConnections	Config::get_D() const	{ return _deny_auto_connections; }
+		HubConnections		Config::get_H() const	{ return _hub_connections; }
+		LeafConnections		Config::get_L() const	{ return _leaf_connections; }
+		VersionLimitations	Config::get_V() const	{ return _version_limitations;}
+		// ExcludedMachines	Config::get_Q() const	{ return _excluded_machine; }
+		ServiceConnections	Config::get_S() const	{ return _service_connections; }
+		BounceServer 		Config::get_B() const	{ return _bounce_server; }
+		DefaultLocalServer	Config::get_U() const	{ return _default_local_server; }
 }
 
 // private funcs
