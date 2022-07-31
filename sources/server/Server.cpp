@@ -36,7 +36,7 @@ namespace irc
 			_pfds.push_back(pfd);
 			if (!(_clients.insert(std::make_pair(sock, client)).second))
 				PE("failed inserting client to _clients.");
-			
+
 			if (_pass.empty())
 				client->setStatus(Client::AUTH);
 		}
@@ -86,12 +86,12 @@ namespace irc
 			_clients.erase(_clients.begin());
 		}
 
-		close(_lfd); 
+		close(_lfd);
 	}
 
 	// void	Server::welcome (Client* client)
 	// {
-	// 	// queue(getPrefix(client) + "001" )
+
 	// }
 
 	void	Server::queue (const Client* client, std::string msg)
@@ -300,7 +300,7 @@ namespace irc
 	}
 
 	const std::string	Server::getName() const
-	{	
+	{
 		return ("localhost");//(conf.get_B().getServerName());
 	}
 
@@ -313,5 +313,10 @@ namespace irc
 		ret += "@";
 		ret += getName();
 		return (ret);
+	}
+
+	const std::string	Server::getPass() const
+	{
+		return _pass;
 	}
 }
