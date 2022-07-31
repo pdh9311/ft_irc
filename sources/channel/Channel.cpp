@@ -138,9 +138,13 @@ namespace irc
 		return (ret);
 	}
 
-	const Channel::umodes_t&	Channel::getUserModes(Client* client) const
+	const Channel::modes_t&	Channel::getUserModes(Client* client) const
 	{
-		return (_user_modes);
+		umodes_t::const_iterator	fit = _user_modes.find(client->getFD());
+		if (fit != _user_modes.end())
+			return (fit->second);
+		PE("Tried to call Channel::getUserModes on ghost");
+		return (_user_modes.begin()->second);
 	}
 
 	std::string	Channel::getUserModestr(Client* client) const

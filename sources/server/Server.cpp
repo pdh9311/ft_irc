@@ -4,6 +4,7 @@
 #include "client/Client.hpp"
 #include "channel/Channel.hpp"
 
+#include <cstring>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>

@@ -49,7 +49,7 @@ namespace irc
 			const clients_t&	getClients() const;
 			const modes_t&		getModes() const;
 			std::string			getModestr() const;
-			const umodes_t&		getUserModes(Client* client) const;
+			const modes_t&		getUserModes(Client* client) const;
 			std::string			getUserModestr(Client* client) const;
 			std::string			getMembers() const;
 			size_t				getSize() const;
