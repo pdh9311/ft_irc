@@ -10,12 +10,12 @@ namespace irc
 	{
 		void	privmsg	(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 
 		void	notice	(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 	}
 }

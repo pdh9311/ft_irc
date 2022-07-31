@@ -88,23 +88,23 @@ namespace irc
 
 		void	server(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 
 		void	oper(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 
 		void	quit(Command* cmd)
 		{
 			// need to broadcast arg[0], the quit message
-			cmd->getServer()->rmclient(cmd->getClient());
+			cmd->getServer()->rmClient(cmd->getClient());
 		}
 
 		void	squit(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 	}
 }

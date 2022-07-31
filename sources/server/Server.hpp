@@ -21,6 +21,7 @@ namespace irc
 	class Server
 	{
 		friend class Client;
+
 		public:
 			typedef std::vector<pollfd>							pfds_t;
 			typedef std::queue<std::pair<int, std::string> >	sque_t;
@@ -30,21 +31,21 @@ namespace irc
 			Config												conf;
 
 		private:
-			pfds_t		_pfds;
-			sque_t		_sque; // maybe create reply/msg class?
-			dque_t		_dque;
-			clients_t	_clients;
-			channels_t	_channels;
-			const int	_port;
-			int			_lfd;
+			const int			_port;
+			const std::string	_pass;
+			pfds_t				_pfds;
+			sque_t				_sque; // maybe create reply/msg class?
+			dque_t				_dque;
+			clients_t			_clients;
+			channels_t			_channels;
+			int					_lfd;
 
 			void	accept();
 			void	flush();
 			void	ping();
-			Channel*	createChannel(const std::string& name);
 
 		public:
-			Server (std::string port);
+			Server (const std::string port, const std::string pass);
 			virtual	~Server();
 
 			// void		welcome (Client* client);
@@ -52,15 +53,16 @@ namespace irc
 			void		queue (const int& fd, std::string msg);
 			void		initialize();
 			void		run();
-			void		rmclient(Client* client);
-			void		rmchannel(Channel* channel);
+			void		rmClient(Client* client);
+			void		rmChannel(Channel* channel);
+			Channel*	addChannel(std::string name);
 
 			const clients_t&	getClients() const;
-			const Client*		getClient(int fd) const;
+			Client*				getClient(int fd) const;
 			Client*				getClient(const std::string& name) const;
 			const channels_t&	getChannels() const;
-			Channel*			getChannel (const std::string& name);
-			bool				hasChannel (const std::string& name) const;
+			Channel*			getChannel (std::string name) const;
+			bool				hasChannel (std::string name) const;
 			const std::string	getName() const;
 			const std::string	getPrefix (const Client* client) const;
 	};

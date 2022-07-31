@@ -27,7 +27,14 @@ FIL_M		=	main \
 				server/irc_type/VersionLimitations \
 				client/Client \
 				client/Command \
-				client/cmds/channel \
+				client/cmds/channel/invite \
+				client/cmds/channel/join \
+				client/cmds/channel/kick \
+				client/cmds/channel/list \
+				client/cmds/channel/mode \
+				client/cmds/channel/names \
+				client/cmds/channel/part \
+				client/cmds/channel/topic\
 				client/cmds/connection \
 				client/cmds/misc \
 				client/cmds/optional \

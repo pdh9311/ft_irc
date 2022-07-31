@@ -143,7 +143,7 @@ namespace irc
 	#define	RPL_INFOSTART			373
 	#define	RPL_MYPORTIS			384
 	#define	ERR_YOUWILLBEBANNED		466
-	#define	ERR_BANCHANMASK			476
+	#define	ERR_BADCHANMASK			476
 	#define	ERR_NOSERVICEHOST		492
 }
 
