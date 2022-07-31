@@ -73,23 +73,23 @@ namespace irc
 		public:
 			Config();
 
-			MachineInfo			get_M();
-			AdministrativeInfo	get_A();
-			PortConnections		get_P();
-			ConnectionClasses	get_Y();
-			ClientConnections	get_Ii();
-			OperatorPrivileges	get_O();
-			RestrictLines		get_R();
-			ExcludedAccounts	get_Kk();
-			ServerConnections	get_CcN();
-			DenyAutoConnections	get_D();
-			HubConnections		get_H();
-			LeafConnections		get_L();
-			VersionLimitations	get_V();
-			// ExcludedMachines	get_Q();
-			ServiceConnections	get_S();
-			BounceServer 		get_B();
-			DefaultLocalServer	get_U();
+			MachineInfo			get_M() const ;
+			AdministrativeInfo	get_A() const ;
+			PortConnections		get_P() const ;
+			ConnectionClasses	get_Y() const ;
+			ClientConnections	get_Ii() const ;
+			OperatorPrivileges	get_O() const ;
+			RestrictLines		get_R() const ;
+			ExcludedAccounts	get_Kk() const ;
+			ServerConnections	get_CcN() const ;
+			DenyAutoConnections	get_D() const ;
+			HubConnections		get_H() const ;
+			LeafConnections		get_L() const ;
+			VersionLimitations	get_V() const ;
+			// ExcludedMachines	get_Q() const ;
+			ServiceConnections	get_S() const ;
+			BounceServer 		get_B() const ;
+			DefaultLocalServer	get_U() const ;
 	};
 
 }
