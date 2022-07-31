@@ -88,12 +88,12 @@ namespace irc
 
 		void	server(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 
 		void	oper(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 
 		void	quit(Command* cmd)
@@ -104,7 +104,7 @@ namespace irc
 
 		void	squit(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 	}
 }

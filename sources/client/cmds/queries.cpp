@@ -10,17 +10,17 @@ namespace irc
 	{
 		void	who		(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 
 		void	whois	(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 
 		void	whowas	(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 	}
 }

@@ -127,12 +127,12 @@ namespace irc
 
 		void	stats	(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 
 		void	links	(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 
 		/*
@@ -172,12 +172,12 @@ namespace irc
 
 		void	connect	(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 
 		void	trace	(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 
 		/*

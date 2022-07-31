@@ -44,7 +44,17 @@ namespace irc
 
 	void	Channel::broadcast(const Client* client, const std::string msg) const
 	{
+		clients_t::iterator	it = _clients.begin();
+		std::string			prefix = _server->getPrefix(client);
 
+		while (it != _clients.end())
+		{
+			Client*	client = _server->getClient(*it);
+			if (!client)
+				PE("Channel had ghost client (Channel broadcast)");
+			client->queue(prefix + " " + msg);	
+			++it;
+		}
 	}
 
 	bool	Channel::isInvited(const Client* client) const
@@ -76,7 +86,6 @@ namespace irc
 		const std::string	prefix = _server->getPrefix(client) + " ";
 		client->queue(prefix + to_string(RPL_NAMREPLY) + " " + client->getNick() + " = " + getFName() + " :" + getMembers());
 		client->queue(prefix + to_string(RPL_ENDOFNAMES) + " " + client->getNick() + " " + getFName() + " :End of /NAMES list");
-		client->queue(prefix + "JOIN " + getFName());
 	}
 
 	void	Channel::rmClient(const Client* client)
@@ -84,7 +93,6 @@ namespace irc
 		if (!isMember(client))
 			PE("Tried to Channel::rmClient on non-member client");
 		_clients.erase(client->getFD());
-		client->queue(_server->getPrefix(client) + " PART " + getFName());
 	}
 
 	const std::string&	Channel::getName() const
@@ -130,6 +138,28 @@ namespace irc
 		return (ret);
 	}
 
+	const Channel::umodes_t&	Channel::getUserModes(Client* client) const
+	{
+		return (_user_modes);
+	}
+
+	std::string	Channel::getUserModestr(Client* client) const
+	{
+		std::string					ret;
+		umodes_t::const_iterator	fit = _user_modes.find(client->getFD());
+
+		if (fit == _user_modes.end())
+			return (ret);
+		modes_t::const_iterator		it = fit->second.begin();
+		while (it != fit->second.end())
+		{
+			ret += *it;
+			++it;
+		}
+
+		return (ret);
+	}
+
 	std::string	Channel::getMembers() const
 	{
 		std::string	ret;
@@ -172,13 +202,19 @@ namespace irc
 		_topic = topic;
 	}
 
+	bool	_isValid(const char c)
+	{
+		return (c == 'i' || c == 'o'); // all channel modes
+	}
+
 	void	Channel::setModes(const std::string& modes)
 	{
 		std::string::const_iterator	it = modes.begin();
 		while (it != modes.end())
 		{
-			_modes.insert(*it);
-			it++;
+			if (_isValid(*it))
+				_modes.insert(*it);
+			++it;
 		}
 	}
 
@@ -187,19 +223,50 @@ namespace irc
 		_modes.insert(c);
 	}
 
+	void	Channel::setUserModes(Client* client, const std::string& modes)
+	{
+		std::string::const_iterator	it = modes.begin();
+		while (it != modes.end())
+		{
+			if (_isValid(*it))
+				_user_modes[client->getFD()].insert(*it); // maybe check for faults?
+			++it;
+		} 
+	}
+
+	void	Channel::setUserMode(Client* client, const char c)
+	{
+		_user_modes[client->getFD()].insert(c);
+	}
+
 	void	Channel::unsetModes(const std::string& modes)
 	{
 		std::string::const_iterator	it = modes.begin();
 		while (it != modes.end())
 		{
 			_modes.erase(*it);
-			it++;
+			++it;
 		}
 	}
 
 	void	Channel::unsetMode(const char c)
 	{
 		_modes.erase(c);
+	}
+
+	void	Channel::unsetUserModes(Client* client, const std::string& modes)
+	{
+		std::string::const_iterator	it = modes.begin();
+		while (it != modes.end())
+		{
+			_user_modes[client->getFD()].erase(*it);
+			++it;
+		}
+	}
+
+	void	Channel::unsetUserMode(Client* client, const char c)
+	{
+		_user_modes[client->getFD()].erase(c);
 	}
 
 	void	Channel::inviteMember(Client* client)

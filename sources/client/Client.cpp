@@ -134,6 +134,16 @@ namespace irc
 		return (_status == LOGGEDIN);
 	}
 
+	const std::string&	Client::getAwayMsg() const
+	{
+		return (_away_msg);
+	}
+
+	void	Client::setAwayMsg(const std::string& msg)
+	{
+		_away_msg = msg;
+	}
+
 	void	Client::setLastPing(const time_t& time)
 	{
 		_last_ping = time;

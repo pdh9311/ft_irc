@@ -12,7 +12,7 @@ namespace irc
 	{
 		void	kill	(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 
 		void	ping	(Command* cmd)
@@ -36,7 +36,7 @@ namespace irc
 
 		void	error	(Command* cmd)
 		{
-
+			(void)cmd;
 		}
 	}
 }

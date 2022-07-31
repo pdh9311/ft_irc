@@ -57,7 +57,6 @@ void	irc::cmd::join(Command *cmd)
 		cli->setCChannel(chan);
 
 		chan->broadcast(cli, "JOIN :" + chan->getFName());
-
 	}
 
 	const Channel*	chan = cli->getCChannel();

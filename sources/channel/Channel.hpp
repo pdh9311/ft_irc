@@ -49,6 +49,8 @@ namespace irc
 			const clients_t&	getClients() const;
 			const modes_t&		getModes() const;
 			std::string			getModestr() const;
+			const umodes_t&		getUserModes(Client* client) const;
+			std::string			getUserModestr(Client* client) const;
 			std::string			getMembers() const;
 			size_t				getSize() const;
 			const size_t&		getMaxClient() const;
@@ -58,8 +60,12 @@ namespace irc
 			void	setTopic(const std::string& topic);
 			void	setModes(const std::string& modes);
 			void	setMode(const char c);
+			void	setUserModes(Client* client, const std::string& modes);
+			void	setUserMode(Client* client, const char c);
 			void	unsetModes(const std::string& modes);
+			void	unsetUserModes(Client* client, const std::string& modes);
 			void	unsetMode(const char c);
+			void	unsetUserMode(Client* client, const char c);
 			void	inviteMember(Client* client);
 	};
 }
