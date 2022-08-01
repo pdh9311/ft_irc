@@ -1,0 +1,2279 @@
+
+Request for Comments: 1459
+
+
+
+                      Internet Relay Chat Protocol
+
+Status of This Memo
+
+    이 메모는 인터넷 커뮤니티를 위한 실험 프로토콜을 정의합니다. 개선을 위한 논의와 제안이 요구된다.
+    이 프로토콜의 표준화 상태 및 상태는 "IAB 공식 프로토콜 표준" 최신판을 참조하십시오.
+    이 메모의 배포는 무제한입니다.
+
+Abstract
+
+    IRC 프로토콜은 BBS 사용자가 서로 채팅할 수 있는 수단으로 처음 구현된 이후 지난 4년 동안 개발되었습니다. 
+    이제 전세계 서버 및 클라이언트 네트워크를 지원하고 성장에 대처하기 위해 노력하고 있습니다. 
+    지난 2년 동안 주요 IRC 네트워크에 연결된 평균 사용자 수는 10배 증가했습니다.
+
+   IRC 프로토콜은 텍스트 기반 프로토콜이며 가장 간단한 클라이언트는 서버에 연결할 수 있는 소켓 프로그램입니다.
+
+Table of Contents
+
+   1.  INTRODUCTION ...............................................    4
+      1.1  Servers ................................................    4
+      1.2  Clients ................................................    5
+         1.2.1 Operators ..........................................    5
+      1.3 Channels ................................................    5
+      1.3.1  Channel Operators ....................................    6
+   2. THE IRC SPECIFICATION .......................................    7
+      2.1 Overview ................................................    7
+      2.2 Character codes .........................................    7
+      2.3 Messages ................................................    7
+         2.3.1  Message format in 'pseudo' BNF ....................    8
+      2.4 Numeric replies .........................................   10
+   3. IRC Concepts ................................................   10
+      3.1 One-to-one communication ................................   10
+      3.2 One-to-many .............................................   11
+         3.2.1 To a list ..........................................   11
+         3.2.2 To a group (channel) ...............................   11
+         3.2.3 To a host/server mask ..............................   12
+      3.3 One to all ..............................................   12
+         3.3.1 Client to Client ...................................   12
+         3.3.2 Clients to Server ..................................   12
+         3.3.3 Server to Server ...................................   12
+   4. MESSAGE DETAILS .............................................   13
+      4.1 Connection Registration .................................   13
+         4.1.1 Password message ...................................   14
+         4.1.2 Nickname message ...................................   14
+         4.1.3 User message .......................................   15
+         4.1.4 Server message .....................................   16
+         4.1.5 Operator message ...................................   17
+         4.1.6 Quit message .......................................   17
+         4.1.7 Server Quit message ................................   18
+      4.2 Channel operations ......................................   19
+         4.2.1 Join message .......................................   19
+         4.2.2 Part message .......................................   20
+         4.2.3 Mode message .......................................   21
+            4.2.3.1 Channel modes .................................   21
+            4.2.3.2 User modes ....................................   22
+         4.2.4 Topic message ......................................   23
+         4.2.5 Names message ......................................   24
+         4.2.6 List message .......................................   24
+         4.2.7 Invite message .....................................   25
+         4.2.8 Kick message .......................................   25
+      4.3 Server queries and commands .............................   26
+         4.3.1 Version message ....................................   26
+         4.3.2 Stats message ......................................   27
+         4.3.3 Links message ......................................   28
+         4.3.4 Time message .......................................   29
+         4.3.5 Connect message ....................................   29
+         4.3.6 Trace message ......................................   30
+         4.3.7 Admin message ......................................   31
+         4.3.8 Info message .......................................   31
+      4.4 Sending messages ........................................   32
+         4.4.1 Private messages ...................................   32
+         4.4.2 Notice messages ....................................   33
+      4.5 User-based queries ......................................   33
+         4.5.1 Who query ..........................................   33
+         4.5.2 Whois query ........................................   34
+         4.5.3 Whowas message .....................................   35
+      4.6 Miscellaneous messages ..................................   35
+         4.6.1 Kill message .......................................   36
+         4.6.2 Ping message .......................................   37
+         4.6.3 Pong message .......................................   37
+         4.6.4 Error message ......................................   38
+   5. OPTIONAL MESSAGES ...........................................   38
+      5.1 Away message ............................................   38
+      5.2 Rehash command ..........................................   39
+      5.3 Restart command .........................................   39
+      5.4 Summon message ..........................................   40
+      5.5 Users message ...........................................   40
+      5.6 Operwall command ........................................   41
+      5.7 Userhost message ........................................   42
+      5.8 Ison message ............................................   42
+   6. REPLIES .....................................................   43
+      6.1 Error Replies ...........................................   43
+      6.2 Command responses .......................................   48
+      6.3 Reserved numerics .......................................   56
+   7. Client and server authentication ............................   56
+   8. Current Implementations Details .............................   56
+      8.1 Network protocol: TCP ...................................   57
+         8.1.1 Support of Unix sockets ............................   57
+      8.2 Command Parsing .........................................   57
+      8.3 Message delivery ........................................   57
+      8.4 Connection 'Liveness' ...................................   58
+      8.5 Establishing a server-client connection .................   58
+      8.6 Establishing a server-server connection .................   58
+         8.6.1 State information exchange when connecting .........   59
+      8.7 Terminating server-client connections ...................   59
+      8.8 Terminating server-server connections ...................   59
+      8.9 Tracking nickname changes ...............................   60
+      8.10 Flood control of clients ...............................   60
+      8.11 Non-blocking lookups ...................................   61
+         8.11.1 Hostname (DNS) lookups ............................   61
+         8.11.2 Username (Ident) lookups ..........................   61
+      8.12 Configuration file .....................................   61
+         8.12.1 Allowing clients to connect .......................   62
+         8.12.2 Operators .........................................   62
+         8.12.3 Allowing servers to connect .......................   62
+         8.12.4 Administrivia .....................................   63
+      8.13 Channel membership .....................................   63
+   9. Current problems ............................................   63
+      9.1 Scalability .............................................   63
+      9.2 Labels ..................................................   63
+         9.2.1 Nicknames ..........................................   63
+         9.2.2 Channels ...........................................   64
+         9.2.3 Servers ............................................   64
+      9.3 Algorithms ..............................................   64
+   10. Support and availability ...................................   64
+   11. Security Considerations ....................................   65
+   12. Authors' Addresses .........................................   65
+
+1.  INTRODUCTION
+
+    IRC(Internet Relay Chat) 프로토콜은 텍스트 기반 원격회의용으로 수년에 걸쳐 설계되었습니다. 이 문서는 현재 IRC 프로토콜을 설명합니다.
+
+    IRC 프로토콜은 TCP/IP 네트워크 프로토콜을 사용하는 시스템에서 개발되었지만 이것이 작동하는 유일한 영역으로 남아 있어야 한다는 요구 사항은 없습니다.
+
+    IRC 자체는 원격 회의 시스템으로 (클라이언트-서버 모델 사용을 통해) 분산 방식으로 많은 시스템에서 실행하는 데 적합합니다. 
+    일반적인 설정은 클라이언트(또는 다른 서버)가 연결할 중심점을 형성하고 필요한 메시지 전달/다중화 및 기타 기능을 수행하는 단일 프로세스(서버)를 포함합니다.
+
+1.1 Servers
+
+   서버는 IRC의 백본을 형성하여 클라이언트가 서로 연결하여 대화할 수 있는 지점과 다른 서버가 연결할 수 있는 지점을 제공하여 IRC 네트워크를 형성합니다. 
+   IRC 서버에 허용되는 유일한 네트워크 구성은 스패닝 트리의 구성뿐입니다[그림 1 참조]. 여기서 각 서버는 보이는 나머지 네트워크에 대한 중앙 노드 역할을 합니다.
+
+
+                           [ Server 15 ]  [ Server 13 ] [ Server 14]
+                                 /                \         /
+                                /                  \       /
+        [ Server 11 ] ------ [ Server 1 ]       [ Server 12]
+                              /        \          /
+                             /          \        /
+                  [ Server 2 ]          [ Server 3 ]
+                    /       \                      \
+                   /         \                      \
+           [ Server 4 ]    [ Server 5 ]         [ Server 6 ]
+            /    |    \                           /
+           /     |     \                         /
+          /      |      \____                   /
+         /       |           \                 /
+ [ Server 7 ] [ Server 8 ] [ Server 9 ]   [ Server 10 ]
+
+                                  :
+                               [ etc. ]
+                                  :
+
+                 [ Fig. 1. Format of IRC server network ]
+
+1.2 Clients
+
+   클라이언트는 다른 서버가 아닌 서버에 연결하는 모든 것입니다. 각 클라이언트는 최대 길이가 9자인 고유한 별명으로 다른 클라이언트와 구별됩니다. 
+   별명에서 사용할 수 있는 것과 사용하지 않을 수 있는 것에 대한 프로토콜 문법 규칙을 참조하십시오. 
+   닉네임 외에도 모든 서버에는 클라이언트가 실행 중인 호스트의 실제 이름, 해당 호스트에 있는 클라이언트의 사용자 이름, 클라이언트가 연결된 서버와 같은 모든 클라이언트에 대한 정보가 있어야 합니다.
+
+1.2.1 Operators
+
+    IRC 네트워크 내에서 합리적인 양의 주문을 유지하기 위해 특수한 클래스의 클라이언트(운영자)가 네트워크에서 일반적인 유지 관리 기능을 수행할 수 있습니다. 
+    운영자에게 부여된 권한은 '위험한' 것으로 간주될 수 있지만 그럼에도 불구하고 필요합니다. 운영자는 기본적인 작업을 수행할 수 있어야 합니다.
+    잘못된 네트워크 라우팅의 장기간 사용을 방지하기 위해 필요에 따라 서버 연결을 끊었다가 다시 연결하는 것과 같은 네트워크 작업. 
+    이러한 필요성을 인식하여, 여기에서 논의된 프로토콜은 오퍼레이터가 그러한 기능을 수행할 수 있도록만 제공합니다. 섹션 4.1.7(SQUIT) 및 4.3.5(CONNECT)를 참조하십시오.
+
+    더 논란의 여지가 있는 운영자의 권한은 '강제'에 의해 연결된 네트워크에서 사용자를 제거하는 기능입니다. 즉 운영자는 모든 클라이언트와 서버 간의 연결을 닫을 수 있습니다. 
+    남용이 파괴적이며 짜증나기 때문에 이에 대한 정당화는 미묘합니다. 이러한 유형의 작업에 대한 자세한 내용은 섹션 4.6.1(KILL)을 참조하십시오.
+
+1.3 Channels
+
+   채널은 해당 채널로 주소가 지정된 메시지를 모두 수신하는 하나 이상의 클라이언트로 구성된 명명된 그룹입니다. 
+   채널은 첫 번째 클라이언트가 가입할 때 암시적으로 생성되고 마지막 클라이언트가 탈퇴할 때 채널이 더 이상 존재하지 않습니다. 
+   채널이 존재하는 동안 모든 클라이언트는 채널 이름을 사용하여 채널을 참조할 수 있습니다.
+
+   채널 이름은 최대 200자 길이의 문자열('&' 또는 '#' 문자로 시작)입니다. 
+   첫 번째 문자가 '&' 또는 '#'이어야 한다는 요구사항 외에; 
+   채널 이름에 대한 유일한 제한은 공백(' '), 컨트롤 G(^G 또는 ASCII 7) 또는 쉼표(', 프로토콜에서 목록 항목 구분 기호로 사용됨)를 포함할 수 없다는 것입니다. .
+   이 프로토콜에서 허용하는 두 가지 유형의 채널이 있습니다. 
+   하나는 네트워크에 연결된 모든 서버에 알려진 분산 채널입니다. 
+   이러한 채널은 존재하는 서버의 유일한 클라이언트인 첫 번째 문자로 표시됩니다. 
+   이들은 선행 '&' 문자로 구별됩니다. 이 두 가지 유형 외에도 개별 채널의 특성을 변경하는 데 사용할 수 있는 다양한 채널 모드가 있습니다. 
+   이에 대한 자세한 내용은 섹션 4.2.3(MODE 명령)을 참조하십시오.
+
+   새 채널을 만들거나 기존 채널의 일부가 되려면 사용자가 채널에 가입해야 합니다. 
+   가입하기 전에 채널이 존재하지 않으면 채널이 생성되고 생성하는 사용자가 채널 운영자가 됩니다. 
+   채널이 이미 존재하는 경우 해당 채널에 대한 JOIN 요청이 승인되는지 여부는 채널의 현재 모드에 따라 다릅니다. 
+   예를 들어 채널이 초대 전용(+i)인 경우 초대받은 경우에만 참여할 수 있습니다. 
+   프로토콜의 일부로 사용자는 한 번에 여러 채널의 일부가 될 수 있지만 숙련된 사용자와 초보자 모두에게 충분한 채널 제한은 10개입니다.
+   이에 대한 자세한 내용은 섹션 8.13을 참조하십시오. 
+   두 서버 간의 분할로 인해 IRC 네트워크가 분리되면 각 측면의 채널은 분할의 각 측면에 있는 서버에 연결된 클라이언트로만 구성되며 분할의 한쪽에 존재하지 않을 수 있습니다. 
+   분할이 치유되면 연결 서버는 각 채널에 있다고 생각하는 사람과 해당 채널의 모드를 서로에게 알립니다. 
+   채널이 양쪽에 모두 존재하는 경우 JOIN 및 MODE는 포괄적인 방식으로 해석되어 새 연결의 양쪽이 채널에 있는 클라이언트와 채널의 모드에 대해 동의합니다.
+
+   1.3.1 Channel Operators
+
+   주어진 채널의 채널 운영자("chop" 또는 "chanop"이라고도 함)는 해당 채널을 '소유'하는 것으로 간주됩니다. 
+   이러한 상태를 인식하여 채널 운영자는 채널을 제어하고 어느 정도 온전한 상태를 유지할 수 있는 특정 권한을 부여받습니다. 
+   채널 소유자로서 채널 운영자는 자신의 행동에 대한 이유를 가질 필요가 없지만 그들의 행동이 일반적으로 반사회적이거나 
+   다른 방식으로 가학적인 경우 IRC 운영자에게 개입을 요청하거나 사용자가 그냥 가도록 요청하는 것이 합리적일 수 있습니다. 
+   다른 곳에서 자신의 채널을 형성합니다.
+
+   채널 운영자만 사용할 수 있는 명령은 다음과 같습니다:
+
+        KICK    - Eject a client from the channel                       채널에서 클라이언트 꺼내기
+        MODE    - Change the channel's mode                             채널 모드 변경
+        INVITE  - Invite a client to an invite-only channel (mode +i)   초대 전용 채널에 고객 초대
+        TOPIC   - Change the channel topic in a mode +t channel         mode +t 채널에서 채널 주제 변경
+
+   채널 운영자는 채널과 연결될 때마다 닉네임 옆에 '@' 기호로 식별됩니다(예: NAMES, WHO 및 WHOIS 명령에 대한 응답).
+
+2. The IRC Specification
+
+2.1 Overview
+
+   여기에 설명된 프로토콜은 서버 대 서버 및 클라이언트 대 서버 연결 모두에서 사용하기 위한 것입니다. 그러나 서버 연결보다 클라이언트 연결(신뢰할 수 없는 것으로 간주됨)에 더 많은 제한이 있습니다.
+
+2.2 Character codes
+
+    특정 문자 집합이 지정되지 않았습니다. 프로토콜은 옥텟을 구성하는 8비트로 구성된 코드 세트를 기반으로 합니다. 
+    각 메시지는 이러한 옥텟의 개수에 관계없이 구성될 수 있습니다. 그러나 일부 옥텟 값은 메시지 구분 기호 역할을 하는 제어 코드에 사용됩니다.
+
+    8비트 프로토콜이기는 하지만 구분자와 키워드는 프로토콜이 USASCII 터미널과 텔넷 연결에서 대부분 사용할 수 있도록 하는 것입니다.
+
+    IRC의 스칸다나비아 기원 때문에 {}| 각각 []\ 문자의 소문자로 간주됩니다. 이것은 두 별명의 동등성을 결정할 때 중요한 문제입니다.
+
+2.3 Messages
+
+    서버와 클라이언트는 응답을 생성할 수도 있고 생성하지 않을 수도 있는 메시지를 서로 보냅니다. 
+    메시지에 유효한 명령이 포함된 경우 나중에 섹션에 설명된 대로 클라이언트는 지정된 대로 응답을 예상해야 하지만 응답을 영원히 기다리지 않는 것이 좋습니다. 
+    클라이언트 대 서버 및 서버 대 서버 통신은 본질적으로 비동기식입니다.
+
+   각 IRC 메시지는 최대 3개의 주요 부분으로 구성될 수 있습니다: 접두사(선택 사항), 명령 및 명령 매개변수(이 중 최대 15개 포함). 
+   접두사, 명령 및 모든 매개변수는 (하나로 구분된) (또는 그 이상) ASCII 공백 문자(0x20).
+
+   접두어의 존재는 단일 선행 ASCII 콜론 문자(':', 0x3b)로 표시되며, 이는 메시지 자체의 첫 번째 문자여야 합니다. 
+   콜론과 접두사 사이에는 공백(공백)이 없어야 합니다. 접두사는 서버에서 메시지의 진정한 출처를 나타내는 데 사용됩니다. 
+   메시지에서 접두사가 누락된 경우 수신된 연결에서 시작된 것으로 간주됩니다. 클라이언트는 자신으로부터 메시지를 보낼 때 접두사를 사용해서는 안 됩니다. 
+   접두사를 사용하는 경우 유일한 유효한 접두사는 클라이언트와 연결된 등록된 닉네임입니다. 
+   접두사로 식별된 소스를 서버의 내부 데이터베이스에서 찾을 수 없거나 소스가 메시지가 도착한 링크와 다른 링크에서 등록된 경우 서버는 메시지를 자동으로 무시해야 합니다.
+
+   명령은 유효한 IRC 명령이거나 ASCII 텍스트로 표시되는 3자리 숫자여야 합니다.
+
+   IRC 메시지는 항상 CR-LF(Carriage Return - Line Feed) 쌍으로 끝나는 문자 행이며 이러한 메시지는 후행 CR-LF를 포함한 모든 문자를 포함하여 길이가 512자를 초과할 수 없습니다. 
+   따라서 명령 및 해당 매개변수에 허용되는 최대 문자 수는 510자입니다. 연속 메시지 라인에 대한 조항은 없습니다. 현재 구현에 대한 자세한 내용은 섹션 7을 참조하십시오.
+
+2.3.1 Message format in 'pseudo' BNF
+
+    프로토콜 메시지는 인접한 옥텟 스트림에서 추출해야 합니다. 현재 솔루션은 CR 및 LF의 두 문자를 메시지 구분 기호로 지정하는 것입니다. 
+    빈 메시지는 자동으로 무시되므로 추가 문제 없이 메시지 간에 시퀀스 CR-LF를 사용할 수 있습니다.
+
+    추출된 메시지는 <prefix>, <command> 구성 요소 및 <middle> 또는 <trailing> 구성 요소와 일치하는 매개 변수 목록으로 구문 분석됩니다.
+
+    이에 대한 BNF 표현은 다음과 같습니다.
+
+
+<message>  ::= [':' <prefix> <SPACE> ] <command> <params> <crlf>
+<prefix>   ::= <servername> | <nick> [ '!' <user> ] [ '@' <host> ]
+<command>  ::= <letter> { <letter> } | <number> <number> <number>
+<SPACE>    ::= ' ' { ' ' }
+<params>   ::= <SPACE> [ ':' <trailing> | <middle> <params> ]
+<middle>   ::= <Any *non-empty* sequence of octets not including SPACE
+               or NUL or CR or LF, the first of which may not be ':'>
+<trailing> ::= <Any, possibly *empty*, sequence of octets not including
+                 NUL or CR or LF>
+<crlf>     ::= CR LF
+
+NOTES:
+
+  1)    <SPACE>는 SPACE 문자(0x20)로만 구성됩니다.
+        특히 TABULATION 및 기타 모든 제어 문자는 NON-WHITE-SPACE로 간주됩니다.
+
+  2)    매개변수 목록을 추출한 후 <middle> 또는 <trailing>과 일치하는지 여부에 관계없이 모든 매개변수는 동일합니다.
+         <Trailing>은 매개변수 내에서 SPACE를 허용하는 구문 트릭일 뿐입니다.
+
+  3)    CR 및 LF가 매개변수 문자열에 나타날 수 없다는 사실은 메시지 프레이밍의 인공물일 뿐입니다. 나중에 변경될 수 있습니다.
+
+  4)    NUL 문자는 메시지 프레이밍에서 특별하지 않으며 기본적으로 매개변수 내부로 끝날 수 있지만 일반적인 C 문자열 처리에서 추가 복잡성을 유발할 수 있습니다. 
+        따라서 NUL은 메시지 내에서 허용되지 않습니다.
+
+  5)    마지막 매개변수는 빈 문자열일 수 있습니다.
+
+  6)    확장된 접두사(['!' <user> ] ['@' <host> ])의 사용은 서버 간 통신에 사용해서는 안 되며 클라이언트에게 보다 유용한 정보를 제공하기 위해 서버 간 메시지에만 사용됩니다. 
+        추가 쿼리 없이 메시지의 발신자에 대해
+
+   대부분의 프로토콜 메시지는 목록에서 위치에 따라 지정된 추출된 매개변수 문자열에 대한 추가 의미와 구문을 지정합니다.
+   예를 들어, 많은 서버 명령은 명령 뒤의 첫 번째 매개변수가 대상 목록이라고 가정하며 다음과 같이 설명할 수 있습니다.
+
+   <target>     ::= <to> [ "," <target> ]
+   <to>         ::= <channel> | <user> '@' <servername> | <nick> | <mask>
+   <channel>    ::= ('#' | '&') <chstring>
+   <servername> ::= <host>
+   <host>       ::= see RFC 952 [DNS:4] for details on allowed hostnames
+   <nick>       ::= <letter> { <letter> | <number> | <special> }
+   <mask>       ::= ('#' | '$') <chstring>
+   <chstring>   ::= <any 8bit code except SPACE, BELL, NUL, CR, LF and
+                     comma (',')>
+
+   Other parameter syntaxes are:
+
+   <user>       ::= <nonwhite> { <nonwhite> }
+   <letter>     ::= 'a' ... 'z' | 'A' ... 'Z'
+   <number>     ::= '0' ... '9'
+   <special>    ::= '-' | '[' | ']' | '\' | '`' | '^' | '{' | '}'
+   <nonwhite>   ::= <any 8bit code except SPACE (0x20), NUL (0x0), CR (0xd), and LF (0xa)>
+
+2.4 Numeric replies
+
+  서버로 보낸 대부분의 메시지는 일종의 응답을 생성합니다. 가장 일반적인 응답은 오류 및 일반 응답 모두에 사용되는 숫자 응답입니다. 
+  숫자 회신은 발신자 접두사, 3자리 숫자 및 회신 대상으로 구성된 하나의 메시지로 보내야 합니다.
+  클라이언트에서 오는 숫자 응답은 허용되지 않습니다. 서버에서 수신한 이러한 메시지는 모두 자동으로 삭제됩니다. 
+  다른 모든 측면에서 숫자 응답은 키워드가 문자열이 아닌 3자리 숫자로 구성된다는 점을 제외하고는 일반 메시지와 같습니다. 다양한 답변 목록은 섹션 6에 나와 있습니다.
+
+3. IRC Concepts.
+
+   이 섹션은 IRC 프로토콜의 조직 뒤에 있는 실제 개념과 현재 구현이 다른 클래스의 메시지를 전달하는 방법을 설명하는 데 전념합니다.
+
+
+
+                          1--\
+                              A        D---4
+                          2--/ \      /
+                                B----C
+                               /      \
+                              3        E
+
+   Servers: A, B, C, D, E         Clients: 1, 2, 3, 4
+
+                    [ Fig. 2. Sample small IRC network ]
+
+3.1 One-to-one communication
+
+   대부분의 서버-서버 트래픽은 서버가 서로만 통신한 결과가 아니기 때문에 일대일 통신은 일반적으로 클라이언트에서만 수행됩니다. 
+   클라이언트가 서로 통신할 수 있는 안전한 수단을 제공하려면 모든 서버가 클라이언트에 도달하기 위해 스패닝 트리를 따라 정확히 한 방향으로 메시지를 보낼 수 있어야 합니다. 
+   전달되는 메시지의 경로는 스패닝 트리의 두 지점 사이의 최단 경로입니다.
+
+    다음 예는 모두 위의 그림 2를 참조합니다.
+
+Example 1:
+     클라이언트 1과 2 사이의 메시지는 서버 A에서만 볼 수 있으며 클라이언트 2로 바로 보냅니다.
+
+Example 2:
+     클라이언트 1과 3 사이의 메시지는 서버 A & B와 클라이언트 3에서 볼 수 있습니다. 다른 클라이언트나 서버는 메시지를 볼 수 없습니다.
+
+Example 3:
+    클라이언트 2와 4 사이의 메시지는 서버 A, B, C 및 D와 클라이언트 4에서만 볼 수 있습니다.
+
+3.2 One-to-many
+
+   IRC의 주요 목표는 쉽고 효율적인 회의(일대다 대화)를 가능하게 하는 포럼을 제공하는 것입니다. IRC는 이를 달성하기 위한 여러 가지 수단을 제공하며, 각각은 고유한 목적을 제공합니다.
+
+3.2.1 To a list
+
+   일대다 대화의 가장 비효율적인 스타일은 클라이언트가 사용자 '목록'과 대화하는 것입니다. 이 작업이 수행되는 방법은 거의 설명할 수 없습니다. 
+   클라이언트는 메시지가 배달될 대상 목록을 제공하고 서버는 이를 분할하고 지정된 각 대상에 별도의 메시지 사본을 발송합니다. 
+   대상 목록이 분할되고 중복이 각 경로로 전송되지 않는지 확인하지 않고 디스패치가 전송되기 때문에 이것은 그룹을 사용하는 것만큼 효율적이지 않습니다.
+
+3.2.2 To a group (channel)
+
+   IRC에서 채널은 멀티캐스트 그룹과 동일한 역할을 합니다. 
+   그들의 존재는 동적이며(사람들이 채널에 가입하고 나갈 때 들어오고 나가는) 채널에서 수행되는 실제 대화는 지정된 채널의 사용자를 지원하는 서버에만 전송됩니다. 
+   동일한 채널의 서버에 여러 사용자가 있는 경우 메시지 텍스트는 해당 서버에 한 번만 전송된 다음 채널의 각 클라이언트에 전송됩니다. 
+   그런 다음 원본 메시지가 팬아웃되어 채널의 각 구성원에 도달할 때까지 각 클라이언트-서버 조합에 대해 이 작업이 반복됩니다.
+
+   다음 예는 모두 그림 2를 참조합니다.
+
+Example 4:
+    클라이언트가 1개인 모든 채널. 채널에 대한 메시지는 서버로 이동한 다음 다른 곳으로 이동하지 않습니다.
+
+Example 5:
+     채널에 2명의 클라이언트가 있습니다. 모든 메시지는 채널 외부의 두 클라이언트 사이의 개인 메시지인 것처럼 경로를 통과합니다.
+
+Example 6:
+     채널의 클라이언트 1, 2 및 3. 채널에 대한 모든 메시지는 모든 클라이언트와 단일 클라이언트에 대한 개인 메시지인 경우 메시지가 통과해야 하는 서버에만 전송됩니다. 
+     클라이언트 1이 메시지를 보내면 클라이언트 2로 돌아간 다음 서버 B를 통해 클라이언트 3으로 돌아갑니다.
+
+3.2.3 To a host/server mask
+
+   IRC 운영자에게 많은 관련 사용자에게 메시지를 보내는 메커니즘을 제공하기 위해 호스트 및 서버 마스크 메시지가 제공됩니다. 
+   이러한 메시지는 호스트 또는 서버 정보가 마스크의 정보와 일치하는 사용자에게 전송됩니다. 메시지는 채널과 유사한 방식으로 사용자가 있는 위치에만 전송됩니다.
+
+3.3 One-to-all
+
+   일대다 메시지 유형은 모든 클라이언트나 서버 또는 둘 다에 전송되는 브로드캐스트 메시지로 더 잘 설명됩니다. 
+   사용자와 서버로 구성된 대규모 네트워크에서 단일 메시지로 인해 원하는 모든 대상에 도달하기 위해 네트워크를 통해 많은 트래픽이 전송될 수 있습니다.
+
+    일부 메시지의 경우 각 서버가 보유한 상태 정보가 서버 간에 합리적으로 일치하도록 모든 서버에 브로드캐스트하는 것 외에는 옵션이 없습니다.
+
+3.3.1 Client-to-Client
+
+   단일 메시지에서 다른 모든 클라이언트로 메시지가 전송되는 메시지 클래스는 없습니다.
+
+3.3.2 Client-to-Server
+
+   상태 정보(예: 채널 멤버십, 채널 모드, 사용자 상태 등)를 변경하는 대부분의 명령은 기본적으로 모든 서버에 전송되어야 하며 이 배포는 클라이언트에 의해 변경되지 않을 수 있습니다.
+
+3.3.3 Server-to-Server.
+
+   서버 간의 대부분의 메시지는 모든 '기타' 서버에 배포되지만 이는 사용자, 채널 또는 서버에 영향을 미치는 모든 메시지에만 필요합니다. 
+   이것들은 IRC에서 찾을 수 있는 기본 항목이기 때문에 서버에서 발생하는 거의 모든 메시지는 연결된 다른 모든 서버로 브로드캐스트됩니다.
+
+4. Message details
+
+   다음 페이지에는 IRC 서버와 클라이언트가 인식하는 각 메시지에 대한 설명이 있습니다. 이 섹션에 설명된 모든 명령은 이 프로토콜에 대한 모든 서버에서 구현해야 합니다.
+
+   응답 ERR_NOSUCHSERVER가 나열되는 경우 <server> 매개변수를 찾을 수 없음을 의미합니다. 서버는 해당 명령에 대해 이후에 다른 응답을 보내지 않아야 합니다.
+
+   클라이언트가 연결된 서버는 전체 메시지를 구문 분석하여 적절한 오류를 반환해야 합니다. 
+   서버가 메시지를 구문 분석하는 동안 치명적인 오류가 발생하면 오류를 클라이언트에 다시 전송하고 구문 분석을 종료해야 합니다. 
+   치명적인 오류는 잘못된 명령, 서버에 알려지지 않은 대상(이 범주에 맞는 서버, 닉네임 또는 채널 이름), 매개변수가 충분하지 않거나 잘못된 권한으로 간주될 수 있습니다.
+
+   전체 매개변수 세트가 표시되면 각각의 유효성을 확인하고 적절한 응답을 클라이언트로 다시 보내야 합니다. 
+   항목 구분자로 쉼표를 사용하여 매개변수 목록을 사용하는 메시지의 경우 각 항목에 대해 회신을 보내야 합니다.
+
+   아래 예에서 일부 메시지는 전체 형식을 사용하여 나타납니다.
+
+   :Name COMMAND parameter list
+
+   이러한 예는 서버 간에 전송되는 "이름"의 메시지를 나타내며, 원격 서버가 올바른 경로를 따라 회신을 다시 보낼 수 있도록 메시지의 원래 보낸 사람의 이름을 포함하는 것이 필수적입니다.
+
+4.1 Connection Registration
+
+   여기에 설명된 명령은 IRC 서버와의 연결을 사용자 또는 서버로 등록하고 올바르게 연결을 끊는 데 사용됩니다.
+
+    "PASS" 명령은 클라이언트 또는 서버 연결을 등록하는 데 필요하지 않지만 NICK/USER 조합의 서버 메시지 또는 후자보다 먼저 와야 합니다. 
+    실제 연결에 일정 수준의 보안을 제공하기 위해 모든 서버 연결에 암호가 있는 것이 좋습니다. 클라이언트에 권장되는 등록 순서는 다음과 같습니다.
+
+           1. Pass message
+           2. Nick message
+           3. User message
+
+4.1.1 Password message
+
+
+      Command: PASS
+   Parameters: <password>
+
+   PASS 명령은 '연결 암호'를 설정하는 데 사용됩니다. 
+   연결 등록을 시도하기 전에 암호를 설정할 수 있고 설정해야 합니다.
+   현재 이것은 클라이언트가 NICK/USER 조합을 보내기 전에 PASS 명령을 보내야 하고 서버가 *반드시* SERVER 명령보다 먼저 PASS 명령을 보내야 합니다.
+   제공된 비밀번호는 C/N 라인(서버의 경우) 또는 I 라인(클라이언트의 경우)에 포함된 비밀번호와 일치해야 합니다. 
+   등록하기 전에 여러 개의 PASS 명령을 보낼 수 있지만 마지막으로 보낸 명령만 확인에 사용되며 한 번 등록하면 변경할 수 없습니다.
+
+   Numeric Replies:
+
+           ERR_NEEDMOREPARAMS              ERR_ALREADYREGISTRED
+
+   Example:
+
+           PASS secretpasswordhere
+
+4.1.2 Nick message
+
+      Command: NICK
+   Parameters: <nickname> [ <hopcount> ]
+
+   NICK 메시지는 사용자에게 닉네임을 부여하거나 이전 닉네임을 변경하는 데 사용됩니다. 
+   <hopcount> 매개변수는 닉이 홈 서버에서 얼마나 멀리 떨어져 있는지를 나타내기 위해 서버에서만 사용됩니다. 로컬 연결의 hopcount는 0입니다. 클라이언트에서 제공하는 경우 무시해야 합니다.
+
+    다른 클라이언트의 동일한 닉네임을 이미 알고 있는 서버에 NICK 메시지가 도착하면 닉네임 충돌이 발생합니다. 
+    닉네임 충돌의 결과로 닉네임의 모든 인스턴스가 서버의 데이터베이스에서 제거되고 KILL 명령이 실행되어 다른 모든 서버의 데이터베이스에서 닉네임을 제거합니다. 
+    충돌을 일으키는 NICK 메시지가 닉네임 변경인 경우 원래(이전) 닉도 제거해야 합니다.
+
+    서버가 직접 연결된 클라이언트로부터 동일한 NICK를 수신하는 경우 로컬 클라이언트에 ERR_NICKCOLLISION을 발행하고 NICK 명령을 삭제하고 킬을 생성하지 않을 수 있습니다.
+
+   Numeric Replies:
+
+           ERR_NONICKNAMEGIVEN             ERR_ERRONEUSNICKNAME
+           ERR_NICKNAMEINUSE               ERR_NICKCOLLISION
+
+   Example:
+
+   NICK Wiz                        ; 새로운 닉네임 "위즈"를 소개합니다.
+
+   :WiZ NICK Kilroy                ; WiZ는 닉네임을 킬로이로 변경했습니다.
+
+4.1.3 User message
+
+      Command: USER
+   Parameters: <username> <hostname> <servername> <realname>
+
+   USER 메시지는 연결 시작 시 새 사용자의 사용자 이름, 호스트 이름, 서버 이름 및 실제 이름을 지정하는 데 사용됩니다. 
+   USER와 NICK가 모두 클라이언트로부터 수신된 후에야 사용자가 등록되기 때문에 IRC에 도착하는 새 사용자를 나타내기 위해 서버 간의 통신에도 사용됩니다.
+
+   서버 간에 USER는 클라이언트의 NICKname 접두사를 사용해야 합니다.
+   호스트 이름과 서버 이름은 USER 명령이 보안상의 이유로 직접 연결된 클라이언트에서 오는 경우 일반적으로 IRC 서버에서 무시되지만 서버 간 통신에 사용됩니다. 
+   이것은 새로운 사용자가 네트워크의 나머지 부분에 소개될 때 수반되는 USER가 전송되기 전에 NICK가 항상 원격 서버로 전송되어야 함을 의미합니다.
+
+   realname 매개변수는 공백 문자를 포함할 수 있고 콜론(':')을 접두어로 붙여 인식되도록 하기 때문에 마지막 매개변수여야 합니다.
+
+   클라이언트가 USER 메시지에만 의존하여 사용자 이름을 속이기 쉽기 때문에 "Identity Server"를 사용하는 것이 좋습니다. 
+   사용자가 연결하는 호스트에 이러한 서버가 활성화되어 있으면 사용자 이름이 Identity Server의 응답에서와 같이 설정됩니다.
+
+   Numeric Replies:
+
+           ERR_NEEDMOREPARAMS              ERR_ALREADYREGISTRED
+
+   Examples:
+
+
+   USER guest tolmoon tolsun :Ronnie Reagan
+
+                                   ; "guest"라는 사용자 이름과 실명 "Ronnie Reagan"으로 자신을 등록하는 사용자.
+
+
+   :testnick USER guest tolmoon tolsun :Ronnie Reagan
+                                   ; USER 명령이 속한 닉네임이 있는 서버 간의 메시지
+
+4.1.4 Server message
+
+      Command: SERVER
+   Parameters: <servername> <hopcount> <info>
+
+   서버 메시지는 새 연결의 다른 쪽 끝이 서버임을 서버에 알리는 데 사용됩니다. 이 메시지는 또한 전체 네트워크를 통해 서버 데이터를 전달하는 데 사용됩니다. 
+   새로운 서버가 net에 연결되면 해당 정보가 전체 네트워크에 브로드캐스트됩니다. 
+   <hopcount>는 모든 서버가 얼마나 멀리 떨어져 있는지에 대한 내부 정보를 모든 서버에 제공하는 데 사용됩니다.
+   전체 서버 목록을 사용하면 전체 서버 트리의 맵을 구성할 수 있지만 호스트 마스크는 이 작업을 수행하지 못하게 합니다.
+
+   SERVER 메시지는 (a) 아직 등록되지 않고 서버로 등록을 시도하는 연결 또는 (b) 다른 서버에 대한 기존 연결(이 경우 SERVER 메시지가 새로운 그 서버 뒤에 있는 서버.
+
+   SERVER 명령을 수신할 때 발생하는 대부분의 오류는 대상 호스트(대상 SERVER)에 의해 연결이 종료되는 결과를 낳습니다. 
+   오류 응답은 일반적으로 숫자가 아닌 "ERROR" 명령을 사용하여 전송됩니다. ERROR 명령에는 여기에서 유용하게 사용할 수 있는 몇 가지 유용한 속성이 있기 때문입니다.
+
+   SERVER 메시지가 구문 분석되고 수신 서버에 이미 알려진 서버를 도입하려고 시도하는 경우 해당 메시지의 연결을 닫아야 합니다(올바른 절차에 따라). 
+   서버에 대한 중복 경로가 형성되고 비순환 특성 IRC 트리가 깨졌습니다.
+
+   Numeric Replies:
+
+           ERR_ALREADYREGISTRED
+
+   Example:
+
+SERVER test.oulu.fi 1 :[tolsun.oulu.fi] Experimental server
+                                ; 새로운 서버 test.oulu.fi가 자신을 소개하고 등록을 시도합니다. []의 이름은 test.oulu.fi를 실행하는 호스트의 호스트 이름입니다.
+
+
+:tolsun.oulu.fi SERVER csd.bu.edu 5 :BU Central Server
+                                ; 서버 tolsun.oulu.fi는 5홉 거리에 있는 csd.bu.edu에 대한 업링크입니다.
+
+4.1.5 Oper
+
+      Command: OPER
+   Parameters: <user> <password>
+
+   OPER 메시지는 일반 사용자가 운영자 권한을 얻기 위해 사용합니다.
+    운영자 권한을 얻으려면 <user>와 <password>의 조합이 필요합니다.
+
+    OPER 명령을 보내는 클라이언트가 주어진 사용자에 대한 올바른 암호를 제공하면 서버는 클라이언트 닉네임에 "MODE +o"를 발행하여 나머지 네트워크에 새 운영자를 알립니다.
+
+    OPER 메시지는 클라이언트-서버 전용입니다.
+   Numeric Replies:
+
+           ERR_NEEDMOREPARAMS              RPL_YOUREOPER
+           ERR_NOOPERHOST                  ERR_PASSWDMISMATCH
+
+   Example:
+
+   OPER foo bar                    ; 사용자 이름 "foo" 및 "bar"를 암호로 사용하여 운영자 등록을 시도합니다.
+
+4.1.6 Quit
+
+      Command: QUIT
+   Parameters: [<Quit message>]
+
+   클라이언트 세션은 종료 메시지와 함께 종료됩니다. 서버는 QUIT 메시지를 보내는 클라이언트에 대한 연결을 닫아야 합니다. 
+   "Quit Message"가 주어지면 이것은 기본 메시지인 닉네임 대신에 보내질 것입니다.
+
+    netsplit(두 서버의 연결 끊김)이 발생하면 종료 메시지는 공백으로 구분된 두 서버의 이름으로 구성됩니다. 
+    첫 번째 이름은 아직 연결되어 있는 서버의 이름이고 두 번째 이름은 연결이 끊긴 서버의 이름입니다.
+
+    어떤 다른 이유로 클라이언트가 QUIT 명령을 내리지 않고 클라이언트 연결이 닫히면(예: 클라이언트가 죽고 소켓에서 EOF가 발생함), 
+    서버는 종료 메시지를 메시지의 특성을 반영하는 일종의 메시지로 채워야 합니다. 하게 만든 사건.
+
+   Numeric Replies:
+
+           None.
+
+   Examples:
+
+   QUIT :Gone to have lunch        ; 선호하는 메시지 형식.
+
+4.1.7 Server quit message
+
+      Command: SQUIT
+   Parameters: <server> <comment>
+
+   SQUIT 메시지는 종료 또는 죽은 서버에 대해 알려야 합니다.
+   서버가 다른 서버와의 연결을 끊고자 한다면 다른 서버의 이름을 서버 매개변수로 사용하여 SQUIT 메시지를 다른 서버에 보내야 하며, 그러면 종료하는 서버와의 연결이 닫힙니다.
+
+   이 명령은 IRC 서버 네트워크를 질서 있는 방식으로 연결하는 데 도움이 되는 운영자도 사용할 수 있습니다. 운영자는 원격 서버 연결에 대해 SQUIT 메시지를 발행할 수도 있습니다.
+   이 경우 SQUIT는 운영자와 원격 서버 사이의 각 서버에서 구문 분석되어야 하며, 아래 설명된 대로 각 서버가 보유한 네트워크 보기를 업데이트해야 합니다.
+
+   <comment>는 원격 서버(현재 있는 서버에 연결되지 않은)에 대해 SQUIT를 실행하는 모든 운영자가 제공해야 다른 운영자가 이 작업의 이유를 알 수 있습니다. 
+   <comment>는 또한 여기에 오류 또는 유사한 메시지를 배치할 수 있는 서버에 의해 채워집니다.
+
+   닫혀 있는 연결의 양쪽에 있는 두 서버 모두 해당 링크 뒤에 있는 것으로 간주되는 다른 모든 서버에 대해 SQUIT 메시지(다른 모든 서버 연결로)를 보내야 합니다.
+
+   마찬가지로 QUIT 메시지는 해당 링크 뒤에 있는 모든 클라이언트를 대신하여 네트워크의 나머지 연결된 다른 서버로 보내져야 합니다. 
+   또한 분할로 인해 회원을 잃은 채널의 모든 채널 회원은 QUIT 메시지를 보내야 합니다.
+
+   서버 연결이 조기에 종료된 경우(예: 링크의 다른 쪽 끝에 있는 서버가 사망한 경우), 이 연결 해제를 감지한 서버는 연결이 종료되었음을 나머지 네트워크에 알리고 주석 필드를 적절한 것으로 채워야 합니다.
+   Numeric replies:
+
+           ERR_NOPRIVILEGES                ERR_NOSUCHSERVER
+
+   Example:
+
+   SQUIT tolsun.oulu.fi :Bad Link ? ; "Bad Link"로 인해 서버 링크 tolson.oulu.fi가 종료되었습니다.
+
+   :Trillian SQUIT cm22.eng.umd.edu :Server out of control
+                                    ; "서버가 통제 불능"이기 때문에 네트워크에서 "cm22.eng.umd.edu"를 연결 해제하라는 Trillian의 메시지.
+
+4.2 Channel operations
+
+    이 메시지 그룹은 채널, 속성(채널 모드) 및 콘텐츠(일반적으로 클라이언트) 조작과 관련됩니다.
+    이를 구현하는 데 있어 네트워크의 반대쪽 끝에 있는 클라이언트가 궁극적으로 충돌할 명령을 보낼 때 여러 경쟁 조건이 불가피합니다. 
+    또한 <nick> 매개변수가 제공되는 곳마다 서버가 최근에 변경된 경우 이력을 확인하도록 서버가 닉네임 기록을 유지해야 합니다.
+
+4.2.1 Join message
+
+      Command: JOIN
+   Parameters: <channel>{,<channel>} [<key>{,<key>}]
+
+   JOIN 명령은 클라이언트가 특정 채널 수신을 시작하는 데 사용됩니다. 클라이언트가 채널에 참여할 수 있는지 여부는 클라이언트가 연결된 서버에서만 확인됩니다. 
+   다른 모든 서버는 다른 서버에서 수신되면 자동으로 사용자를 채널에 추가합니다. 이에 영향을 미치는 조건은 다음과 같습니다.
+
+            1. 채널이 초대 전용인 경우 사용자를 초대해야 합니다.
+
+            2. 사용자의 닉네임/사용자 이름/호스트 이름은 활성 차단과 일치하지 않아야 합니다.
+
+            3. 설정된 경우 올바른 키(비밀번호)를 제공해야 합니다.
+   이는 MODE 명령에서 더 자세히 설명됩니다(자세한 내용은 섹션 4.2.3 참조).
+
+    사용자가 채널에 가입하면 채널에 영향을 주는 서버가 받는 모든 명령에 대한 알림을 받습니다. 여기에는 MODE, KICK, PART, QUIT 및 물론 PRIVMSG/NOTICE가 포함됩니다. 
+    JOIN 명령은 각 서버가 채널에 있는 사용자를 찾을 위치를 알 수 있도록 모든 서버에 브로드캐스트해야 합니다. 이를 통해 PRIVMSG/NOTICE 메시지를 채널에 최적으로 전달할 수 있습니다.
+
+    JOIN이 성공하면 사용자에게 채널의 주제(RPL_TOPIC 사용)와 채널에 있는 사용자 목록(RPL_NAMREPLY 사용)이 전송되며 여기에는 참여하는 사용자가 포함되어야 합니다.
+   Numeric Replies:
+
+           ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
+           ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
+           ERR_CHANNELISFULL               ERR_BADCHANMASK
+           ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
+           RPL_TOPIC
+
+   Examples:
+
+   JOIN #foobar                    ; 채널 #foober에 가입하세요.
+
+   JOIN &foo fubar                 ; 키 "fubar"를 사용하여 채널 &foo에 가입하십시오.
+
+   JOIN #foo,&bar fubar            ; 키 "fubar"를 사용하여 채널 #foo에 참여하고 키를 사용하지 않고 &bar에 참여하십시오.
+
+   JOIN #foo,#bar fubar,foobar     ; 키 "fubar"를 사용하여 채널 #foo에 가입하세요. "foobar" 키를 사용하여 채널 #bar.
+
+   JOIN #foo,#bar                  ; 채널 #foo 및 #bar에 가입하세요.
+
+   :WiZ JOIN #Twilight_zone        ; WiZ의 JOIN 메시지
+
+4.2.2 Part message
+
+      Command: PART
+   Parameters: <channel>{,<channel>}
+
+   PART 메시지는 메시지를 보내는 클라이언트가 매개변수 문자열에 나열된 모든 주어진 채널에 대한 활성 사용자 목록에서 제거되도록 합니다.
+
+   Numeric Replies:
+
+           ERR_NEEDMOREPARAMS              ERR_NOSUCHCHANNEL
+           ERR_NOTONCHANNEL
+
+   Examples:
+
+   PART #twilight_zone             ; 채널 "#twilight_zone" 나가기
+
+   PART #oz-ops,&group5            ; 두 채널 "&group5" 및 "#oz-ops"를 그대로 두십시오.
+
+4.2.3 Mode message
+
+      Command: MODE
+ MODE 명령은 IRC의 이중 목적 명령입니다. 사용자 이름과 채널 모두 모드를 변경할 수 있습니다. 이 선택의 근거는 언젠가는 별명이 더 이상 사용되지 않고 동등한 속성이 채널이 되기 때문입니다.
+
+    MODE 메시지를 구문 분석할 때 전체 메시지를 먼저 구문 분석한 다음 결과 변경 사항을 전달하는 것이 좋습니다.
+
+4.2.3.1 Channel modes
+
+   Parameters: <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>]
+               [<ban mask>]
+
+   MODE 명령은 채널 운영자가 '자신의' 채널의 특성을 변경할 수 있도록 제공됩니다. 또한 채널 운영자를 생성할 수 있도록 서버가 채널 모드를 변경할 수 있어야 합니다.
+
+    채널에 사용할 수 있는 다양한 모드는 다음과 같습니다.
+
+            o - 채널 운영자 권한 부여/받기
+            p - 개인 채널 플래그;
+            s - 비밀 채널 플래그.
+            i - 초대 전용 채널 플래그
+            t - 채널 운영자 전용 플래그로 토픽 설정 가능.
+            n - 외부의 클라이언트에서 채널로 보내는 메시지가 없습니다.
+            m - 중재된 채널;
+            l - 사용자 제한을 채널로 설정합니다.
+            b - 사용자를 차단하기 위해 금지 마스크를 설정합니다.
+            v - 중재된 채널에서 말할 수 있는 능력을 부여/수락합니다.
+            k - 채널 키(암호)를 설정합니다.
+
+    'o' 및 'b' 옵션을 사용할 때 모드 명령당 총 3개로 제한됩니다. 즉, 'o'와
+
+4.2.3.2 User modes
+
+   Parameters: <nickname> {[+|-]|i|w|s|o}
+
+   사용자 모드는 일반적으로 다른 사람이 클라이언트를 보는 방식이나 클라이언트가 보내는 '추가' 메시지에 영향을 주는 변경 사항입니다.
+    사용자 MODE 명령은 메시지의 발신자와 매개변수로 주어진 닉네임이 모두 동일한 경우에만 허용될 수 있습니다.
+
+    사용 가능한 모드는 다음과 같습니다.
+
+            i - 사용자를 보이지 않는 것으로 표시합니다.
+            s - 서버 알림 수신을 위해 사용자를 표시합니다.
+            w - 사용자가 wallops를 수신합니다.
+            o - 연산자 플래그.
+
+    추가 모드는 나중에 사용할 수 있습니다.
+
+    사용자가 "+o" 플래그를 사용하여 자신을 연산자로 만들려고 하면 시도를 무시해야 합니다. 그러나 자신을 '데핑'하는 사람("-o" 사용)에는 제한이 없습니다. 
+    
+    숫자 답장:
+
+           ERR_NEEDMOREPARAMS              RPL_CHANNELMODEIS
+           ERR_CHANOPRIVSNEEDED            ERR_NOSUCHNICK
+           ERR_NOTONCHANNEL                ERR_KEYSET
+           RPL_BANLIST                     RPL_ENDOFBANLIST
+           ERR_UNKNOWNMODE                 ERR_NOSUCHCHANNEL
+
+           ERR_USERSDONTMATCH              RPL_UMODEIS
+           ERR_UMODEUNKNOWNFLAG
+
+   Examples:
+
+           Use of Channel Modes:
+
+MODE #Finnish +im               ; #Finnish 채널을 '초대 전용'으로 설정합니다.
+
+MODE #Finnish +o Kilroy         ; 채널 #Finnish에서 Kilroy에게 'chanop' 권한을 부여합니다.
+
+MODE #Finnish +v Wiz            ; WiZ가 #Finnish로 말할 수 있도록 허용하세요.
+
+MODE #Fins -s                   ; 채널 #Fins에서 '비밀' 플래그를 제거합니다.
+
+MODE #42 +k oulu                ; 채널 키를 "oulu"로 설정합니다.
+
+MODE #eu-opers +l 10            ; 채널의 사용자 수 제한을 10으로 설정합니다.
+
+MODE &oulu +b                   ; 채널에 대해 설정된 금지 마스크를 나열합니다.
+
+MODE &oulu +b *!*@*             ; 모든 사용자가 가입하지 못하도록 합니다.
+
+MODE &oulu +b *!*@*.edu         ; *.edu와 일치하는 호스트 이름의 모든 사용자가 참여하지 못하도록 합니다.
+
+        Use of user Modes:
+
+:MODE WiZ -w                    ; turns reception of WALLOPS messages off for WiZ.
+
+:Angel MODE Angel +i            ; Message from Angel to make themselves invisible.
+
+MODE WiZ -o                     ; WiZ '중단'(운영자 상태 제거). 이 명령의 역순("MODE WiZ +o")은 OPERA 명령을 무시하므로 사용자가 허용해서는 안 됩니다.
+
+4.2.4 Topic message
+
+      Command: TOPIC
+   Parameters: <channel> [<topic>]
+
+   TOPIC 메시지는 채널의 주제를 변경하거나 보기 위해 사용됩니다.
+    <topic>이 제공되지 않으면 <channel> 채널에 대한 주제가 반환됩니다.
+    <topic> 매개변수가 있는 경우 채널 모드에서 이 작업을 허용하는 경우 해당 채널의 주제가 변경됩니다.
+
+   Numeric Replies:
+
+           ERR_NEEDMOREPARAMS              ERR_NOTONCHANNEL
+           RPL_NOTOPIC                     RPL_TOPIC
+           ERR_CHANOPRIVSNEEDED
+
+   Examples:
+
+   :Wiz TOPIC #test :New topic     ;사용자 Wiz가 주제를 설정합니다.
+
+   TOPIC #test :another topic      ;#test의 주제를 "다른 주제"로 설정하십시오.
+
+   TOPIC #test                     ; #test 주제를 확인하세요.
+
+4.2.5 Names message
+
+      Command: NAMES
+   Parameters: [<channel>{,<channel>}]
+
+   NAMES 명령을 사용하여 사용자는 볼 수 있는 모든 채널에서 볼 수 있는 모든 닉네임을 나열할 수 있습니다. 
+   그들이 볼 수 있는 채널 이름은 비공개(+p) 또는 비밀(+s)이 아니거나 실제로 켜져 있는 채널 이름입니다. <channel> 매개변수는 유효한 경우 정보를 반환할 채널을 지정합니다.
+    잘못된 채널 이름에 대한 오류 응답은 없습니다.
+
+    <channel> 매개변수가 제공되지 않으면 모든 채널과 해당 점유자의 목록이 반환됩니다. 
+    이 목록의 끝에 표시되지만 채널에 없거나 표시되는 채널에 없는 사용자 목록은 '채널' "*"에 있는 것으로 나열됩니다.
+
+   Numerics:
+
+           RPL_NAMREPLY                    RPL_ENDOFNAMES
+
+   Examples:
+
+   NAMES #twilight_zone,#42        ; 채널이 표시되는 경우 #twilight_zone 및 #42에 표시되는 사용자를 나열합니다.
+
+   NAMES                           ; 표시되는 모든 채널 및 사용자 나열
+
+4.2.6 List message
+
+      Command: LIST
+   Parameters: [<channel>{,<channel>} [<server>]]
+
+   LIST 메시지는 채널과 해당 주제를 나열하는 데 사용됩니다. <channel> 매개변수를 사용하면 해당 채널의 상태만 표시됩니다. 
+   쿼리를 생성하는 클라이언트가 실제로 해당 채널에 있지 않는 한 비공개 채널은 주제 없이 채널 "Prv"로 나열됩니다. 
+   마찬가지로 비밀 채널은 클라이언트가 해당 채널의 구성원이 아닌 한 전혀 나열되지 않습니다.
+
+   Numeric Replies:
+
+           ERR_NOSUCHSERVER                RPL_LISTSTART
+           RPL_LIST                        RPL_LISTEND
+
+   Examples:
+
+   LIST                            ; 모든 채널을 나열합니다.
+
+   LIST #twilight_zone,#42         ; 채널 #twilight_zone 및 #42 나열
+
+4.2.7 Invite message
+
+      Command: INVITE
+   Parameters: <nickname> <channel>
+
+   INVITE 메시지는 사용자를 채널에 초대하는 데 사용됩니다. <nickname> 매개변수는 대상 채널 <channel>에 초대할 사람의 별명입니다. 
+   대상 사용자를 초대하는 채널이 존재하거나 유효한 채널이어야 한다는 요구 사항은 없습니다. 
+   초대 전용(MODE+i)인 채널에 사용자를 초대하려면 초대를 보내는 클라이언트가 해당 채널의 채널 운영자로 인식되어야 합니다.
+
+   Numeric Replies:
+
+           ERR_NEEDMOREPARAMS              ERR_NOSUCHNICK
+           ERR_NOTONCHANNEL                ERR_USERONCHANNEL
+           ERR_CHANOPRIVSNEEDED
+           RPL_INVITING                    RPL_AWAY
+
+   Examples:
+
+   :Angel INVITE Wiz #Dust         ; 사용자 Angel이 WiZ를 채널 #Dust에 초대합니다.
+
+   INVITE Wiz #Twilight_Zone       ; WiZ를 #Twilight_zone에 초대하는 명령
+
+4.2.8 Kick command
+
+      Command: KICK
+   Parameters: <channel> <user> [<comment>]
+
+   KICK 명령은 채널에서 사용자를 강제로 제거하는 데 사용할 수 있습니다. 채널에서 '추방'합니다(강제 부분).
+
+   채널 운영자만이 다른 사용자를 채널에서 추방할 수 있습니다.
+    KICK 메시지를 수신한 각 서버는 채널에서 희생자를 제거하기 전에 유효한지(즉, 보낸 사람이 실제로 채널 운영자인지) 확인합니다.
+
+   Numeric Replies:
+
+           ERR_NEEDMOREPARAMS              ERR_NOSUCHCHANNEL
+           ERR_BADCHANMASK                 ERR_CHANOPRIVSNEEDED
+           ERR_NOTONCHANNEL
+
+   Examples:
+
+KICK &Melbourne Matthew         ; &Melbourne의 킥 매튜
+
+KICK #Finnish John :Speaking English
+                                ; "영어 말하기"를 이유(댓글)로 사용하여 #Finnish에서 John을 걷어차십시오.
+
+:WiZ KICK #Finnish John         ; 채널 #Finnish에서 John을 제거하라는 WiZ의 KICK 메시지
+
+NOTE:
+     KICK 명령 매개변수를 다음으로 확장할 수 있습니다.
+
+<channel>{,<channel>} <user>{,<user>} [<comment>]
+
+4.3 Server queries and commands
+
+   서버 쿼리 명령 그룹은 네트워크에 연결된 모든 서버에 대한 정보를 반환하도록 설계되었습니다. 연결된 모든 서버는 이러한 쿼리에 응답하고 올바르게 응답해야 합니다. 
+   유효하지 않은 응답(또는 응답이 없는 경우)은 서버 고장의 표시로 간주되어야 하며 상황이 해결될 때까지 가능한 한 빨리 연결을 끊거나 비활성화해야 합니다.
+
+    이러한 쿼리에서 매개변수가 "<server>"로 표시되는 경우 일반적으로 닉네임이나 서버 또는 일종의 와일드카드 이름이 될 수 있음을 의미합니다. 
+    그러나 각 매개변수에 대해 하나의 쿼리와 응답 세트만 생성됩니다.
+
+
+3.4.1 Motd message         // 2812
+
+      Command: MOTD
+   Parameters: [ <target> ]
+
+   MOTD 명령은 주어진 서버 또는 <target>이 생략된 경우 현재 서버의 "오늘의 메시지"를 가져오는 데 사용됩니다.
+
+   <target> 매개변수에는 와일드카드가 허용됩니다.
+
+   Numeric Replies:
+           RPL_MOTDSTART                   RPL_MOTD
+           RPL_ENDOFMOTD                   ERR_NOMOTD
+
+3.4.2 Lusers message       // 2812
+
+      Command: LUSERS
+   Parameters: [ <mask> [ <target> ] ]
+
+   The LUSERS command is used to get statistics about the size of the IRC network.
+   If no parameter is given, the reply will be about the whole net.
+   If a <mask> is specified, then the reply will only concern the part of the network formed by the servers matching the mask.
+   Finally, if the <target> parameter is specified, the request is forwarded to that server which will generate the reply.
+
+   Wildcards are allowed in the <target> parameter.
+
+   Numeric Replies:
+
+           RPL_LUSERCLIENT                 RPL_LUSEROP
+           RPL_LUSERUNKOWN                 RPL_LUSERCHANNELS
+           RPL_LUSERME                     ERR_NOSUCHSERVER
+
+
+4.3.1 Version message
+
+      Command: VERSION
+   Parameters: [<server>]
+
+   VERSION 메시지는 서버 프로그램의 버전을 조회하는 데 사용됩니다. 선택적 매개변수 <server>는 클라이언트가 직접 연결되지 않은 서버 프로그램의 버전을 조회하는 데 사용됩니다.
+
+   Numeric Replies:
+
+           ERR_NOSUCHSERVER                RPL_VERSION
+
+   Examples:
+
+   :Wiz VERSION *.se               ; "*.se"와 일치하는 서버의 버전을 확인하라는 Wiz의 메시지
+
+   VERSION tolsun.oulu.fi          ; "tolsun.oulu.fi" 서버의 버전을 확인하십시오.
+
+4.3.2 Stats message
+
+      Command: STATS
+   Parameters: [<query> [<server>]]
+
+  stats 메시지는 특정 서버의 통계를 조회하는 데 사용됩니다. <server> 매개변수가 생략되면 통계 응답의 끝 부분만 다시 전송됩니다. 
+  이 명령의 구현은 응답하는 서버에 크게 의존하지만 서버는 아래(또는 유사한) 쿼리에 설명된 대로 정보를 제공할 수 있어야 합니다.
+
+   쿼리는 대상 서버(<server> 매개변수로 제공되는 경우)에서만 확인되는 단일 문자로 제공될 수 있으며, 그렇지 않으면 무시되고 변경되지 않은 상태에서 중간 서버에 의해 전달됩니다.
+   다음 쿼리는 현재 IRC 구현에서 찾을 수 있는 쿼리이며 해당 서버에 대한 설정 정보의 많은 부분을 제공합니다. 
+   다른 버전에서 동일한 방식으로 지원되지 않을 수 있지만 모든 서버는 현재 사용되는 응답 형식 및 쿼리 목적과 일치하는 STATS 쿼리에 유효한 응답을 제공할 수 있어야 합니다.
+
+   현재 지원되는 쿼리는 다음과 같습니다.
+
+           c - 서버가 연결하거나 연결을 허용할 수 있는 서버 목록을 반환합니다.
+           h - 강제로 리프로 처리되거나 허브로 작동하도록 허용되는 서버 목록을 반환합니다.
+           i - 서버에서 클라이언트가 연결할 수 있는 호스트 목록을 반환합니다.
+           k - 해당 서버에 대해 금지된 사용자 이름/호스트 이름 조합 목록을 반환합니다.
+           l - 각 연결이 설정된 시간과 해당 연결을 통한 트래픽(바이트 및 각 방향에 대한 메시지)을 보여주는 서버 연결 목록을 반환합니다.
+           m - 사용 횟수가 0이 아닌 경우 서버에서 지원하는 명령 목록과 각각에 대한 사용 횟수를 반환합니다.
+           o - 일반 클라이언트가 운영자가 될 수 있는 호스트 목록을 반환합니다.
+           y - 서버의 구성 파일에서 Y(클래스) 행을 표시합니다.
+           u - 서버가 가동된 시간을 보여주는 문자열을 반환합니다.
+
+   Numeric Replies:
+
+           ERR_NOSUCHSERVER
+           RPL_STATSCLINE                  RPL_STATSNLINE
+           RPL_STATSILINE                  RPL_STATSKLINE
+           RPL_STATSQLINE                  RPL_STATSLLINE
+           RPL_STATSLINKINFO               RPL_STATSUPTIME
+           RPL_STATSCOMMANDS               RPL_STATSOLINE
+           RPL_STATSHLINE                  RPL_ENDOFSTATS
+
+   Examples:
+
+STATS m                         ; 연결된 서버의 명령어 사용법 확인
+
+:Wiz STATS c eff.org            ; 서버 eff.org의 C/N 회선 정보에 대한 WiZ의 요청
+
+4.3.3 Links message
+
+      Command: LINKS
+   Parameters: [[<remote server>] <server mask>]
+
+   LINKS를 사용하여 사용자는 쿼리에 응답하는 서버가 알고 있는 모든 서버를 나열할 수 있습니다. 반환된 서버 목록은 마스크와 일치해야 하며, 마스크가 제공되지 않으면 전체 목록이 반환됩니다.
+
+    <server mask>와 함께 <remote server>가 제공되면 LINKS 명령은 해당 이름(있는 경우)과 일치하는 첫 번째 서버로 전달되고 해당 서버는 쿼리에 응답해야 합니다.
+
+   Numeric Replies:
+
+           ERR_NOSUCHSERVER
+           RPL_LINKS                       RPL_ENDOFLINKS
+
+   Examples:
+
+LINKS *.au                      ; *.au와 일치하는 이름을 가진 모든 서버를 나열합니다.
+
+:WiZ LINKS *.bu.edu *.edu       ; *.bu.edu와 일치하는 서버 목록은 WiZ에서 *.edu와 일치하는 첫 번째 서버로의 LINKS 메시지입니다.
+
+4.3.4 Time message
+
+      Command: TIME
+   Parameters: [<server>]
+
+   TIME 메시지는 지정된 서버에서 현지 시간을 쿼리하는 데 사용됩니다. server 매개변수를 지정하지 않으면 명령을 처리하는 서버가 쿼리에 응답해야 합니다.
+
+   Numeric Replies:
+
+           ERR_NOSUCHSERVER                RPL_TIME
+
+   Examples:
+
+   TIME tolsun.oulu.fi             ; "tolson.oulu.fi" 서버의 시간을 확인하십시오.
+
+   Angel TIME *.au                 ; "*.au"와 일치하는 서버의 시간을 확인하는 user angel
+
+4.3.5 Connect message
+
+      Command: CONNECT
+   Parameters: <target server> [<port> [<remote server>]]
+
+   CONNECT 명령을 사용하여 서버가 다른 서버에 즉시 새 연결을 설정하도록 강제할 수 있습니다. CONNECT는 권한 있는 명령이며 IRC 운영자만 사용할 수 있습니다. 
+   원격 서버가 제공되면 해당 서버에서 <대상 서버> 및 <포트>로 CONNECT를 시도합니다.
+
+   Numeric Replies:
+
+           ERR_NOSUCHSERVER                ERR_NOPRIVILEGES
+           ERR_NEEDMOREPARAMS
+
+   Examples:
+
+CONNECT tolsun.oulu.fi          ; tolsun.oulu.fi에 서버 연결 시도
+
+
+:WiZ CONNECT eff.org 6667 csd.bu.edu
+                                ; CONNECT는 WiZ가 eff.org 및 csd.bu.edu 서버를 포트 6667에 연결하도록 시도합니다.
+
+4.3.6 Trace message
+
+      Command: TRACE
+   Parameters: [<server>]
+
+   TRACE 명령은 특정 서버에 대한 경로를 찾는 데 사용됩니다. 
+   이 메시지를 처리하는 각 서버는 "traceroute"를 사용하여 얻은 것과 유사한 응답 체인을 형성하여 통과 링크임을 나타내는 응답을 보내 보낸 사람에게 알려야 합니다. 
+   이 응답을 다시 보낸 후 지정된 서버에 도달할 때까지 다음 서버로 TRACE 메시지를 보내야 합니다. 
+   <server> 매개변수가 생략된 경우 TRACE 명령은 현재 서버가 직접 연결되어 있는 서버를 알려주는 메시지를 보낸 사람에게 보내는 것이 좋습니다.
+
+    "<server>"가 지정한 대상이 실제 서버인 경우 대상 서버는 연결된 모든 서버와 사용자를 보고해야 하지만 운영자만 사용자가 있는 것을 볼 수 있습니다. 
+    <server>가 지정한 목적지가 닉네임이면 해당 닉네임에 대한 응답만 제공됩니다.
+    숫자 답장:
+
+           ERR_NOSUCHSERVER
+
+   TRACE 메시지가 다른 서버를 대상으로 하는 경우 모든 중간 서버는 RPL_TRACELINK 응답을 반환하여 TRACE가 자신을 통과했으며 다음으로 이동할 위치를 표시해야 합니다.
+
+           RPL_TRACELINK
+
+   TRACE 회신은 다음 숫자 회신으로 구성될 수 있습니다.
+
+           RPL_TRACECONNECTING             RPL_TRACEHANDSHAKE
+           RPL_TRACEUNKNOWN                RPL_TRACEOPERATOR
+           RPL_TRACEUSER                   RPL_TRACESERVER
+           RPL_TRACESERVICE                RPL_TRACENEWTYPE
+           RPL_TRACECLASS
+
+   Examples:
+
+TRACE *.oulu.fi                 ; *.oulu.fi와 일치하는 서버로 추적
+
+:WiZ TRACE AngelDust            ; AngelDust를 닉하기 위해 WiZ에서 발행한 TRACE
+
+4.3.7 Admin command
+
+      Command: ADMIN
+   Parameters: [<server>]
+
+   admin 메시지는 주어진 서버 또는 <server> 매개변수가 생략된 경우 현재 서버의 관리자 이름을 찾는 데 사용됩니다. 각 서버에는 ADMIN 메시지를 다른 서버로 전달할 수 있는 기능이 있어야 합니다.
+
+   Numeric Replies:
+
+           ERR_NOSUCHSERVER
+           RPL_ADMINME                     RPL_ADMINLOC1
+           RPL_ADMINLOC2                   RPL_ADMINEMAIL
+
+   Examples:
+
+   ADMIN tolsun.oulu.fi            ; tolsun.oulu.fi에서 ADMIN 응답 요청
+
+   :WiZ ADMIN *.edu                ; *.edu와 일치하는 첫 번째 서버에 대한 WiZ의 ADMIN 요청.
+
+4.3.8 Info command
+
+      Command: INFO
+   Parameters: [<server>]
+
+   INFO 명령은 서버를 설명하는 정보를 반환하는 데 필요합니다. 서버의 버전, 컴파일된 시기, 패치 수준, 시작된 시기 및 기타 관련 있다고 간주될 수 있는 기타 정보입니다.
+
+   Numeric Replies:
+
+           ERR_NOSUCHSERVER
+           RPL_INFO                        RPL_ENDOFINFO
+
+   Examples:
+
+   INFO csd.bu.edu                 ; csd.bu.edu에서 정보 회신 요청
+
+   :Avalon INFO *.fi               ; *.fi와 일치하는 첫 번째 서버에 대한 Avalon의 정보 요청.
+
+   INFO Angel                      ; Angel이 연결된 서버에서 정보를 요청합니다.
+
+4.4 Sending messages
+
+   IRC 프로토콜의 주요 목적은 클라이언트가 서로 통신할 수 있는 기반을 제공하는 것입니다. 
+   PRIVMSG와 NOTICE는 실제로 한 클라이언트에서 다른 클라이언트로 문자 메시지 전달을 수행하는 유일한 메시지입니다.
+
+4.4.1 Private messages
+
+      Command: PRIVMSG
+   Parameters: <receiver>{,<receiver>} <text to be sent>
+
+   PRIVMSG는 사용자 간에 개인 메시지를 보내는 데 사용됩니다. <receiver>는 메시지 수신자의 닉네임입니다. <receiver>는 쉼표로 구분된 이름 또는 채널 목록일 수도 있습니다.
+
+    <receiver> 매개변수는 호스트 마스크(#mask) 또는 서버 마스크($mask)일 수도 있습니다. 
+    두 경우 모두 서버는 마스크와 일치하는 서버 또는 호스트가 있는 사용자에게만 PRIVMSG를 보냅니다. 
+    마스크에는 최소 1(하나) "."이 있어야 합니다. 
+    마지막 "." 뒤에 와일드카드가 없습니다. 
+    이 요구 사항은 모든 사용자에게 브로드캐스트되는 "#*" 또는 "$*"에 메시지를 보내는 것을 방지하기 위해 존재합니다. 
+    경험에 따르면 이것은 책임감 있고 적절하게 사용되는 것보다 더 많이 남용됩니다.
+    와일드카드는 '*' 및 '?' 문자. PRIVMSG 명령에 대한 이 확장은 운영자만 사용할 수 있습니다.
+
+   Numeric Replies:
+
+           ERR_NORECIPIENT                 ERR_NOTEXTTOSEND
+           ERR_CANNOTSENDTOCHAN            ERR_NOTOPLEVEL
+           ERR_WILDTOPLEVEL                ERR_TOOMANYTARGETS
+           ERR_NOSUCHNICK
+           RPL_AWAY
+
+   Examples:
+
+:Angel PRIVMSG Wiz :Hello are you receiving this message ?
+                                ; Angel이 Wiz에게 보내는 메시지.
+
+PRIVMSG Angel :yes I'm receiving it !receiving it !'u>(768u+1n) .br
+                                ; 엔젤에게 보내는 메시지.
+
+PRIVMSG jto@tolsun.oulu.fi :Hello !
+                                ; 사용자 이름이 "jto"인 서버 tolsun.oulu.fi의 클라이언트에 대한 메시지입니다.
+
+PRIVMSG $*.fi :Server tolsun.oulu.fi rebooting.
+                                ; 이름이 *.fi와 일치하는 서버의 모든 사람에게 보내는 메시지입니다.
+
+PRIVMSG #*.edu :NSFNet is undergoing work, expect interruptions
+                                ; 이름이 *.edu와 일치하는 호스트에서 온 모든 사용자에게 보내는 메시지입니다.
+
+4.4.2 Notice
+
+      Command: NOTICE
+   Parameters: <nickname> <text>
+
+   NOTICE 메시지는 PRIVMSG와 유사하게 사용됩니다. NOTICE와 PRIVMSG의 차이점은 NOTICE 메시지에 대한 응답으로 자동 회신을 보내서는 안 된다는 것입니다.
+   이 규칙은 서버에도 적용됩니다. 서버는 통지를 받는 즉시 클라이언트에 오류 응답을 보내서는 안 됩니다. 
+   이 규칙의 목적은 클라이언트가 수신한 것에 대한 응답으로 자동으로 무언가를 보내는 사이의 루프를 방지하는 것입니다. 
+   이것은 일반적으로 자동 장치(자신의 작업을 제어하는 AI 또는 기타 대화형 프로그램이 있는 클라이언트)가 사용하며, 다른 자동 장치와 루프에 빠지지 않도록 항상 응답하는 것으로 보입니다.
+
+    회신 및 예에 대한 자세한 내용은 PRIVMSG를 참조하세요.
+
+4.5 User based queries
+
+   사용자 쿼리는 주로 특정 사용자 또는 그룹 사용자에 대한 세부 정보를 찾는 것과 관련된 명령 그룹입니다.
+   이러한 명령에 와일드카드를 사용할 때 일치하는 경우 '표시되는' 사용자에 대한 정보만 반환합니다. 
+   사용자의 가시성은 사용자 모드와 둘 다 사용 중인 공통 채널 세트의 조합으로 결정됩니다.
+
+4.5.1 Who query
+
+      Command: WHO
+   Parameters: [<name> [<o>]]
+
+   WHO 메시지는 클라이언트가 제공한 <name> 매개변수와 '일치'하는 정보 목록을 반환하는 쿼리를 생성하기 위해 클라이언트가 사용합니다. 
+   <name> 매개변수가 없으면 보이지 않는(사용자 모드 +i) 표시되는 모든 사용자와 요청하는 클라이언트와 공통 채널이 없는 사용자가 나열됩니다.
+   "0"의 <name> 또는 가능한 모든 항목과 일치하는 와일드카드를 사용하여 동일한 결과를 얻을 수 있습니다.
+
+    WHO에 전달된 <name>은 채널 <name>을 찾을 수 없는 경우 사용자의 호스트, 서버, 실명 및 닉네임과 일치합니다.
+
+    "o" 매개변수가 전달되면 제공된 이름 마스크에 따라 연산자만 반환됩니다.
+
+   Numeric Replies:
+
+           ERR_NOSUCHSERVER
+           RPL_WHOREPLY                    RPL_ENDOFWHO
+
+   Examples:
+
+   WHO *.fi                        ; List all users who match against "*.fi".
+
+   WHO jto* o                      ; 연산자인 경우 "jto*"와 일치하는 모든 사용자를 나열합니다.
+
+4.5.2 Whois query
+
+      Command: WHOIS
+   Parameters: [<server>] <nickmask>[,<nickmask>[,...]]
+
+    이 메시지는 특정 사용자에 대한 정보를 조회하는 데 사용됩니다. 
+    서버는 닉마스크와 일치하는 각 사용자의 다른 상태를 나타내는 여러 숫자 메시지로 이 메시지에 응답합니다(사용자가 볼 수 있는 권한이 있는 경우). 
+    <nickmask>에 와일드카드가 없으면 볼 수 있는 해당 닉네임에 대한 모든 정보가 표시됩니다. 쉼표(',')로 구분된 닉네임 목록을 제공할 수 있습니다.
+
+    후자 버전은 쿼리를 특정 서버로 보냅니다. 
+    로컬 서버(즉, 사용자가 직접 연결되어 있는 서버)만 해당 정보를 알고 나머지는 전역적으로 알고 있기 때문에 해당 사용자가 얼마나 오랫동안 유휴 상태인지 알고 싶을 때 유용합니다.
+
+   Numeric Replies:
+
+           ERR_NOSUCHSERVER                ERR_NONICKNAMEGIVEN
+           RPL_WHOISUSER                   RPL_WHOISCHANNELS
+           RPL_WHOISCHANNELS               RPL_WHOISSERVER
+           RPL_AWAY                        RPL_WHOISOPERATOR
+           RPL_WHOISIDLE                   ERR_NOSUCHNICK
+           RPL_ENDOFWHOIS
+
+
+   Examples:
+
+   WHOIS wiz                       ; nick WiZ에 대한 사용 가능한 사용자 정보 반환
+
+   WHOIS eff.org trillian          ; 서버 eff.org에 trillian에 대한 사용자 정보를 요청하십시오.
+
+4.5.3 Whowas
+
+      Command: WHOWAS
+   Parameters: <nickname> [<count> [<server>]]
+
+    Whowa는 더 이상 존재하지 않는 닉네임에 대한 정보를 요청합니다.
+    이것은 닉네임 변경 또는 사용자가 IRC를 떠나기 때문일 수 있습니다.
+    이 쿼리에 대한 응답으로 서버는 닉네임 기록을 검색하여 어휘적으로 동일한 닉을 찾습니다(여기에서는 와일드 카드가 일치하지 않음). 
+    히스토리를 역방향으로 검색하여 가장 최근 항목을 먼저 반환합니다. 
+    항목이 여러 개인 경우 최대 <count>개의 응답이 반환됩니다(또는 <count> 매개변수가 지정되지 않은 경우 모든 응답). 
+    양수가 아닌 숫자가 <count>로 전달되면 전체 검색이 수행됩니다.
+
+   Numeric Replies:
+
+           ERR_NONICKNAMEGIVEN             ERR_WASNOSUCHNICK
+           RPL_WHOWASUSER                  RPL_WHOISSERVER
+           RPL_ENDOFWHOWAS
+
+   Examples:
+
+   WHOWAS Wiz                      ; 닉 "WiZ"에 대한 닉 기록의 모든 정보를 반환합니다.
+
+   WHOWAS Mermaid 9                ; 인어에 대한 닉네임 기록의 가장 최근 항목 9개를 반환합니다.";
+
+   WHOWAS Trillian 1 *.edu         ; "*.edu"와 일치하는 것으로 발견된 첫 번째 서버에서 "Trillian"에 대한 가장 최근 기록을 반환합니다.
+
+4.6 Miscellaneous messages
+
+   이 범주의 메시지는 위의 범주에 속하지 않지만 그럼에도 불구하고 여전히 프로토콜의 일부이며 프로토콜에서 필요합니다.
+
+4.6.1 Kill message
+
+      Command: KILL
+   Parameters: <nickname> <comment>
+
+   KILL 메시지는 실제 연결이 있는 서버에 의해 클라이언트-서버 연결이 닫히도록 하는 데 사용됩니다.
+   KILL은 유효한 별명 목록에서 중복 항목이 발견될 때 서버에서 사용되며 두 항목을 모두 제거하는 데 사용됩니다. 운영자도 사용할 수 있습니다.
+
+   자동 재연결 알고리즘이 있는 클라이언트는 연결 해제가 짧기 때문에 이 명령을 효과적으로 쓸모 없게 만듭니다. 
+   그러나 그것은 데이터의 흐름을 깨뜨리고 많은 양의 남용을 막는 데 사용할 수 있습니다. 
+   모든 사용자는 다른 사람들이 문제가 될 부분을 '감시'하기 위해 생성된 KILL 메시지를 수신하도록 선택할 수 있습니다.
+
+   닉네임은 항상 전역적으로 고유해야 하는 분야에서 '중복'이 감지될 때마다(즉, 동일한 닉네임으로 두 명의 사용자를 등록하려는 시도) KILL 메시지가 전송됩니다. 1 다시 나타납니다.
+
+   제공된 설명은 KILL의 실제 이유를 반영해야 합니다. 서버 생성 KILL의 경우 일반적으로 충돌하는 두 닉네임의 출처에 관한 세부 정보로 구성됩니다. 
+   그것을 보는 다른 사람들을 만족시킬 적절한 이유를 제공하는 것은 사용자에게 달려 있습니다. 
+   KILLer의 식별을 숨기기 위해 가짜 KILL이 생성되는 것을 방지/단절하기 위해 주석은 경로 앞에 이름을 추가하여 전달하는 각 서버에 의해 업데이트되는 'kill-path'도 표시합니다.
+
+   Numeric Replies:
+
+           ERR_NOPRIVILEGES                ERR_NEEDMOREPARAMS
+           ERR_NOSUCHNICK                  ERR_CANTKILLSERVER
+
+
+   KILL David (csd.bu.edu <- tolsun.oulu.fi)
+                                   ; csd.bu.edu와 tolson.oulu.fi 간의 닉네임 충돌
+
+
+   NOTE:
+   운영자만 KILL 메시지로 다른 사용자를 죽일 수 있도록 허용하는 것이 좋습니다. 이상적인 세계에서는 운영자도 이 작업을 수행할 필요가 없으며 서버에서 처리해야 합니다.
+
+4.6.2 Ping message
+
+      Command: PING
+   Parameters: <server1> [<server2>]
+
+   PING 메시지는 연결의 다른 쪽 끝에서 활성 클라이언트의 존재를 테스트하는 데 사용됩니다.
+   연결에서 오는 다른 활동이 감지되지 않으면 PING 메시지가 정기적으로 전송됩니다. 연결이 설정된 시간 내에 PING 명령에 응답하지 않으면 해당 연결이 닫힙니다.
+
+    PING 메시지를 받는 모든 클라이언트는 <server1>(PING 메시지를 보낸 서버)에 가능한 한 빨리 적절한 PONG 메시지로 응답하여 여전히 존재하고 살아 있음을 나타내야 합니다.
+    서버는 PING 명령에 응답하지 않아야 하지만 연결이 활성 상태임을 나타내기 위해 연결의 다른 쪽 끝에서 온 PING에 의존해야 합니다.
+    <server2> 매개변수가 지정되면 PING 메시지가 그곳으로 전달됩니다.
+
+   Numeric Replies:
+
+           ERR_NOORIGIN                    ERR_NOSUCHSERVER
+
+   Examples:
+
+   PING tolsun.oulu.fi             ; 서버가 아직 살아 있음을 나타내기 위해 다른 서버에 PING 메시지를 보냅니다.
+
+   PING WiZ                        ; Nick WiZ에게 PING 메시지 전송 중
+
+4.6.3 Pong message
+
+      Command: PONG
+   Parameters: <daemon> [<daemon2>]
+
+   PONG 메시지는 ping 메시지에 대한 응답입니다. 매개변수 <daemon2>가 주어지면 이 메시지는 주어진 데몬으로 전달되어야 합니다. 
+   <daemon> 매개변수는 PING 메시지에 응답하고 이 메시지를 생성한 데몬의 이름입니다.
+
+   Numeric Replies:
+
+           ERR_NOORIGIN                    ERR_NOSUCHSERVER
+
+   Examples:
+
+   PONG csd.bu.edu tolsun.oulu.fi  ; csd.bu.edu에서 tolsun.oulu.fi로의 PONG 메시지
+
+4.6.4 Error
+
+      Command: ERROR
+   Parameters: <error message>
+
+    ERROR 명령은 서버에서 운영자에게 심각하거나 치명적인 오류를 보고할 때 사용합니다. 또한 한 서버에서 다른 서버로 보낼 수 있지만 일반적인 알 수 없는 클라이언트에서 수락해서는 안 됩니다.
+
+    ERROR 메시지는 서버 간 링크에서만 발생하는 오류를 보고하는 데 사용됩니다. ERROR 메시지는 다른 쪽 끝에 있는 서버(연결된 모든 운영자에게 전송)와 현재 연결된 모든 운영자에게 전송됩니다.
+    서버에서 받은 경우 서버에 의해 다른 서버로 전달되지 않습니다.
+
+    서버가 수신된 ERROR 메시지를 운영자에게 보낼 때 메시지는 NOTICE 메시지 안에 캡슐화되어 클라이언트가 오류에 대한 책임이 없음을 표시해야 합니다.
+
+   Numerics:
+
+           None.
+
+   Examples:
+
+   ERROR :Server *.fi already exists
+   ; 이 오류를 일으킨 다른 서버에 ERROR 메시지를 보냅니다.
+
+   NOTICE WiZ :ERROR from csd.bu.edu -- Server *.fi already exists
+                                   ; 위와 같은 ERROR 메시지를 다른 서버의 WiZ 사용자에게 보낸다.
+
+5. OPTIONALS
+
+   이 섹션에서는 OPTIONAL 메시지에 대해 설명합니다. 여기에 설명된 프로토콜의 작업 서버 구현에는 필요하지 않습니다. 
+   옵션이 없으면 오류 응답 메시지가 생성되거나 알 수 없는 명령 오류가 생성되어야 합니다. 
+   메시지가 다른 서버가 응답할 예정인 경우 전달되어야 합니다(기본 구문 분석 필요) 이에 대해 할당된 숫자는 아래 메시지와 함께 나열됩니다.
+
+5.1 Away
+
+      Command: AWAY
+   Parameters: [message]
+
+    AWAY 메시지를 사용하여 클라이언트는 자신에게 향하는 모든 PRIVMSG 명령에 대해 자동 응답 문자열을 설정할 수 있습니다(현재 있는 채널이 아님).
+    자동 응답은 서버에서 PRIVMSG 명령을 보내는 클라이언트로 보냅니다. 유일한 응답 서버는 보내는 클라이언트가 연결된 서버입니다.
+
+   AWAY 메시지는 하나의 매개변수(AWAY 메시지를 설정하기 위해) 또는 매개변수 없이(AWAY 메시지를 제거하기 위해) 사용됩니다.
+
+   Numeric Replies:
+
+           RPL_UNAWAY                      RPL_NOWAWAY
+
+   Examples:
+
+   AWAY :Gone to lunch.  Back in 5 ; set away message to "Gone to lunch.
+                                   Back in 5".
+
+   :WiZ AWAY                       ; unmark WiZ as being away.
+
+
+5.2 Rehash message
+
+      Command: REHASH
+   Parameters: None
+
+   운영자는 재해시 메시지를 사용하여 서버가 구성 파일을 다시 읽고 처리하도록 할 수 있습니다.
+
+   Numeric Replies:
+
+        RPL_REHASHING                   ERR_NOPRIVILEGES
+
+Examples:
+
+REHASH                          ; 운영자 상태를 가진 클라이언트에서 서버로 구성 파일을 다시 읽도록 요청하는 메시지.
+
+5.3 Restart message
+
+      Command: RESTART
+   Parameters: None
+
+    다시 시작 메시지는 운영자만 서버를 강제로 다시 시작하는 데 사용할 수 있습니다. 
+    이 메시지는 임의의 사람들이 운영자로 서버에 연결하고 이 명령을 실행하여 (최소한) 서비스 중단을 유발할 수 있는 위험으로 간주될 수 있으므로 선택 사항입니다.
+
+    RESTART 명령은 항상 보내는 클라이언트가 연결된 서버에서 완전히 처리되어야 하며 연결된 다른 서버로 전달되지 않아야 합니다.
+
+   Numeric Replies:
+
+           ERR_NOPRIVILEGES
+
+   Examples:
+
+   RESTART                         ; no parameters required.
+
+5.4 Summon message
+
+      Command: SUMMON
+   Parameters: <user> [<server>]
+
+   SUMMON 명령을 사용하여 IRC 서버를 실행하는 호스트에 있는 사용자에게 IRC에 가입하라는 메시지를 보낼 수 있습니다. 
+   이 메시지는 대상 서버가 (a) SUMMON이 활성화되어 있고, (b) 사용자가 로그인되어 있고, (c) 서버 프로세스가 사용자의 tty(또는 이와 유사한 것)에 쓸 수 있는 경우에만 전송됩니다.
+
+    <server> 매개변수를 지정하지 않으면 클라이언트가 연결된 서버에서 <user>를 호출하려고 시도하는 것으로 가정합니다.
+
+    서버에서 소환이 활성화되지 않은 경우 ERR_SUMMONDISABLED 숫자를 반환하고 소환 메시지를 전달해야 합니다.
+
+   Numeric Replies:
+
+           ERR_NORECIPIENT                 ERR_FILEERROR
+           ERR_NOLOGIN                     ERR_NOSUCHSERVER
+           RPL_SUMMONING
+
+   Examples:
+
+   SUMMON jto                      ; 서버 호스트에서 사용자 jto 호출
+
+   SUMMON jto tolsun.oulu.fi       ; "tolsun.oulu.fi"라는 서버가 실행 중인 호스트에서 사용자 jto를 호출합니다.
+
+
+5.5 Users
+
+      Command: USERS
+   Parameters: [<server>]
+
+   USERS 명령은 who(1), rusers(1) 및 finger(1)와 유사한 형식으로 서버에 로그인한 사용자 목록을 반환합니다. 
+   일부 사람들은 보안 관련 이유로 서버에서 이 명령을 비활성화할 수 있습니다. 비활성화된 경우 이를 나타내기 위해 올바른 숫자가 반환되어야 합니다.
+
+   Numeric Replies:
+
+           ERR_NOSUCHSERVER                ERR_FILEERROR
+           RPL_USERSSTART                  RPL_USERS
+           RPL_NOUSERS                     RPL_ENDOFUSERS
+           ERR_USERSDISABLED
+
+   Disabled Reply:
+
+           ERR_USERSDISABLED
+
+   Examples:
+
+USERS eff.org                   ; eff.org 서버에 로그인한 사용자 목록 요청
+
+:John USERS tolsun.oulu.fi      ; tolsun.oulu.fi 서버에 로그인한 사용자 목록에 대한 John의 요청
+
+5.6 Operwall message
+
+      Command: WALLOPS
+   Parameters: Text to be sent to all operators currently online
+
+   현재 온라인 상태인 모든 교환원에게 메시지를 보냅니다. 
+   WALLOPS를 사용자 명령으로 구현한 후 많은 사람들에게 메시지를 보내는 수단(WALL과 매우 유사)으로 자주 그리고 일반적으로 남용되는 것으로 나타났습니다. 
+   이 때문에 WALLOPS의 발신자로 서버만 허용하고 인식하여 WALLOPS의 현재 구현을 예로 사용하는 것이 좋습니다.
+
+   Numeric Replies:
+
+           ERR_NEEDMOREPARAMS
+
+   Examples:
+
+   :csd.bu.edu WALLOPS :Connect '*.uiuc.edu 6667' from Joshua; csd.bu.edu의 WALLOPS 메시지는 Joshua로부터 수신 및 조치된 CONNECT 메시지를 발표합니다.
+
+
+
+
+5.7 Userhost message
+
+      Command: USERHOST
+   Parameters: <nickname>{<space><nickname>}
+
+   USERHOST 명령은 각각 공백 문자로 구분된 최대 5개의 닉네임 목록을 가져와서 찾은 각 닉네임에 대한 정보 목록을 리턴합니다. 반환된 목록에는 공백으로 구분된 각 응답이 있습니다.
+
+   Numeric Replies:
+
+           RPL_USERHOST                    ERR_NEEDMOREPARAMS
+
+   Examples:
+
+   USERHOST Wiz Michael Marty p    ;USERHOST는 "Wiz", "Michael", "Marty" 및 "p"라는 별명에 대한 정보를 요청합니다.
+
+5.8 Ison message
+
+      Command: ISON
+   Parameters: <nickname>{<space><nickname>}
+
+   ISON 명령은 주어진 닉네임이 현재 IRC에 있는지 여부에 대한 응답을 얻을 수 있는 빠르고 효율적인 수단을 제공하기 위해 구현되었습니다. 
+   ISON은 공백으로 구분된 닉네임 목록인 하나의 매개변수만 사용합니다. 존재하는 목록의 각 닉네임에 대해 서버는 해당 닉네임을 응답 문자열에 추가합니다. 
+   따라서 응답 문자열은 비어 있음(주어진 닉네임이 없음), 매개변수 문자열의 정확한 사본(모두 있음) 또는 매개변수에 제공된 닉네 집합의 다른 하위 집합으로 반환할 수 있습니다. 
+   확인할 수 있는 닉 수에 대한 유일한 제한은 결합된 길이가 512자에 맞도록 서버에서 잘릴 정도로 너무 커서는 안 된다는 것입니다.
+
+    ISON은 명령을 보내는 클라이언트의 로컬 서버에서만 처리되므로 추가 처리를 위해 다른 서버로 전달되지 않습니다.
+
+   Numeric Replies:
+
+           RPL_ISON                ERR_NEEDMOREPARAMS
+
+   Examples:
+
+   ISON phone trillian WiZ jarlek Avalon Angel Monstah
+                                   ; 7개의 닉에 대한 샘플 ISON 요청.
+
+
+
+
+
+6. REPLIES
+
+   다음은 위에 주어진 명령에 대한 응답으로 생성된 숫자 응답 목록입니다. 각 숫자는 해당 번호, 이름 및 응답 문자열과 함께 제공됩니다.
+
+6.1 Error Replies.
+
+        401     ERR_NOSUCHNICK
+                        "<nickname> :No such nick/channel"
+
+                - 명령에 제공된 별명 매개변수가 현재 사용되지 않음을 표시하는 데 사용됩니다.
+
+        402     ERR_NOSUCHSERVER
+                        "<server name> :No such server"
+
+                - 현재 주어진 서버 이름이 존재하지 않음을 나타내는 데 사용됩니다.
+
+        403     ERR_NOSUCHCHANNEL
+                        "<channel name> :No such channel"
+
+                - 주어진 채널 이름이 유효하지 않음을 나타내는 데 사용됩니다.
+
+        404     ERR_CANNOTSENDTOCHAN
+                        "<channel name> :Cannot send to channel"
+
+                - (a) 모드 +n인 채널에 있지 않거나 (b) 모드 +m이 설정된 채널의 chanop(또는 모드 +v)이 아니고 PRIVMSG 메시지를 보내려는 사용자에게 전송됩니다. 그 채널.
+
+        405     ERR_TOOMANYCHANNELS
+                        "<channel name> :You have joined too many channels"
+
+                - 사용자가 허용된 최대 채널 수에 가입하고 다른 채널에 가입하려고 할 때 사용자에게 전송됩니다.
+
+        406     ERR_WASNOSUCHNICK
+                        "<nickname> :There was no such nickname"
+
+                - 해당 닉네임에 대한 기록 정보가 없음을 나타내기 위해 WHOWAS에서 반환했습니다.
+
+        407     ERR_TOOMANYTARGETS
+                        "<target> :Duplicate recipients. No message delivered"
+
+                - user@host 대상 형식을 사용하여 PRIVMSG/NOTICE를 보내려는 클라이언트와 여러 번 발생하는 user@host에 대해 반환됩니다.
+
+        409     ERR_NOORIGIN
+                        ":No origin specified"
+
+                - 이러한 명령은 유효한 접두사 없이 작동해야 하기 때문에 필요한 발신자 매개변수가 누락된 PING 또는 PONG 메시지입니다.
+
+        411     ERR_NORECIPIENT
+                        ":No recipient given (<command>)"
+        412     ERR_NOTEXTTOSEND
+                        ":No text to send"
+        413     ERR_NOTOPLEVEL
+                        "<mask> :No toplevel domain specified"
+        414     ERR_WILDTOPLEVEL
+                        "<mask> :Wildcard in toplevel domain"
+
+                - 412 - 414는 메시지가 어떤 이유로 배달되지 않았음을 나타내기 위해 PRIVMSG에 의해 반환됩니다.
+                  ERR_NOTOPLEVEL 및 ERR_WILDTOPLEVEL은 "PRIVMSG $<server>" 또는 "PRIVMSG #<host>"의 잘못된 사용을 시도할 때 반환되는 오류입니다.
+
+        421     ERR_UNKNOWNCOMMAND
+                        "<command> :Unknown command"
+
+                - 서버에서 보낸 명령을 알 수 없음을 나타내기 위해 등록된 클라이언트로 반환됩니다.
+
+        422     ERR_NOMOTD
+                        ":MOTD File is missing"
+
+                - 서버에서 서버의 MOTD 파일을 열 수 없습니다.
+
+        423     ERR_NOADMININFO
+                        "<server> :No administrative info available"
+
+                - 적절한 정보를 찾는 데 오류가 있을 때 ADMIN 메시지에 대한 응답으로 서버에서 반환합니다.
+
+        424     ERR_FILEERROR
+                ":File error doing <file op> on <file>"
+
+                - 메시지 처리 중 실패한 파일 작업을 보고하는 데 사용되는 일반 오류 메시지입니다.
+
+        431     ERR_NONICKNAMEGIVEN
+                        ":No nickname given"
+
+                - 명령에 대한 별명 매개변수가 필요했지만 찾을 수 없는 경우 반환됩니다.
+
+        432     ERR_ERRONEUSNICKNAME
+                        "<nick> :Erroneus nickname"
+
+                - 정의된 집합에 속하지 않는 문자가 포함된 NICK 메시지를 수신한 후 반환됩니다. 유효한 별명에 대한 자세한 내용은 섹션 x.x.x를 참조하십시오.
+
+        433     ERR_NICKNAMEINUSE
+                        "<nick> :Nickname is already in use"
+
+                - 현재 존재하는 별명으로 변경을 시도하는 NICK 메시지가 처리될 때 반환됩니다.
+
+        436     ERR_NICKCOLLISION
+                        "<nick> :Nickname collision KILL"
+
+                - 닉네임 충돌(다른 서버에 이미 존재하는 NICK에 등록됨)을 감지하면 서버에서 클라이언트로 반환합니다.
+
+        441     ERR_USERNOTINCHANNEL
+                        "<nick> <channel> :They aren't on that channel"
+
+                - 명령의 대상 사용자가 지정된 채널에 없음을 나타내기 위해 서버에서 반환됩니다.
+
+        442     ERR_NOTONCHANNEL
+                        "<channel> :You're not on that channel"
+
+                - 클라이언트가 구성원이 아닌 명령에 영향을 주는 채널을 클라이언트가 수행하려고 할 때마다 서버에서 반환됩니다.
+
+        443     ERR_USERONCHANNEL
+                        "<user> <channel> :is already on channel"
+
+                - 클라이언트가 이미 있는 채널에 사용자를 초대하려고 할 때 반환됩니다.
+
+        444     ERR_NOLOGIN
+                        "<user> :User not logged in"
+
+                - 사용자가 로그인하지 않았기 때문에 수행할 수 없는 사용자에 대한 SUMMON 명령 후 소환에 의해 반환되었습니다.
+
+        445     ERR_SUMMONDISABLED
+                        ":SUMMON has been disabled"
+
+                - SUMMON 명령에 대한 응답으로 반환됩니다. 이를 구현하지 않는 모든 서버에서 반환해야 합니다.
+
+        446     ERR_USERSDISABLED
+                        ":USERS has been disabled"
+
+                - USERS 명령에 대한 응답으로 반환됩니다. 이를 구현하지 않는 모든 서버에서 반환해야 합니다.
+
+        451     ERR_NOTREGISTERED
+                        ":You have not registered"
+
+                - 서버가 클라이언트를 자세히 구문 분석할 수 있도록 하려면 먼저 클라이언트를 등록해야 함을 나타내기 위해 서버에서 반환됩니다.
+
+        461     ERR_NEEDMOREPARAMS
+                        "<command> :Not enough parameters"
+
+                - 클라이언트에 충분한 매개변수를 제공하지 않았음을 나타내기 위해 수많은 명령에 의해 서버에서 반환됩니다.
+
+        462     ERR_ALREADYREGISTRED
+                        ":You may not reregister"
+
+                - 등록된 세부 정보(예: 암호 또는 두 번째 USER 메시지의 사용자 세부 정보)의 일부를 변경하려고 시도하는 모든 링크로 서버가 반환합니다.
+
+        463     ERR_NOPERMFORHOST
+                        ":Your host isn't among the privileged"
+
+                - 호스트로부터의 연결을 허용하도록 설정되지 않은 서버에 등록을 시도하는 클라이언트로 돌아가서 시도한 연결을 시도합니다.
+
+        464     ERR_PASSWDMISMATCH
+                        ":Password incorrect"
+
+                - 암호가 필요했지만 제공되지 않았거나 올바르지 않은 연결 등록 시도가 실패했음을 나타내기 위해 반환됩니다.
+
+        465     ERR_YOUREBANNEDCREEP
+                        ":You are banned from this server"
+
+                - 명시적으로 연결을 거부하도록 설정된 서버에 연결 및 등록을 시도한 후 반환됩니다.
+
+        467     ERR_KEYSET
+                        "<channel> :Channel key already set"
+        471     ERR_CHANNELISFULL
+                        "<channel> :Cannot join channel (+l)"
+        472     ERR_UNKNOWNMODE
+                        "<char> :is unknown mode char to me"
+        473     ERR_INVITEONLYCHAN
+                        "<channel> :Cannot join channel (+i)"
+        474     ERR_BANNEDFROMCHAN
+                        "<channel> :Cannot join channel (+b)"
+        475     ERR_BADCHANNELKEY
+                        "<channel> :Cannot join channel (+k)"
+        481     ERR_NOPRIVILEGES
+                        ":Permission Denied- You're not an IRC operator"
+
+                - 작동하기 위해 운영자 권한이 필요한 모든 명령은 시도가 실패했음을 나타내기 위해 이 오류를 반환해야 합니다.
+
+        482     ERR_CHANOPRIVSNEEDED
+                        "<channel> :You're not channel operator"
+
+                - 'chanop' 권한이 필요한 모든 명령(예: MODE 메시지)은 시도하는 클라이언트가 지정된 채널의 chanop이 아닌 경우 이 오류를 반환해야 합니다.
+
+        483     ERR_CANTKILLSERVER
+                        ":You cant kill a server!"
+
+                - 서버에서 KILL 명령을 사용하려는 모든 시도는 거부되고 이 오류는 클라이언트에 직접 반환됩니다.
+
+        491     ERR_NOOPERHOST
+                        ":No O-lines for your host"
+
+                - 클라이언트가 OPER 메시지를 보내고 클라이언트의 호스트에서 운영자로 연결을 허용하도록 서버가 구성되지 않은 경우 이 오류를 반환해야 합니다.
+
+        501     ERR_UMODEUNKNOWNFLAG
+                        ":Unknown MODE flag"
+
+                - MODE 메시지가 닉네임 매개변수와 함께 전송되었고 전송된 모드 플래그가 인식되지 않았음을 나타내기 위해 서버에서 반환되었습니다.
+
+        502     ERR_USERSDONTMATCH
+                        ":Cant change mode for other users"
+
+                - 자신이 아닌 다른 사용자의 사용자 모드를 보거나 변경하려는 사용자에게 오류가 전송되었습니다.
+
+6.2 Command responses.
+
+        300     RPL_NONE
+                        Dummy reply number. Not used.
+
+        302     RPL_USERHOST
+                        ":[<reply>{<space><reply>}]"
+
+                - 쿼리 목록에 대한 응답을 나열하기 위해 USERHOST에서 사용하는 응답 형식입니다. 응답 문자열은 다음과 같이 구성됩니다.:
+
+                  <reply> ::= <nick>['*'] '=' <'+'|'-'><hostname>
+
+                  '*'는 클라이언트가 운영자로 등록되었는지 여부를 나타냅니다. '-' 또는 '+' 문자는 각각 클라이언트가 AWAY 메시지를 설정했는지 여부를 나타냅니다.
+
+        303     RPL_ISON
+                        ":[<nick> {<space><nick>}]"
+
+                - ISON에서 쿼리 목록에 대한 응답을 나열하는 데 사용하는 응답 형식입니다.
+
+        301     RPL_AWAY
+                        "<nick> :<away message>"
+
+        305     RPL_UNAWAY
+                        ":You are no longer marked as being away"
+        306     RPL_NOWAWAY
+                        ":You have been marked as being away"
+
+                - 이러한 응답은 AWAY 명령과 함께 사용됩니다(허용되는 경우). RPL_AWAY는 멀리 떨어져 있는 클라이언트에 PRIVMSG를 보내는 모든 클라이언트에 전송됩니다. 
+                RPL_AWAY는 클라이언트가 연결된 서버에서만 전송됩니다. 응답 RPL_UNAWAY 및 RPL_NOWAWAY는 클라이언트가 AWAY 메시지를 제거하고 설정할 때 전송됩니다.
+
+        311     RPL_WHOISUSER
+                        "<nick> <user> <host> * :<real name>"
+        312     RPL_WHOISSERVER
+                        "<nick> <server> :<server info>"
+        313     RPL_WHOISOPERATOR
+                        "<nick> :is an IRC operator"
+        317     RPL_WHOISIDLE
+                        "<nick> <integer> :seconds idle"
+        318     RPL_ENDOFWHOIS
+                        "<nick> :End of /WHOIS list"
+        319     RPL_WHOISCHANNELS
+                        "<nick> :{[@|+]<channel><space>}"
+
+                - 회신 311 - 313, 317 - 319는 모두 WHOIS 메시지에 대한 응답으로 생성된 회신입니다. 
+                충분한 매개변수가 있는 경우 응답 서버는 위의 숫자로 응답을 공식화하거나(쿼리 닉이 발견된 경우) 오류 응답을 반환해야 합니다. 
+                RPL_WHOISUSER의 '*'는 와일드 카드가 아닌 리터럴 문자로 있습니다. 각 응답 세트에 대해 RPL_WHOISCHANNELS만 두 번 이상 나타날 수 있습니다(긴 채널 이름 목록의 경우).
+                   채널 이름 옆의 '@' 및 '+' 문자는 클라이언트가 채널 운영자인지 또는 중재된 채널에서 말할 수 있는 권한이 부여되었는지를 나타냅니다. 
+                   RPL_ENDOFWHOIS 응답은 WHOIS 메시지 처리의 끝을 표시하는 데 사용됩니다.
+
+        314     RPL_WHOWASUSER
+                        "<nick> <user> <host> * :<real name>"
+        369     RPL_ENDOFWHOWAS
+                        "<nick> :End of WHOWAS"
+
+                - WHOWAS 메시지에 응답할 때 서버는 표시된 목록의 각 닉네임에 대해 RPL_WHOWASUSER, RPL_WHOISSERVER 또는 ERR_WASNOSUCHNICK 응답을 사용해야 합니다. 
+                모든 회신 일괄 처리의 끝에 RPL_ENDOFWHOWAS가 있어야 합니다(회신이 하나뿐이고 오류였더라도).
+
+        321     RPL_LISTSTART
+                        "Channel :Users  Name"
+        322     RPL_LIST
+                        "<channel> <# visible> :<topic>"
+        323     RPL_LISTEND
+                        ":End of /LIST"
+
+                - RPL_LISTSTART, RPL_LIST, RPL_LISTEND 응답은 시작을 표시하고 데이터로 실제 응답을 표시하고 LIST 명령에 대한 서버 응답의 끝을 표시합니다. 
+                반환할 수 있는 채널이 없는 경우 시작 및 종료 응답만 보내야 합니다.
+
+        324     RPL_CHANNELMODEIS
+                        "<channel> <mode> <mode params>"
+
+        331     RPL_NOTOPIC
+                        "<channel> :No topic is set"
+        332     RPL_TOPIC
+                        "<channel> :<topic>"
+
+                - 채널 주제를 결정하기 위해 TOPIC 메시지를 보낼 때 두 가지 응답 중 하나가 전송됩니다. 토픽이 설정되면 RPL_TOPIC이 다시 RPL_NOTOPIC으로 전송됩니다.
+
+        341     RPL_INVITING
+                        "<channel> <nick>"
+
+                - 시도한 INVITE 메시지가 성공했으며 최종 클라이언트로 전달되고 있음을 나타내기 위해 서버에서 반환됩니다.
+
+        342     RPL_SUMMONING
+                        "<user> :Summoning user to IRC"
+
+                - 서버가 해당 사용자를 호출하고 있음을 나타내기 위해 SUMMON 메시지에 응답하여 반환합니다.
+
+        351     RPL_VERSION
+                        "<version>.<debuglevel> <server> :<comments>"
+
+                - 버전 세부 정보를 보여주는 서버에서 응답합니다.
+                   <version>은 사용 중인 소프트웨어의 버전(패치 레벨 개정 포함)이고 debuglevel>은 서버가 "디버그 모드"에서 실행 중인지 여부를 나타내는 데 사용됩니다.
+
+                   "설명" 필드에는 버전 또는 추가 버전 세부 정보에 대한 설명이 포함될 수 있습니다.
+
+        352     RPL_WHOREPLY
+                        "<channel> <user> <host> <server> <nick> \
+                         <H|G>[*][@|+] :<hopcount> <real name>"
+        315     RPL_ENDOFWHO
+                        "<name> :End of /WHO list"
+
+                - RPL_WHOREPLY 및 RPL_ENDOFWHO 쌍은 WHO 메시지에 응답하는 데 사용됩니다. 
+                RPL_WHOREPLY는 WHO 쿼리와 적절하게 일치하는 경우에만 전송됩니다. 
+                WHO 메시지와 함께 제공된 매개변수 목록이 있는 경우 <name>이 항목인 각 목록 항목을 처리한 후 RPL_ENDOFWHO를 보내야 합니다.
+
+        353     RPL_NAMREPLY
+                        "<channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
+        366     RPL_ENDOFNAMES
+                        "<channel> :End of /NAMES list"
+
+                - NAMES 메시지에 응답하기 위해 RPL_NAMREPLY 및 RPL_ENDOFNAMES로 구성된 응답 쌍이 서버에서 클라이언트로 다시 전송됩니다. 
+                쿼리에서와 같이 검색된 채널이 없으면 RPL_ENDOFNAMES만 반환됩니다. 
+                이것에 대한 예외는 NAMES 메시지가 매개변수 없이 전송되고 모든 보이는 채널과 콘텐츠가 끝을 표시하기 위해 RPL_ENDOFNAMES와 함께
+                일련의 RPL_NAMEREPLY 메시지로 다시 전송되는 경우입니다.
+
+        364     RPL_LINKS
+                        "<mask> <server> :<hopcount> <server info>"
+        365     RPL_ENDOFLINKS
+                        "<mask> :End of /LINKS list"
+
+                - LINKS 메시지에 회신할 때 서버는 RPL_LINKS 숫자를 사용하여 회신을 보내고 RPL_ENDOFLINKS 회신을 사용하여 목록의 끝을 표시해야 합니다.
+
+        367     RPL_BANLIST
+                        "<channel> <banid>"
+        368     RPL_ENDOFBANLIST
+                        "<channel> :End of channel ban list"
+
+                - 주어진 채널에 대한 활성 '금지'를 나열할 때 서버는 RPL_BANLIST 및 RPL_ENDOFBANLIST 메시지를 사용하여 목록을 다시 보내야 합니다. 
+                각 활성 banid에 대해 별도의 RPL_BANLIST가 전송됩니다. banid가 나열된 후(또는 존재하지 않는 경우) RPL_ENDOFBANLIST를 보내야 합니다.
+
+        371     RPL_INFO
+                        ":<string>"
+        374     RPL_ENDOFINFO
+                        ":End of /INFO list"
+
+                - INFO 메시지에 응답하는 서버는 응답의 끝을 나타내는 RPL_ENDOFINFO 응답과 함께 일련의 RPL_INFO 메시지에 있는 모든 '정보'를 보내야 합니다.
+
+        375     RPL_MOTDSTART
+                        ":- <server> Message of the day - "
+        372     RPL_MOTD
+                        ":- <text>"
+        376     RPL_ENDOFMOTD
+                        ":End of /MOTD command"
+
+                - MOTD 메시지에 응답하고 MOTD 파일이 발견되면 RPL_MOTD 형식 응답을 사용하여 각 라인이 80자를 넘지 않는 라인별로 파일이 표시됩니다. 
+                RPL_MOTDSTART(RPL_MOTD 앞)와 RPL_ENDOFMOTD(뒤)로 둘러싸야 합니다.
+
+        381     RPL_YOUREOPER
+                        ":You are now an IRC operator"
+
+                - RPL_YOUREOPER는 OPER 메시지를 성공적으로 발행하고 운영자 상태를 얻은 클라이언트로 다시 전송됩니다.
+
+        382     RPL_REHASHING
+                        "<config file> :Rehashing"
+
+                - REHASH 옵션이 사용되고 운영자가 REHASH 메시지를 보내면 RPL_REHASHING이 운영자에게 다시 전송됩니다.
+
+        391     RPL_TIME
+                        "<server> :<string showing server's local time>"
+
+                - TIME 메시지에 응답할 때 서버는 위의 RPL_TIME 형식을 사용하여 응답을 보내야 합니다. 시간을 표시하는 문자열에는 정확한 날짜와 시간만 있으면 됩니다. 
+                시간 문자열에 대한 추가 요구 사항은 없습니다.
+
+        392     RPL_USERSSTART
+                        ":UserID   Terminal  Host"
+        393     RPL_USERS
+                        ":%-8s %-9s %-8s"
+        394     RPL_ENDOFUSERS
+                        ":End of users"
+        395     RPL_NOUSERS
+                        ":Nobody logged in"
+
+                - USERS 메시지가 서버에서 처리되면 RPL_USERSTART, RPL_USERS, RPL_ENDOFUSERS 및 RPL_NOUSERS 응답이 사용됩니다. 
+                RPL_USERSSTART가 먼저 전송되어야 하며, 그 다음에 RPL_USERS 또는 단일 RPL_NOUSER가 전송되어야 합니다. 다음은 RPL_ENDOFUSERS입니다.
+
+        200     RPL_TRACELINK
+                        "Link <version & debug level> <destination> \
+                         <next server>"
+        201     RPL_TRACECONNECTING
+                        "Try. <class> <server>"
+        202     RPL_TRACEHANDSHAKE
+                        "H.S. <class> <server>"
+        203     RPL_TRACEUNKNOWN
+                        "???? <class> [<client IP address in dot form>]"
+        204     RPL_TRACEOPERATOR
+                        "Oper <class> <nick>"
+        205     RPL_TRACEUSER
+                        "User <class> <nick>"
+        206     RPL_TRACESERVER
+                        "Serv <class> <int>S <int>C <server> \
+                         <nick!user|*!*>@<host|server>"
+        208     RPL_TRACENEWTYPE
+                        "<newtype> 0 <client name>"
+        261     RPL_TRACELOG
+                        "File <logfile> <debug level>"
+
+                - RPL_TRACE*는 모두 TRACE 메시지에 대한 응답으로 서버에서 반환됩니다. 반환되는 수는 TRACE 메시지와 운영자가 보낸 것인지 여부에 따라 다릅니다. 
+                먼저 발생하는 사전 정의된 순서는 없습니다.
+                응답 RPL_TRACEUNKNOWN, RPL_TRACECONNECTING 및 RPL_TRACEHANDSHAKE는 모두 아직 연결을 시도하거나 
+                '서버 핸드셰이크'를 완료하는 과정에서 완전히 설정되지 않고 알 수 없는 연결에 사용됩니다.
+                RPL_TRACELINK는 TRACE 메시지를 처리하고 다른 서버로 전달해야 하는 모든 서버에 의해 전송됩니다. 
+                IRC 네트워크를 통과하는 TRACE 명령에 대한 응답으로 전송된 RPL_TRACELINK 목록은 해당 경로를 따라 서버 자체의 실제 연결을 반영해야 합니다.
+                RPL_TRACENEWTYPE은 다른 범주에 맞지 않지만 어쨌든 표시되는 모든 연결에 사용됩니다.
+
+        211     RPL_STATSLINKINFO
+                        "<linkname> <sendq> <sent messages> <sent bytes> <received messages> <received bytes> <time open>"
+        212     RPL_STATSCOMMANDS
+                        "<command> <count>"
+        213     RPL_STATSCLINE
+                        "C <host> * <name> <port> <class>"
+        214     RPL_STATSNLINE
+                        "N <host> * <name> <port> <class>"
+        215     RPL_STATSILINE
+                        "I <host> * <host> <port> <class>"
+        216     RPL_STATSKLINE
+                        "K <host> * <username> <port> <class>"
+        218     RPL_STATSYLINE
+                        "Y <class> <ping frequency> <connect frequency> <max sendq>"
+        219     RPL_ENDOFSTATS
+                        "<stats letter> :End of /STATS report"
+        241     RPL_STATSLLINE
+                        "L <hostmask> * <servername> <maxdepth>"
+        242     RPL_STATSUPTIME
+                        ":Server Up %d days %d:%02d:%02d"
+        243     RPL_STATSOLINE
+                        "O <hostmask> * <name>"
+        244     RPL_STATSHLINE
+                        "H <hostmask> * <servername>"
+
+        221     RPL_UMODEIS
+                        "<user mode string>"
+
+                        - 클라이언트 고유 모드에 대한 쿼리에 응답하기 위해 RPL_UMODEIS가 다시 전송됩니다.
+
+        251     RPL_LUSERCLIENT
+                        ":There are <integer> users and <integer> invisible on <integer> servers"
+        252     RPL_LUSEROP
+                        "<integer> :operator(s) online"
+        253     RPL_LUSERUNKNOWN
+                        "<integer> :unknown connection(s)"
+        254     RPL_LUSERCHANNELS
+                        "<integer> :channels formed"
+        255     RPL_LUSERME
+                        ":I have <integer> clients and <integer> servers"
+
+                        - LUSERS 메시지를 처리할 때 서버는 RPL_LUSERCLIENT, RPL_LUSEROP, RPL_USERUNKNOWN, RPL_LUSERCHANNELS 및 RPL_LUSERME에서 응답 집합을 보냅니다.
+                        응답할 때 서버는 RPL_LUSERCLIENT 및 RPL_LUSERME를 다시 보내야 합니다. 다른 응답은 0이 아닌 개수가 발견된 경우에만 다시 전송됩니다.
+
+        256     RPL_ADMINME
+                        "<server> :Administrative info"
+        257     RPL_ADMINLOC1
+                        ":<admin info>"
+        258     RPL_ADMINLOC2
+                        ":<admin info>"
+        259     RPL_ADMINEMAIL
+                        ":<admin info>"
+
+                        - ADMIN 메시지에 회신할 때 서버는 RLP_ADMINME에서 RPL_ADMINEMAIL까지 회신을 사용하고 각각에 문자 메시지를 제공해야 합니다.
+                        RPL_ADMINLOC1의 경우 서버가 있는 도시, 주 및 국가에 대한 설명이 예상되며, 그 다음에는 대학 및 부서에 대한 세부정보 RPL_ADMINLOC2), 
+                        마지막으로 RPL_ADMINEMAIL의 서버 관리 연락처(여기에 이메일 주소가 필요함)가 나옵니다.
+
+6.3 Reserved numerics.
+
+   이러한 숫자는 다음 범주 중 하나에 속하므로 위에서 설명하지 않았습니다.
+
+         1. 더 이상 사용하지 않음
+
+         2. 향후 계획된 사용을 위해 예약됨
+
+         3. 현재 사용 중이지만 현재 IRC 서버의 일반이 아닌 '기능'의 일부입니다.
+
+        209     RPL_TRACECLASS          217     RPL_STATSQLINE
+        231     RPL_SERVICEINFO         232     RPL_ENDOFSERVICES
+        233     RPL_SERVICE             234     RPL_SERVLIST
+        235     RPL_SERVLISTEND
+        316     RPL_WHOISCHANOP         361     RPL_KILLDONE
+        362     RPL_CLOSING             363     RPL_CLOSEEND
+        373     RPL_INFOSTART           384     RPL_MYPORTIS
+        466     ERR_YOUWILLBEBANNED     476     ERR_BADCHANMASK
+        492     ERR_NOSERVICEHOST
+
+7. Client and server authentication
+
+   클라이언트와 서버는 모두 동일한 수준의 인증을 받습니다. 둘 다 서버에 대한 모든 연결에 대해 호스트 이름 조회에 대한 IP 번호(및 이에 대한 역 확인)가 수행됩니다.
+   그런 다음 두 연결 모두 암호 확인을 받습니다(해당 연결에 암호가 설정된 경우). 암호 확인은 일반적으로 서버에서만 사용되지만 이러한 확인은 모든 연결에서 가능합니다.
+
+    점점 더 일반화되고 있는 추가 검사는 연결을 담당하는 사용자 이름에 대한 검사입니다. 
+    연결의 다른 쪽 끝의 사용자 이름을 찾는 것은 일반적으로 RFC 1413에 설명된 대로 IDENT와 같은 인증 서버에 연결하는 것을 포함합니다.
+
+    암호가 없으면 네트워크 연결의 다른 쪽 끝에 있는 사람을 안정적으로 판별하기가 쉽지 않으므로 ident 서버 사용과 같은 다른 조치와 함께 서버 간 연결에서 암호를 사용하는 것이 좋습니다.
+
+8. Current implementations
+
+   이 프로토콜의 유일한 현재 구현은 IRC 서버 버전 2.8입니다. 이전 버전은 이 문서에서 설명하는 명령의 일부 또는 전부를 많은 숫자 응답을 대체하는 NOTICE 메시지로 구현할 수 있습니다. 
+   불행히도 이전 버전과의 호환성 요구 사항으로 인해 이 문서의 일부 구현은 배치된 내용에 따라 다릅니다. 주목할만한 차이점은 다음과 같습니다.
+
+         * 메시지의 임의의 LF 또는 CR이 해당 메시지의 끝을 표시한다는 인식(CR-LF를 요구하는 대신)
+
+    이 섹션의 나머지 부분에서는 서버를 구현하려는 사람들에게 가장 중요한 문제를 다루지만 일부는 클라이언트에도 직접 적용됩니다.
+
+8.1 Network protocol: TCP - why it is best used here.
+
+   IRC는 TCP가 이러한 규모의 회의에 적합한 안정적인 네트워크 프로토콜을 제공하기 때문에 TCP 위에 구현되었습니다.
+    멀티캐스트 IP를 사용하는 것이 대안이지만 현재 널리 사용되거나 지원되지 않습니다.
+
+8.1.1 Support of Unix sockets
+
+   Unix 도메인 소켓이 수신/연결 작업을 허용한다는 점을 감안할 때 현재 구현은 Unix 도메인 소켓에서 클라이언트 및 서버 연결을 수신하고 수락하도록 구성할 수 있습니다. 
+   호스트 이름이 '/'로 시작하는 소켓으로 인식됩니다.
+
+    Unix 도메인 소켓의 연결에 대한 정보를 제공할 때 서버는 실제 소켓 이름을 요구하지 않는 한 경로 이름 대신 실제 호스트 이름을 대체해야 합니다.
+
+8.2 Command Parsing
+
+   클라이언트와 서버에 유용한 '버퍼링되지 않은' 네트워크 IO를 제공하기 위해 각 연결에는 가장 최근의 읽기 및 구문 분석 결과가 유지되는 자체 개인 '입력 버퍼'가 제공됩니다. 
+   512바이트의 버퍼 크기는 1개의 전체 메시지를 보유하는 데 사용되지만 일반적으로 여러 명령을 보유합니다. 개인 버퍼는 유효한 메시지에 대한 모든 읽기 작업 후에 구문 분석됩니다. 
+   버퍼에 있는 한 클라이언트의 여러 메시지를 처리할 때 클라이언트가 '제거'되는 경우에 주의해야 합니다.
+
+8.3 Message delivery
+
+   네트워크 링크가 포화 상태이거나 데이터를 보낼 수 없는 호스트를 보내는 것이 일반적입니다. 
+   Unix는 일반적으로 TCP 창과 내부 버퍼를 통해 이를 처리하지만 서버는 보낼 데이터의 양이 많고(특히 새로운 서버-서버 링크가 형성될 때) 커널에 제공된 작은 버퍼가 나가는 큐에 충분하지 않습니다.
+   이 문제를 완화하기 위해 "보내기 큐"는 보낼 데이터에 대한 FIFO 큐로 사용됩니다.
+    일반적인 "전송 대기열"은 새 서버가 연결될 때 느린 네트워크 연결을 사용하는 대규모 IRC 네트워크에서 200KB까지 커질 수 있습니다.
+
+    연결을 폴링할 때 서버는 먼저 들어오는 모든 데이터를 읽고 구문 분석하여 보낼 데이터를 대기열에 넣습니다. 사용 가능한 모든 입력이 처리되면 대기 중인 데이터가 전송됩니다. 
+    이것은 write() 시스템 호출의 수를 줄이고 TCP가 더 큰 패킷을 만드는 데 도움이 됩니다.
+
+8.4 Connection 'Liveness'
+
+   연결이 끊어졌거나 응답하지 않는 경우를 감지하려면 서버는 주어진 시간 동안 응답을 받지 못하는 각 연결에 대해 ping을 수행해야 합니다.
+
+    연결이 제 시간에 응답하지 않으면 적절한 절차를 사용하여 연결이 닫힙니다. 
+    서버 프로세스 블록을 갖는 것보다 느린 연결을 닫는 것이 더 나기 때문에 sendq가 허용된 최대값을 초과하여 증가하면 연결도 끊어집니다.
+
+8.5 Establishing a server to client connection
+
+   IRC 서버에 연결하면 클라이언트에 MOTD(존재하는 경우)와 현재 사용자/서버 수(LUSER 명령에 따라)가 전송됩니다.
+   서버는 또한 적절하다고 간주될 수 있는 기타 소개 메시지뿐만 아니라 이름과 버전을 명시하는 명확한 메시지를 클라이언트에 제공해야 합니다.
+
+    이를 처리한 후 서버는 새 사용자의 별명과 기타 정보를 자체적으로 제공하고(USER 명령) 서버가 검색할 수 있는 대로(DNS/인증 서버에서) 보내야 합니다.
+    서버는 먼저 NICK와 함께 이 정보를 보낸 다음 USER를 보내야 합니다.
+
+8.6 Establishing a server-server connection.
+
+   서버 간 연결을 설정하는 프로세스는 문제가 발생할 수 있는 가능한 영역이 많기 때문에 위험이 따릅니다. 그 중 가장 적은 영역은 경쟁 조건입니다.
+
+    서버가 유효한 것으로 인식된 PASS/SERVER 쌍이 뒤따르는 연결을 수신한 후 서버는 해당 연결에 대한 자체 PASS/SERVER 정보와 설명된 대로 알고 있는 다른 모든 상태 정보로 응답해야 합니다. 아래에.
+
+    시작 서버가 PASS/SERVER 쌍을 받으면 해당 서버로의 연결을 수락하기 전에 응답하는 서버가 제대로 인증되었는지 확인합니다.
+
+8.6.1 Server exchange of state information when connecting
+
+   서버 간에 교환되는 상태 정보의 순서는 필수적입니다. 필요한 순서는 다음과 같습니다.
+
+         * 알려진 다른 모든 서버
+
+         * 알려진 모든 사용자 정보
+
+         * 알려진 모든 채널 정보.
+
+    서버에 대한 정보는 추가 SERVER 메시지, NICK/USER/MODE/JOIN 메시지가 있는 사용자 정보 및 MODE 메시지가 있는 채널을 통해 전송됩니다.
+
+    참고: 채널 주제는 TOPIC 명령이 이전 주제 정보를 덮어쓰므로 여기에서 교환되지 *않습니다*. 따라서 기껏해야 연결의 양측이 주제를 교환합니다.
+
+    서버에 대한 상태 정보를 먼저 전달하면 특정 닉네임을 도입하는 두 번째 서버로 인해 닉네임 충돌 이전에 이미 존재하는 서버와의 충돌이 발생합니다. 
+    IRC 네트워크는 비순환 그래프로만 존재할 수 있기 때문에 네트워크가 이미 다른 위치에서 다시 연결되었을 수 있습니다. 충돌이 발생한 위치는 네트워크가 분할되어야 하는 위치를 나타냅니다.
+
+8.7 Terminating server-client connections
+
+   클라이언트 연결이 닫히면 클라이언트가 연결된 서버에서 클라이언트를 대신하여 QUIT 메시지가 생성됩니다. 다른 메시지는 생성되거나 사용되지 않습니다.
+
+8.8 Terminating server-server connections
+
+   원격으로 생성된 SQUIT 또는 '자연적' 원인을 통해 서버-서버 연결이 닫히면 연결된 IRC 네트워크의 나머지 부분은 닫힘을 감지한 서버에서 정보를 업데이트해야 합니다. 
+   그런 다음 서버는 SQUIT 목록(해당 연결 뒤에 있는 각 서버에 대해 하나씩)과 QUIT 목록(다시 말하지만 해당 연결 뒤에 있는 각 클라이언트에 대해 하나씩)을 보냅니다.
+
+8.9 Tracking nickname changes
+
+   모든 IRC 서버는 최근 닉네임 변경 이력을 유지해야 합니다. 이것은 닉체인지 경쟁 조건이 그들을 조작하는 명령과 함께 발생할 때 서버가 사물에 계속 연락할 수 있도록 하는 데 필요합니다.
+   별명 변경을 추적해야 하는 명령은 다음과 같습니다.
+
+        * KILL (죽는 닉네임)
+
+        * 모드(+/- o,v)
+
+        * KICK (차기되는 닉)
+
+   다른 명령은 닉 변경 사항을 확인하지 않습니다.
+
+   위의 경우 서버는 먼저 닉네임이 있는지 확인한 다음 닉네임이 현재 누구에게 속하는지(있는 경우!) 이력을 확인해야 합니다. 
+   이렇게 하면 경쟁 조건의 가능성이 줄어들지만 서버가 잘못된 클라이언트에 영향을 미치면 여전히 발생할 수 있습니다. 
+   위 명령에 대한 변경 추적을 수행할 때 시간 범위를 지정하고 너무 오래된 항목은 무시하는 것이 좋습니다.
+
+   합리적인 기록을 위해 서버는 모든 클라이언트가 변경하기로 결정한 경우 알고 있는 모든 클라이언트에 대해 이전 별명을 유지할 수 있어야 합니다. 
+   이 크기는 다른 요인(예: 메모리 등)에 의해 제한됩니다.
+
+8.10 Flood control of clients
+
+   상호 연결된 IRC 서버의 대규모 네트워크에서는 네트워크에 연결된 단일 클라이언트가 연속적인 메시지 스트림을 제공하기가 매우 쉽습니다. 
+   모든 '피해자'가 자신의 보호를 제공하도록 요구하기보다는 홍수 보호가 서버에 작성되었으며 서비스를 제외한 모든 클라이언트에 적용됩니다. 현재 알고리즘은 다음과 같습니다.
+
+         * 클라이언트의 '메시지 타이머'가 현재 시간보다 작은지 확인합니다(같은 경우 동일하게 설정).
+
+         * 클라이언트에서 존재하는 모든 데이터를 읽습니다.
+
+         * 타이머가 현재 시간보다 10초 미만인 동안 현재 메시지를 구문 분석하고 각 메시지에 대해 클라이언트에 2초 패널티를 줍니다.
+
+    이는 본질적으로 클라이언트가 부정적인 영향을 받지 않고 2초마다 1개의 메시지를 보낼 수 있음을 의미합니다.
+
+8.11 Non-blocking lookups
+
+   실시간 환경에서는 모든 클라이언트가 공정하게 서비스를 받을 수 있도록 서버 프로세스가 대기 시간을 최소화하는 것이 중요합니다. 
+   분명히 이것은 모든 네트워크 읽기/쓰기 작업에서 비차단 IO가 필요합니다. 일반 서버 연결의 경우 어렵지 않았지만 서버를 차단할 수 있는 다른 지원 작업(예: 디스크 읽기)이 있습니다. 
+   가능한 경우 이러한 활동은 짧은 시간 제한으로 수행되어야 합니다.
+
+8.11.1 Hostname (DNS) lookups
+
+   Berkeley 및 기타 업체의 표준 해석기 라이브러리를 사용하면 응답 시간이 초과되는 경우에 큰 지연이 발생했습니다. 
+   이를 피하기 위해 비차단 IO 작업을 위해 설정한 다음 주 서버 IO 루프 내에서 폴링되는 별도의 DNS 루틴 세트가 작성되었습니다.
+
+8.11.2 Username (Ident) lookups
+
+   사용하고 다른 프로그램에 포함시키기 위한 수많은 ident 라이브러리가 있지만 동기 방식으로 작동하고 자주 지연되기 때문에 문제가 발생했습니다.
+   다시 해결책은 서버의 나머지 부분과 협력하고 비차단 IO를 사용하여 작동하는 일련의 루틴을 작성하는 것이었습니다.
+
+8.12 Configuration File
+
+   서버를 설정하고 실행하는 유연한 방법을 제공하려면 다음에 대한 지침이 포함된 구성 파일을 사용하는 것이 좋습니다.
+
+        * 클라이언트 연결을 수락할 호스트;
+
+        * 서버로 연결할 수 있는 호스트;
+
+        * 연결할 호스트(능동적 및 수동적 모두)
+
+        * 서버가 어디에 있는지에 대한 정보(대학, 시/도, 회사가 이에 대한 예임);
+
+        * 서버 담당자와 연락 가능한 이메일 주소
+
+        * 제한된 운영자 명령에 대한 액세스 권한을 부여하려는 클라이언트의 호스트 이름 및 비밀번호.
+
+   호스트 이름을 지정할 때 도메인 이름과 '점' 표기법(127.0.0.1) 사용이 모두 허용되어야 합니다.
+   나가는 연결과 들어오는 모든 연결에 대해 사용/승인할 암호를 지정할 수 있어야 합니다(단, 나가는 연결은 다른 서버에 대한 연결뿐임).
+
+   위의 목록은 다른 서버와 연결을 원하는 서버에 대한 최소 요구 사항입니다. 사용할 수 있는 기타 항목은 다음과 같습니다.
+
+        * 다른 서버가 도입할 수 있는 서버 지정
+
+        * 서버 분기가 허용되는 깊이
+
+        * 클라이언트가 연결할 수 있는 시간.
+
+8.12.1 Allowing clients to connect
+
+  서버는 시작할 때 읽고 클라이언트가 서버에 연결하는 데 사용할 수 있는 호스트를 결정하는 데 사용되는 일종의 '액세스 제어 목록'(구성 파일 또는 다른 곳에서)을 사용해야 합니다.
+
+    호스트 액세스 제어에 필요한 유연성을 제공하려면 '거부'와 '허용'을 모두 구현해야 합니다.
+
+8.12.2 Operators
+
+   방해가 되는 사람에게 운영자 권한을 부여하면 부여된 권한으로 인해 일반적으로 IRC 네트워크의 웰빙에 심각한 결과를 초래할 수 있습니다. 
+   따라서 그러한 권한을 획득하는 것은 그리 쉬운 일이 아닙니다. 현재 설정에서는 두 개의 '비밀번호'를 사용해야 하지만 그 중 하나는 일반적으로 쉽게 추측할 수 있습니다. 
+   구성 파일에 oper 암호를 저장하는 것이 하드 코딩하는 것보다 바람직하며 쉬운 도난을 방지하기 위해 암호화된 형식(즉, Unix의 crypt(3) 사용)으로 저장해야 합니다.
+
+8.12.3 Allowing servers to connect
+
+   서버의 상호 연결은 사소한 문제가 아닙니다. 잘못된 연결은 IRC의 유용성에 큰 영향을 미칠 수 있습니다. 
+   따라서 각 서버에는 연결할 수 있는 서버 목록과 연결할 수 있는 서버 목록이 있어야 합니다. 어떤 경우에도 서버는 임의의 호스트가 서버로 연결하는 것을 허용해서는 안 됩니다. 
+   연결할 수 있는 서버와 연결하지 않을 수 있는 서버 외에도 구성 파일에는 해당 링크의 암호 및 기타 특성도 저장되어 있어야 합니다.
+
+8.12.4 Administrivia
+
+   ADMIN 명령에 정확하고 유효한 응답을 제공하려면(섹션 4.3.7 참조) 서버는 구성에서 관련 세부 정보를 찾아야 합니다.
+
+8.13 Channel membership
+
+   현재 서버에서는 등록된 모든 로컬 사용자가 최대 10개의 다른 채널에 참여할 수 있습니다. 
+   서버가 채널 멤버십을 기반으로 다른 모든 서버와 (합리적으로) 일관성을 유지하도록 로컬이 아닌 사용자에게 제한이 없습니다. 
+9. 현재 문제
+
+    이 프로토콜에는 인식된 문제가 많이 있으며, 이 모두는 재작성 중에 가까운 장래에 해결되기를 희망합니다. 현재 이러한 문제에 대한 효과적인 솔루션을 찾기 위한 작업이 진행 중입니다.
+
+9.1 Scalability
+
+   이 프로토콜은 대규모 경기장에서 사용할 때 충분히 확장되지 않는다는 것이 널리 알려져 있습니다. 
+   주요 문제는 모든 서버가 다른 모든 서버와 사용자에 대해 알고 있고 그에 관한 정보가 변경되는 즉시 업데이트된다는 요구 사항에서 비롯됩니다. 
+   또한 두 지점 사이의 경로 길이가 최소로 유지되고 스패닝 트리가 가능한 한 강력하게 분기되도록 서버 수를 낮게 유지하는 것이 바람직합니다.
+
+9.2 Labels
+
+   현재 IRC 프로토콜에는 닉네임, 채널 이름 및 서버 이름의 3가지 유형의 레이블이 있습니다. 
+   세 가지 유형 각각에는 고유한 도메인이 있으며 해당 도메인 내에서 중복이 허용되지 않습니다.
+    현재 사용자는 세 가지 중 하나에 대한 레이블을 선택할 수 있으므로 충돌이 발생합니다. 
+    순환 트리를 허용하는 솔루션뿐만 아니라 충돌하지 않는 채널 및 닉에 대한 고유한 이름에 대한 계획과 함께 재작업이 필요하다는 것은 널리 알려져 있습니다.
+
+9.2.1 Nicknames
+
+   IRC에 있는 닉네임의 개념은 사용자들이 채널 밖에서 서로 이야기할 때 사용하는 것이 매우 편리하지만 
+   닉네임 공간이 한정되어 있고 그들이 있는 그대로이므로 여러 사람이 같은 것을 사용하고 싶어하는 경우가 드물지 않습니다. 
+   새긴 ​​금. 이 프로토콜을 사용하여 두 사람이 별명을 선택하면 둘 중 하나가 성공하지 않거나 KILL(4.6.1)을 사용하여 둘 다 제거됩니다.
+
+9.2.2 Channels
+
+   현재 채널 레이아웃에서는 모든 서버가 모든 채널, 해당 거주자 및 속성에 대해 알고 있어야 합니다. 
+   잘 확장되지 않는 것 외에도 개인 정보 문제도 우려 사항입니다. 
+   채널 충돌은 닉네임 충돌을 해결하는 데 사용되는 것과 같은 배타적 이벤트가 아니라 포괄적 이벤트(새 채널을 만드는 두 사람 모두 채널의 구성원으로 간주됨)로 처리됩니다.
+
+9.2.3 Servers
+
+   서버의 수는 일반적으로 사용자 및 채널 수에 비해 적지만 현재 두 대는 각각 별도로 또는 마스크 뒤에 숨겨져 전 세계적으로 알려야 합니다.
+
+9.3 Algorithms
+
+   서버 코드 내의 일부 위치에서는 클라이언트 집합의 채널 목록을 확인하는 것과 같은 N^2 알고리즘을 피할 수 없습니다.
+
+    현재 서버 버전에는 데이터베이스 일관성 검사가 없으며 각 서버는 인접 서버가 올바른 것으로 가정합니다. 
+    이것은 연결 서버에 버그가 있거나 기존 네트워크에 모순을 도입하려는 경우 큰 문제의 문을 엽니다.
+
+    현재 고유한 내부 및 글로벌 레이블이 없기 때문에 수많은 경쟁 조건이 존재합니다. 
+    이러한 경쟁 조건은 일반적으로 메시지가 IRC 네트워크를 통과하고 영향을 미치는 데 시간이 걸린다는 문제에서 발생합니다. 
+    고유 레이블로 변경하더라도 채널 관련 명령이 중단되는 문제가 있습니다.
+
+10. Current support and availability
+
+           Mailing lists for IRC related discussion:
+                Future protocol: ircd-three-request@eff.org
+                General discussion: operlist-request@eff.org
+
+           Software implemenations
+                cs.bu.edu:/irc
+                nic.funet.fi:/pub/irc
+                coombs.anu.edu.au:/pub/irc
+
+           Newsgroup: alt.irc
+
+Security Considerations
+
+   Security issues are discussed in sections 4.1, 4.1.1, 4.1.3, 5.5, and 7.
+
+
