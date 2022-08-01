@@ -16,7 +16,7 @@ void	irc::cmd::part(Command* cmd)
 
 		if (name[0] != '#' || !chan)
 			return (cmd->queue(ERR_NOSUCHCHANNEL, name + " :No such server"));
-		
+
 		if (!chan->isMember(cli))
 			return (cmd->queue(ERR_NOTONCHANNEL, chan->getName() + " :You're not on that channel"));
 		chan->rmClient(cli);

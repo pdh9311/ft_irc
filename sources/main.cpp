@@ -14,9 +14,10 @@ int	main(int argc, char** argv)
 		return (0);
 	}
 
-	irc::Server	serv(argv[1], (argv[2] == NULL ? "" : argv[2]));		
+	irc::Server	serv(argv[1], (argv[2] == NULL ? "" : argv[2]));
 
 	serv.initialize();
 	serv.run();
+
 	return (0);
 }

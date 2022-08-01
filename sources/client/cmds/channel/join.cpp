@@ -27,7 +27,7 @@ void	irc::cmd::join(Command *cmd)
 	for (size_t i = 0; i < channs.size(); ++i)
 	{
 		const std::string&	name = channs[i];
-		
+
 		if (name[0] != '#')
 			return (cmd->queue(ERR_NOSUCHCHANNEL, name + " :No such server"));
 		Channel*	chan = serv->getChannel(name);

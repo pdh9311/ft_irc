@@ -11,5 +11,5 @@ void	irc::cmd::topic(Command* cmd)
 	Channel*		channel = cmd->getServer()->getChannel(name);
 	if (channel->getTopic().empty())
 		return (cmd->setResult(RPL_NOTOPIC));
-	return (cmd->setResult(RPL_TOPIC, channel->getTopic()));	
+	return (cmd->setResult(RPL_TOPIC, channel->getTopic()));
 }
