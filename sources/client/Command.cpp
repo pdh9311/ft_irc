@@ -108,6 +108,12 @@ namespace irc
 				_args.push_back(str.substr(cur, fpos - cur));
 			cur = fpos;
 		}
+
+		if (_args.back()[0] == ':')
+		{
+			_trailing = _args.back();
+			_args.pop_back();
+		}
 	}
 
 	void	Command::setFunc()
@@ -166,6 +172,11 @@ namespace irc
 	const std::string&	Command::getCommand()
 	{
 		return (_command);
+	}
+
+	const std::string&	Command::getTrailing()
+	{
+		return (_trailing);
 	}
 
 	const std::vector<std::string>&	Command::getArgs()

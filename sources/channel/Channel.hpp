@@ -21,8 +21,9 @@ namespace irc
 		private:
 			Server*		_server;
 			std::string	_name;
+			char		_prefix;
 			std::string	_key;
-			bool		_is_local;
+			// bool		_is_local;
 			size_t		_max_client;
 			std::string	_topic;
 			clients_t	_clients;
@@ -34,6 +35,7 @@ namespace irc
 			Channel(Server* server, const std::string name);
 			~Channel();
 
+			void	sendNames(const Client* client) const;
 			void	broadcast(const Client* client, const std::string msg) const;
 			bool	isInvited(const Client* client) const;
 			bool	isMember(const Client* client) const;
@@ -42,6 +44,7 @@ namespace irc
 			void	addClient(const Client* client);
 			void	rmClient(const Client* client);
 
+			char				getPrefix() const;
 			const std::string&	getName() const;
 			const std::string	getFName() const;
 			const std::string&	getTopic() const;

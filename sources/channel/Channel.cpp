@@ -17,11 +17,10 @@ namespace irc
 	Channel::Channel(Server* server, const std::string name)
 	:	_server(server)
 	{
-		_is_local = true;
-		if (name[0] == '#' || name[0] == '&')
+		if (irc::isChPrefix(name[0]))
 		{
 			_name = name.substr(1);
-			_is_local = (name[0] == '#');
+			_prefix = name[0];
 		}
 		else
 			_name = name;
@@ -40,6 +39,14 @@ namespace irc
 			_server->queue(*it, "PART " + getFName());
 			++it;
 		}
+	}
+
+	void	Channel::sendNames(const Client* client) const
+	{
+		std::string	str = _server->getPrefix(client) + " ";
+		str += (to_string(RPL_NAMREPLY) + " " + client->getNick());
+		str += (" = " + getFName());
+		
 	}
 
 	void	Channel::broadcast(const Client* client, const std::string msg) const
@@ -95,6 +102,11 @@ namespace irc
 		_clients.erase(client->getFD());
 	}
 
+	char	Channel::getPrefix() const
+	{
+		return (_prefix);
+	}
+
 	const std::string&	Channel::getName() const
 	{
 		return (_name);
@@ -102,7 +114,7 @@ namespace irc
 
 	const std::string	Channel::getFName() const
 	{
-		return (_is_local ? "#" : "&") + getName();
+		return (getPrefix() + getName());
 	}
 
 	const std::string&	Channel::getTopic() const
