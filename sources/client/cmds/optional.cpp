@@ -9,6 +9,18 @@ namespace irc
 {
 	namespace cmd
 	{
+		/*
+			Command: AWAY
+			Parameters: [message]
+			Example:
+				AWAY :Gone to lunch.  Back in 5
+					; 메시지를 "점심 먹으러 갔다. 5시에 돌아오라"로 설정합니다.
+				:WiZ AWAY
+					; WiZ를 부재중으로 표시 해제합니다.
+			Numeric Replies:
+				RPL_UNAWAY
+				RPL_NOWAWAY
+		*/
 		void	away	(Command* cmd)
 		{
 			(void)cmd;
@@ -39,9 +51,40 @@ namespace irc
 			(void)cmd;
 		}
 
+		/*
+			Command: USERHOST
+			Parameters: <nickname>{<space><nickname>}
+			Example:
+				USERHOST Wiz Michael Marty p
+					;USERHOST는 "Wiz", "Michael", "Marty" 및 "p"라는 별명에 대한 정보를 요청합니다.
+			Numeric Replies:
+				RPL_USERHOST
+				ERR_NEEDMOREPARAMS
+		*/
+		// RPL_USERHOST
+        //    ":[<reply>{<space><reply>}]"
+
+        //    - Reply format used by USERHOST to list replies to
+        //      the query list.  The reply string is composed as
+        //      follows:
+
+        //    <reply> ::= <nick>['*'] '=' <'+'|'-'><hostname>
+
+        //    The '*' indicates whether the client has registered
+        //    as an Operator.  The '-' or '+' characters represent
+        //    whether the client has set an AWAY message or not
+        //    respectively.
 		void	userhost	(Command* cmd)
 		{
-			(void)cmd;
+			// Server*		server = cmd->getServer();
+			std::string	msg;
+
+			if (cmd->getArgC() == 0)
+			{
+				cmd->queue(ERR_NEEDMOREPARAMS);
+				return ;
+			}
+
 		}
 
 		/*
@@ -59,7 +102,6 @@ namespace irc
 			Server*		server = cmd->getServer();
 			std::string	msg;
 
-			(void)cmd;
 			if (cmd->getArgC() == 0)
 			{
 				cmd->queue(ERR_NEEDMOREPARAMS);
