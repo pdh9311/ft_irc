@@ -125,8 +125,9 @@ namespace irc
 			if (_client->getStatus() < Client::AUTH && _command != "PASS")
 				return ;
 			if (_client->getStatus() < Client::LOGGEDIN &&
-							!(_command == "NICK" || _command == "USER"))
+				_command != "PASS" && !(_command == "NICK" || _command == "USER"))
 				return ;
+
 			_func = fit->second;
 		}
 	}
@@ -209,13 +210,13 @@ namespace irc
 		std::string str = _server->getPrefix(_client) + " ";
 		str += (to_string(rcode) + " ");
 		str += (_client->getNick() + " ");
-		
+
 		switch (rcode)
 		{
 			case ERR_NEEDMOREPARAMS:
 				str += (getCommand() + " :Not enough parameters");
 				break ;
-			
+
 		}
 
 		_client->queue(str);

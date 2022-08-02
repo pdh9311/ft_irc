@@ -45,7 +45,7 @@ namespace irc
 				msg += buf;
 				cmd->queue(RPL_MOTD, msg);
 			}
-			msg = ":End of MOTD command";
+			msg = ":End of /MOTD command";
 			cmd->queue(RPL_ENDOFMOTD, msg);
 		}
 
@@ -62,13 +62,12 @@ namespace irc
 		*/
 		void	lusers	(Command* cmd)
 		{
-			Server*						server = cmd->getServer();
-			std::vector<std::string>	args = cmd->getArgs();
-			std::string					msg;
+			Server*		server = cmd->getServer();
+			std::string	msg;
 
-			if (args.size() != 0)
+			if (cmd->getArgC() != 0)
 			{
-				msg = args[0];
+				msg = cmd->getArgs()[0];
 				msg += " :No such server";
 				cmd->queue(ERR_NOSUCHSERVER, msg);
 				return ;
@@ -108,13 +107,12 @@ namespace irc
 		*/
 		void	version	(Command* cmd)
 		{
-			Server*						server = cmd->getServer();
-			std::vector<std::string>	args = cmd->getArgs();
-			std::string					msg;
+			Server*		server = cmd->getServer();
+			std::string	msg;
 
-			if (args.size() != 0)
+			if (cmd->getArgC() != 0)
 			{
-				msg = args[0];
+				msg = cmd->getArgs()[0];
 				msg += " :No such server";
 				cmd->queue(ERR_NOSUCHSERVER, msg);
 				return ;
@@ -149,13 +147,12 @@ namespace irc
 		*/
 		void	time	(Command* cmd)
 		{
-			Server*						server = cmd->getServer();
-			std::vector<std::string>	args = cmd->getArgs();
-			std::string					msg;
+			Server*		server = cmd->getServer();
+			std::string	msg;
 
-			if (args.size() != 0)
+			if (cmd->getArgC() != 0)
 			{
-				msg = args[0];
+				msg = cmd->getArgs()[0];
 				msg += " :No such server";
 				cmd->queue(ERR_NOSUCHSERVER, msg);
 				return ;
@@ -197,13 +194,12 @@ namespace irc
 		*/
 		void	admin	(Command* cmd)
 		{
-			Server*						server = cmd->getServer();
-			std::vector<std::string>	args = cmd->getArgs();
-			std::string					msg;
+			Server*		server = cmd->getServer();
+			std::string	msg;
 
-			if (args.size() != 0)
+			if (cmd->getArgC() != 0)
 			{
-				msg = args[0];
+				msg = cmd->getArgs()[0];
 				msg += " :No such server";
 				cmd->queue(ERR_NOSUCHSERVER, msg);
 				return ;
@@ -243,12 +239,11 @@ namespace irc
 		*/
 		void	info	(Command* cmd)
 		{
-			std::vector<std::string>	args = cmd->getArgs();
-			std::string					msg;
+			std::string	msg;
 
-			if (args.size() != 0)
+			if (cmd->getArgC() != 0)
 			{
-				msg = args[0];
+				msg = cmd->getArgs()[0];
 				msg += " :No such server";
 				cmd->queue(ERR_NOSUCHSERVER, msg);
 				return ;
