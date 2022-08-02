@@ -17,6 +17,8 @@ namespace irc
 	Channel::Channel(Server* server, const std::string name)
 	:	_server(server)
 	{
+		_prefix = '&';
+		// std::cout << "channel creat name: " << name << " prefix: " << name[0] << std::endl;
 		if (irc::isChPrefix(name[0]))
 		{
 			_name = name.substr(1);
@@ -45,8 +47,38 @@ namespace irc
 	{
 		std::string	str = _server->getPrefix(client) + " ";
 		str += (to_string(RPL_NAMREPLY) + " " + client->getNick());
-		str += (" = " + getFName());
-		
+		if (hasMode('p'))
+			str += " * :";
+		else if (hasMode('s'))
+			str += " @ :";
+		else
+			str += " = :";
+		str += getFName();
+
+		std::string	ustr;
+		clients_t::const_iterator	it = _clients.begin();
+
+		for (size_t i = 0; i < getSize(); ++i)
+		{
+			Client*	cli = _server->getClient(*it);
+			if (!cli)
+				PE("Channel::sendNames tried to getClient a ghost");
+			if ((i % 10) == 0)
+			{
+				if (i)
+					client->queue(str + ustr);
+				ustr = str;
+			}
+			if (ustr.size())
+				ustr += " ";
+			if (hasUserMode(cli, 'O') || hasUserMode(cli, 'o') || cli->hasMode('o'))
+				ustr += "@";
+			ustr += cli->getNick();
+			it++;
+		}
+
+		client->queue(_server->getPrefix(client) + " " + to_string(RPL_ENDOFNAMES)
+					+ " " + client->getNick() + " " + getFName() + " :End of /NAMES list");
 	}
 
 	void	Channel::broadcast(const Client* client, const std::string msg) const
@@ -84,21 +116,31 @@ namespace irc
 		return (_modes.count(c));
 	}
 
+	bool	Channel::hasUserMode(const Client* client, const char c) const
+	{
+		umodes_t::const_iterator	fit = _user_modes.find(client->getFD());
+		if (fit != _user_modes.end())
+			return (fit->second.find(c) != fit->second.end());
+		// PE("Tried to call Channel::hasUserMode on ghost");
+		return (false);
+	}
+
 	void	Channel::addClient(const Client* client)
 	{
 		_clients.insert(client->getFD());
 		if (_invites.count(client->getFD()))
 			_invites.erase(client->getFD());
 
-		const std::string	prefix = _server->getPrefix(client) + " ";
-		client->queue(prefix + to_string(RPL_NAMREPLY) + " " + client->getNick() + " = " + getFName() + " :" + getMembers());
-		client->queue(prefix + to_string(RPL_ENDOFNAMES) + " " + client->getNick() + " " + getFName() + " :End of /NAMES list");
+		// const std::string	prefix = _server->getPrefix(client) + " ";
+		// client->queue(prefix + to_string(RPL_NAMREPLY) + " " + client->getNick() + " = " + getFName() + " :" + getMembers());
+		// client->queue(prefix + to_string(RPL_ENDOFNAMES) + " " + client->getNick() + " " + getFName() + " :End of /NAMES list");
 	}
 
 	void	Channel::rmClient(const Client* client)
 	{
 		if (!isMember(client))
 			PE("Tried to Channel::rmClient on non-member client");
+		_user_modes.erase(client->getFD());
 		_clients.erase(client->getFD());
 	}
 
@@ -150,13 +192,14 @@ namespace irc
 		return (ret);
 	}
 
-	const Channel::modes_t&	Channel::getUserModes(Client* client) const
+	const Channel::modes_t&	Channel::getUserModes(Client* client)
 	{
-		umodes_t::const_iterator	fit = _user_modes.find(client->getFD());
-		if (fit != _user_modes.end())
-			return (fit->second);
-		PE("Tried to call Channel::getUserModes on ghost");
-		return (_user_modes.begin()->second);
+		return (_user_modes[client->getFD()]);
+		// umodes_t::const_iterator	fit = _user_modes.find(client->getFD());
+		// if (fit != _user_modes.end())
+		// 	return (fit->second);
+		// // PE("Tried to call Channel::getUserModes on ghost");
+		// return (_user_modes.begin()->second);
 	}
 
 	std::string	Channel::getUserModestr(Client* client) const

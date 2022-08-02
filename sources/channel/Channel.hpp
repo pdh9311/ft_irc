@@ -41,6 +41,7 @@ namespace irc
 			bool	isMember(const Client* client) const;
 			bool	isMember(const int fd) const;
 			bool	hasMode(const char c) const;
+			bool	hasUserMode(const Client* client, const char c) const;
 			void	addClient(const Client* client);
 			void	rmClient(const Client* client);
 
@@ -52,7 +53,7 @@ namespace irc
 			const clients_t&	getClients() const;
 			const modes_t&		getModes() const;
 			std::string			getModestr() const;
-			const modes_t&		getUserModes(Client* client) const;
+			const modes_t&		getUserModes(Client* client);
 			std::string			getUserModestr(Client* client) const;
 			std::string			getMembers() const;
 			size_t				getSize() const;
