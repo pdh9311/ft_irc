@@ -88,7 +88,7 @@ namespace irc
 			cmd->queue(RPL_LUSERCHANNELS, msg);
 
 			msg = ":I have ";
-			msg += toString(server->getClients().size());	// TODO
+			msg += toString(server->getClients().size());
 			msg += " clients and 1 servers";
 			cmd->queue(RPL_LUSERME, msg);
 		}
@@ -117,7 +117,7 @@ namespace irc
 				cmd->queue(ERR_NOSUCHSERVER, msg);
 				return ;
 			}
-			msg = "version 0.0.1.<debuglevel> ";	// TODO
+			msg = "version 0.0.1 ";
 			msg += server->getName();
 			msg += " :ft_irc server (Member: donpark, sunbchoi, minsunki)";
 			cmd->queue(RPL_VERSION, msg);

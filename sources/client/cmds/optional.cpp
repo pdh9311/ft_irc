@@ -63,17 +63,11 @@ namespace irc
 		*/
 		// RPL_USERHOST
         //    ":[<reply>{<space><reply>}]"
-
-        //    - Reply format used by USERHOST to list replies to
-        //      the query list.  The reply string is composed as
-        //      follows:
-
-        //    <reply> ::= <nick>['*'] '=' <'+'|'-'><hostname>
-
-        //    The '*' indicates whether the client has registered
-        //    as an Operator.  The '-' or '+' characters represent
-        //    whether the client has set an AWAY message or not
-        //    respectively.
+        // - 쿼리 목록에 대한 응답을 나열하기 위해 USERHOST에서 사용하는 응답 형식입니다.
+		//   응답 문자열은 다음과 같이 구성됩니다.:
+        //   <reply> ::= <nick>['*'] '=' <'+'|'-'><hostname>
+        //   '*'는 클라이언트가 운영자로 등록되었는지 여부를 나타냅니다.
+		//   '-' 또는 '+' 문자는 각각 클라이언트가 AWAY 메시지를 설정했는지 여부를 나타냅니다.
 		void	userhost	(Command* cmd)
 		{
 			// Server*		server = cmd->getServer();
@@ -84,6 +78,8 @@ namespace irc
 				cmd->queue(ERR_NEEDMOREPARAMS);
 				return ;
 			}
+			std::cout << cmd->getArgs()[0] << std::endl;
+
 
 		}
 
