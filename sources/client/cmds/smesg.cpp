@@ -48,11 +48,17 @@ namespace irc
 					chcl = ((*chiter).second)->getClients();	// 채널에 있는 수신자들
 					for (chcliter = chcl.begin(); chcliter != chcl.end(); ++chcliter)
 					{
+						// 이름 같은거 말고
 						int chcl_fd = *chcliter;
-						msg = server->getPrefix(server->getClients().at(chcl_fd)) + " ";
-						// msg += to_string(rcode) + " ";
-						msg += sender_msg;
-						server->queue(chcl_fd, msg);
+						if (cmd->getClient()->getNick() != server->getClients().at(chcl_fd)->getNick())
+						{
+							msg = server->getPrefix(cmd->getClient()) + " ";
+							msg += "PRIVMSG ";
+							msg += chiter->second->getFName();
+							msg += " :";
+							msg += sender_msg;
+							server->queue(chcl_fd, msg);
+						}
 					}
 					break ;
 				}
@@ -84,8 +90,10 @@ namespace irc
 				if (nicks[i] == receiver->getNick())
 				{
 					int	receiver_fd = receiver->getFD();
-					msg = server->getPrefix(receiver) + " ";
-					// msg += to_string(rcode) + " ";
+					msg = server->getPrefix(cmd->getClient()) + " ";
+					msg += "PRIVMSG ";
+					msg += receiver->getNick();
+					msg += " :";
 					msg += sender_msg;
 					server->queue(receiver_fd, msg);
 					break ;
