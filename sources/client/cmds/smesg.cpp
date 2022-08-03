@@ -153,7 +153,7 @@ namespace irc
 			for (size_t i = 0; i < nicks.size(); i++)
 			{
 				// 수신자가 채널인 경우 - 채널이 있는지 확인하고, 채널에 있는 사람들에게 보낸다.
-				if (nicks[i][0] == '#')
+				if (nicks[i][0] == '#')		// TODO
 				{
 					if (send_channel(cmd, nicks, i) == false)
 						return ;
@@ -164,9 +164,85 @@ namespace irc
 			}
 		}
 
+		void	nsend_channel(Command* cmd, std::vector<std::string>& nicks, size_t i)
+		{
+			Server*							server = cmd->getServer();
+			std::string						msg;
+			Server::channels_t				channels = server->getChannels();
+			Server::channels_t::iterator	chiter;
+			Channel::clients_t				chcl;
+			Channel::clients_t::iterator	chcliter;
+			std::string						sender_msg = cmd->getArgs()[1].substr(1);
+
+			nicks[i] = nicks[i].substr(1);
+			for (chiter = channels.begin(); chiter != channels.end(); ++chiter)
+			{
+				if (nicks[i] == (*chiter).first)	// 채널을 찾음
+				{
+					chcl = ((*chiter).second)->getClients();	// 채널에 있는 수신자들
+					for (chcliter = chcl.begin(); chcliter != chcl.end(); ++chcliter)
+					{
+						// 이름 같은거 말고
+						int chcl_fd = *chcliter;
+						if (cmd->getClient()->getNick() != server->getClients().at(chcl_fd)->getNick())
+						{
+							msg = server->getPrefix(cmd->getClient()) + " ";
+							msg += "PRIVMSG ";
+							msg += chiter->second->getFName();
+							msg += " :";
+							msg += sender_msg;
+							server->queue(chcl_fd, msg);
+						}
+					}
+					break ;
+				}
+			}
+		}
+
+		void	nsend_receiver(Command* cmd, std::vector<std::string>& nicks, size_t i)
+		{
+			Server*							server = cmd->getServer();
+			std::string						msg;
+			Server::clients_t				clients = server->getClients();
+			Server::clients_t::iterator		cliter;
+			std::string						sender_msg = cmd->getArgs()[1].substr(1);
+			Client*							receiver = NULL;
+
+			for (cliter = clients.begin(); cliter != clients.end(); ++cliter)
+			{
+				receiver = (*cliter).second;
+				if (nicks[i] == receiver->getNick())
+				{
+					int	receiver_fd = receiver->getFD();
+					msg = server->getPrefix(cmd->getClient()) + " ";
+					msg += "PRIVMSG ";
+					msg += receiver->getNick();
+					msg += " :";
+					msg += sender_msg;
+					server->queue(receiver_fd, msg);
+					break ;
+				}
+			}
+		}
+
+
 		void	notice	(Command* cmd)
 		{
-			privmsg(cmd);
+			std::string						msg;
+			std::vector<std::string>		nicks = split(cmd->getArgs()[0]);
+			std::string						sender_msg = cmd->getArgs()[1].substr(1);
+
+			// 수신자가 채널인지 아닌지 판단. // 수신자가 현재 서버에 존재하는지 확인
+			for (size_t i = 0; i < nicks.size(); i++)
+			{
+				// 수신자가 채널인 경우 - 채널이 있는지 확인하고, 채널에 있는 사람들에게 보낸다.
+				if (nicks[i][0] == '#')		// TODO
+				{
+					nsend_channel(cmd, nicks, i);
+					continue ;
+				}
+				nsend_receiver(cmd, nicks, i);
+			}
 		}
 	}
 }

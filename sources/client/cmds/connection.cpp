@@ -89,11 +89,12 @@ namespace irc
 			{
 				if (it->second->getNick() == nick)
 				{
-					msg = ":" + nick + "_" + "!" + nick + "_" + "@" + cmd->getServer()->getName() + " ";
-					msg += to_string(ERR_NICKNAMEINUSE) + " ";
-					msg += nick + "_" + " :Nickname is already in use";
-					// msg = nick + " :Nickname is already in use";
-					// cmd->queue(ERR_NICKNAMEINUSE, msg);
+					// msg = ":" + nick + "!" + nick + "@" + cmd->getServer()->getName() + " ";
+					// msg += to_string(ERR_NICKNAMEINUSE) + " ";
+					// msg += nick + " :Nickname is already in use";
+					// cmd->queue(msg);
+					msg = nick + " :Nickname is already in use";
+					cmd->queue(ERR_NICKNAMEINUSE, msg);
 					return ;
 				}
 				++it;
@@ -133,11 +134,12 @@ namespace irc
 			{
 				if (it->second->getUserName() == username)
 				{
-					msg = ":" + username + "_" + "!" + username + "_" + "@" + cmd->getServer()->getName() + " ";
-					msg += to_string(ERR_NICKNAMEINUSE) + " ";
-					msg += username + "_" + " :Nickname is already in use";
-					// msg = ":Unauthorized command (already registered)";
-					// cmd->queue(ERR_ALREADYREGISTRED, msg);
+					// msg = ":" + username + "!" + username + "@" + cmd->getServer()->getName() + " ";
+					// msg += to_string(ERR_NICKNAMEINUSE) + " ";
+					// msg += username + " :Nickname is already in use";
+					// cmd->queue(msg);
+					msg = ":Unauthorized command (already registered)";
+					cmd->queue(ERR_ALREADYREGISTRED, msg);
 					return ;
 				}
 				++it;
