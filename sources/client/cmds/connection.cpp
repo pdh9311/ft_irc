@@ -29,21 +29,15 @@ namespace irc
 				cmd->queue(ERR_NEEDMOREPARAMS);
 				return ;
 			}
-			const std::string&	pwd = cmd->getArgs()[0];
-
-			std::cout << pwd << std::endl;
-
 			if (cmd->getClient()->isLoggedIn())
 			{
-				msg = ":You may not reregister";
+				msg = ":Unauthorized command (already registered)";
 				cmd->queue(ERR_ALREADYREGISTRED, msg);
 				return ;
 			}
-			if (pwd == server->getPass())	// if (pwd == "TODO:: PASSWORD")
-			{
-				std::cout << "test" << std::endl;
+			const std::string&	pwd = cmd->getArgs()[0];
+			if (pwd == server->getPass())
 				cmd->getClient()->setStatus(Client::AUTH);
-			}
 			else // is this needed?
 				cmd->getClient()->setStatus(Client::PENDING);
 		}
@@ -95,8 +89,11 @@ namespace irc
 			{
 				if (it->second->getNick() == nick)
 				{
-					msg = nick + " :Nickname is already in use";
-					cmd->queue(ERR_NICKNAMEINUSE, msg);
+					msg = ":" + nick + "_" + "!" + nick + "_" + "@" + cmd->getServer()->getName() + " ";
+					msg += to_string(ERR_NICKNAMEINUSE) + " ";
+					msg += nick + "_" + " :Nickname is already in use";
+					// msg = nick + " :Nickname is already in use";
+					// cmd->queue(ERR_NICKNAMEINUSE, msg);
 					return ;
 				}
 				++it;
@@ -136,8 +133,11 @@ namespace irc
 			{
 				if (it->second->getUserName() == username)
 				{
-					msg = ":You may not reregister";
-					cmd->queue(ERR_ALREADYREGISTRED, msg);
+					msg = ":" + username + "_" + "!" + username + "_" + "@" + cmd->getServer()->getName() + " ";
+					msg += to_string(ERR_NICKNAMEINUSE) + " ";
+					msg += username + "_" + " :Nickname is already in use";
+					// msg = ":Unauthorized command (already registered)";
+					// cmd->queue(ERR_ALREADYREGISTRED, msg);
 					return ;
 				}
 				++it;

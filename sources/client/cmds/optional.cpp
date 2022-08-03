@@ -82,6 +82,7 @@ namespace irc
 		//   '-' 또는 '+' 문자는 각각 클라이언트가 AWAY 메시지를 설정했는지 여부를 나타냅니다.
 		void	userhost	(Command* cmd)
 		{
+			(void)cmd;
 			// Server*						server = cmd->getServer();
 			// std::string					msg;
 			// std::vector<std::string>	nicks = split(cmd->getArgs()[0], ' ');
