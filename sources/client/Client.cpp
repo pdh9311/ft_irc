@@ -24,8 +24,8 @@ namespace irc
 			Command	cmd(this, _server, _buf.substr(cur, fpos - cur));
 			cmd.run();
 			cur = fpos + 2;
-			_buf.erase(0, _buf.find_last_of('\n') + 2);
 		}
+		_buf.erase(0, _buf.find_last_of('\n') + 2);
 
 		return (ret);
 	}
@@ -35,7 +35,7 @@ namespace irc
 {
 	Client::Client (const int& fd, Server* server)
 	:	_fd(fd), _server(server), _cchannel(NULL),
-		_last_ping(std::time(0)), _status(PENDING)
+		_last_ping(std::time(0)), _status(PENDING), _welcome(0)
 	{
 		if (!server->getPass().size())	// 서버의 비밀번호가 없는 경우에도 사용할 수 있도록 하기 위함.
 			_status = AUTH;
@@ -124,6 +124,10 @@ namespace irc
 		return (_cchannel);
 	}
 
+	int	Client::getWelcome() const {
+		return (_welcome);
+	}
+
 	bool	Client::hasMode(char c) const
 	{
 		return (_modes.count(c));
@@ -203,5 +207,10 @@ namespace irc
 	void	Client::setStatus(const char status)
 	{
 		_status = status;
+	}
+
+	void	Client::setWelcome(int i)
+	{
+		_welcome = i;
 	}
 }

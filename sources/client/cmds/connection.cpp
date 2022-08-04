@@ -77,10 +77,12 @@ namespace irc
 
 			if (nick.size() > 9 || !isNickStr(nick))
 			{
-				msg = ":" + nick + "!" + nick + "@" + cmd->getServer()->getName() + " ";
-				msg += to_string(ERR_ERRONEUSNICKNAME) + " ";
-				msg += nick + " :Erroneus nickname";
-				cmd->queue(msg);
+				// msg = ":" + nick + "!" + nick + "@" + cmd->getServer()->getName() + " ";
+				// msg += to_string(ERR_ERRONEUSNICKNAME) + " ";
+				// msg += nick + " :Erroneus nickname";
+				// cmd->queue(msg);
+				msg = ":Erroneus nickname";
+				cmd->queue(ERR_ERRONEUSNICKNAME, msg);
 				return ;
 			}
 
@@ -98,15 +100,21 @@ namespace irc
 				}
 				++it;
 			}
+			std::cout << "===========" << std::endl;
 			// ERR_NICKCOLLISION? check if it's S2S
 			Client* client = cmd->getClient();
+
+			std::cout << "1: " << client->getWelcome() << std::endl;
+
+			std::cout << "2 :" << client->getNick() << std::endl;
 			client->setNick(cmd->getArgs()[0]);
-			if (client->getStatus() == Client::LOGGEDIN)
+			std::cout << "3 :" << client->getNick() << std::endl;
+
+			if (client->getStatus() == Client::LOGGEDIN && client->getWelcome() == 0)
 			{
-				msg = ":Welcome to the Internet Relay Network ";
+				msg = ":@@Welcome to the Internet Relay Network ";
 				msg += client->getNick() + "!" + client->getUserName() + "@" + cmd->getServer()->getName();
 				cmd->queue(RPL_WELCOME, msg);
-
 				motd(cmd);
 			}
 		}
@@ -150,6 +158,8 @@ namespace irc
 			client->setStatus(Client::LOGGEDIN);
 			if (!client->getNick().empty())
 			{
+				client->setWelcome(1);
+				std::cout << "4: " << client->getWelcome() << std::endl;
 				msg = ":Welcome to the Internet Relay Network ";
 				msg += client->getNick() + "!" + client->getUserName() + "@" + server->getName();
 				cmd->queue(RPL_WELCOME, msg);
