@@ -23,9 +23,8 @@ void	irc::cmd::names(Command* cmd)
 	while (it != chans.end())
 	{
 		Channel*	chan = serv->getChannel(*it);
-		if (!chan)
-			continue ; //no error reply per rfc
-		chan->sendNames(cli);
+		if (chan) // no err msg for unknown channel per rfc
+			chan->sendNames(cli);
 		++it;
 	}
 }

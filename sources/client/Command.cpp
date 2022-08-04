@@ -87,7 +87,7 @@ namespace irc
 		}
 
 		while (str[cur] == ' ') cur++;
-
+	
 		fpos = str.find(' ', cur);
 		_command = str.substr(cur, fpos - cur);
 		for (size_t i = 0; i < _command.size(); ++i)
@@ -109,7 +109,7 @@ namespace irc
 			cur = fpos;
 		}
 
-		if (_args.back()[0] == ':')
+		if (_args.size() && _args.back()[0] == ':')
 		{
 			_trailing = _args.back();
 			_args.pop_back();
@@ -216,7 +216,9 @@ namespace irc
 			case ERR_NEEDMOREPARAMS:
 				str += (getCommand() + " :Not enough parameters");
 				break ;
-
+			case ERR_NOPRIVILEGES:
+				str += " :Permission Denied- You're not an IRC operator";
+				break ;
 		}
 
 		_client->queue(str);
