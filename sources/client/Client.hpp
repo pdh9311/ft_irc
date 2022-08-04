@@ -40,7 +40,7 @@ namespace irc
 			std::string		_last_nick;
 			std::string		_away_msg;
 			mode_t			_modes;
-			int 			_welcome;
+			bool			_welcome;
 
 			int		parse();
 
@@ -63,7 +63,7 @@ namespace irc
 			bool				hasMode(char c) const;
 			bool				isLoggedIn() const;
 			const std::string&	getAwayMsg() const;
-			int				getWelcome() const;
+			bool				getWelcome() const;
 
 			void	setAwayMsg(const std::string& msg);
 			void	setLastPing(const time_t& time);
@@ -76,7 +76,7 @@ namespace irc
 			void	unsetMode(const char c);
 			void	setCChannel(Channel* channel);
 			void	setStatus(const char status);
-			void	setWelcome(int i);
+			void	setWelcome(bool i);
 	};
 }
 

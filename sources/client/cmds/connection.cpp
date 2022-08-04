@@ -88,6 +88,7 @@ namespace irc
 
 			const Server::clients_t&			clients = cmd->getServer()->getClients();
 			Server::clients_t::const_iterator	it = clients.begin();
+			Client* client = cmd->getClient();
 			while (it != clients.end())
 			{
 				if (it->second->getNick() == nick)
@@ -100,23 +101,22 @@ namespace irc
 				}
 				++it;
 			}
-			std::cout << "===========" << std::endl;
 			// ERR_NICKCOLLISION? check if it's S2S
-			Client* client = cmd->getClient();
 
-			std::cout << "1: " << client->getWelcome() << std::endl;
+			client->setNick(nick);
 
-			std::cout << "2 :" << client->getNick() << std::endl;
-			client->setNick(cmd->getArgs()[0]);
-			std::cout << "3 :" << client->getNick() << std::endl;
-
+			msg = ": NICK :" + cmd->getArgs()[0];
+			cmd->queue(msg);
 			if (client->getStatus() == Client::LOGGEDIN && client->getWelcome() == 0)
 			{
 				msg = ":@@Welcome to the Internet Relay Network ";
 				msg += client->getNick() + "!" + client->getUserName() + "@" + cmd->getServer()->getName();
 				cmd->queue(RPL_WELCOME, msg);
+
 				motd(cmd);
+				client->setWelcome(1);
 			}
+
 		}
 
 		/*
@@ -145,7 +145,7 @@ namespace irc
 
 			if (cmd->getClient()->isLoggedIn())
 			{
-				msg = ":" + username + "!" + username + "@" + cmd->getServer()->getName() + " ";
+				msg = ":" + cmd->getClient()->getNick() + "!" + username + "@" + cmd->getServer()->getName() + " ";
 				msg += to_string(ERR_ALREADYREGISTRED) + " ";
 				msg += username + " :Unauthorized command (already registered)";
 				cmd->queue(msg);
@@ -158,8 +158,7 @@ namespace irc
 			client->setStatus(Client::LOGGEDIN);
 			if (!client->getNick().empty())
 			{
-				client->setWelcome(1);
-				std::cout << "4: " << client->getWelcome() << std::endl;
+				client->setWelcome(true);
 				msg = ":Welcome to the Internet Relay Network ";
 				msg += client->getNick() + "!" + client->getUserName() + "@" + server->getName();
 				cmd->queue(RPL_WELCOME, msg);
