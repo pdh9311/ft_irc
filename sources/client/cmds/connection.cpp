@@ -63,7 +63,7 @@ namespace irc
 
 			if (cmd->getArgC() < 1)
 			{
-				msg = nick + " : No nickname given";
+				msg = ":No nickname given";
 				cmd->queue(ERR_NONICKNAMEGIVEN, msg);	// no arg
 				return ;
 			}
@@ -79,7 +79,7 @@ namespace irc
 			{
 				msg = ":" + nick + "!" + nick + "@" + cmd->getServer()->getName() + " ";
 				msg += to_string(ERR_ERRONEUSNICKNAME) + " ";
-				msg += " :Erroneus nickname";
+				msg += nick + " :Erroneus nickname";
 				cmd->queue(msg);
 				return ;
 			}
@@ -167,7 +167,7 @@ namespace irc
 		{
 			if (cmd->getArgC() < 2)
 				cmd->queue(ERR_NEEDMOREPARAMS);
-			
+
 			Server*				serv = cmd->getServer();
 			Client*				cli = cmd->getClient();
 			const std::string&	oper_nick = serv->conf.get_O().getNickname();
@@ -175,7 +175,7 @@ namespace irc
 
 			if (oper_nick.empty() || oper_pwd.empty())
 				cmd->queue(ERR_NOOPERHOST, ":No O-lines for your host");
-			
+
 			const std::string&	nick = cmd->getArgs()[0];
 			const std::string&	pwd = cmd->getArgs()[1];
 
