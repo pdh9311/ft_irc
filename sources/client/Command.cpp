@@ -87,7 +87,7 @@ namespace irc
 		}
 
 		while (str[cur] == ' ') cur++;
-
+	
 		fpos = str.find(' ', cur);
 		_command = str.substr(cur, fpos - cur);
 		for (size_t i = 0; i < _command.size(); ++i)
@@ -107,6 +107,12 @@ namespace irc
 			if (!tmp.empty())
 				_args.push_back(str.substr(cur, fpos - cur));
 			cur = fpos;
+		}
+
+		if (_args.size() && _args.back()[0] == ':')
+		{
+			_trailing = _args.back();
+			_args.pop_back();
 		}
 	}
 
@@ -169,6 +175,11 @@ namespace irc
 		return (_command);
 	}
 
+	const std::string&	Command::getTrailing()
+	{
+		return (_trailing);
+	}
+
 	const std::vector<std::string>&	Command::getArgs()
 	{
 		return (_args);
@@ -205,7 +216,9 @@ namespace irc
 			case ERR_NEEDMOREPARAMS:
 				str += (getCommand() + " :Not enough parameters");
 				break ;
-
+			case ERR_NOPRIVILEGES:
+				str += " :Permission Denied- You're not an IRC operator";
+				break ;
 		}
 
 		_client->queue(str);

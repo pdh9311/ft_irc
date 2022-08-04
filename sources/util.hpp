@@ -18,4 +18,5 @@ namespace irc
 	bool						isSpecialC(const char c);
 	bool						isSpecialStr(const std::string& str);
 	bool						isNickStr(const std::string& str);
+	bool						isChPrefix(const char c);
 }

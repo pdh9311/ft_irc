@@ -27,6 +27,7 @@ namespace irc
 			fp							_func;
 			std::string					_prefix;
 			std::string					_command;
+			std::string					_trailing;
 			std::vector<std::string>	_args;
 
 			void	parse(const std::string& str);
@@ -43,6 +44,7 @@ namespace irc
 			Server*							getServer();
 			const std::string&				getPrefix();
 			const std::string&				getCommand();
+			const std::string&				getTrailing();
 			const std::vector<std::string>&	getArgs();
 			int								getArgC();
 

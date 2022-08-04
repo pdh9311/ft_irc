@@ -118,7 +118,7 @@ namespace irc
 			Server*		server = cmd->getServer();
 			std::string	msg;
 
-			if (cmd->getArgC() < 4)
+			if (cmd->getArgC() < 3) // 1 is trailing
 			{
 				cmd->queue(ERR_NEEDMOREPARAMS);
 				return ;
@@ -162,7 +162,27 @@ namespace irc
 
 		void	oper(Command* cmd)
 		{
-			(void)cmd;
+			if (cmd->getArgC() < 2)
+				cmd->queue(ERR_NEEDMOREPARAMS);
+			
+			Server*				serv = cmd->getServer();
+			Client*				cli = cmd->getClient();
+			const std::string&	oper_nick = serv->conf.get_O().getNickname();
+			const std::string&	oper_pwd = serv->conf.get_O().getPassword();
+
+			if (oper_nick.empty() || oper_pwd.empty())
+				cmd->queue(ERR_NOOPERHOST, ":No O-lines for your host");
+			
+			const std::string&	nick = cmd->getArgs()[0];
+			const std::string&	pwd = cmd->getArgs()[1];
+
+			if (nick != oper_nick)
+				return ;
+			if (pwd != oper_pwd)
+				return (cmd->queue(ERR_PASSWDMISMATCH, ":Password Incorrect"));
+			cmd->queue(RPL_YOUREOPER, ":You are now an IRC operator");
+			cli->setMode('o');
+			cmd->queue(RPL_UMODEIS, "+ " + cli->getModestr());
 		}
 
 		void	quit(Command* cmd)
@@ -173,7 +193,17 @@ namespace irc
 
 		void	squit(Command* cmd)
 		{
-			(void)cmd;
+			if (cmd->getArgC() < 2)
+				return ;
+			Server*	serv = cmd->getServer();
+			Client*	cli = cmd->getClient();
+			const std::string&	name = cmd->getArgs()[0];
+
+			if (!cli->hasMode('o'))
+				return (cmd->queue(ERR_NOPRIVILEGES));
+			return (cmd->queue(ERR_NOSUCHSERVER, name + " :No such server"));
+
+			// cmd->queue(ERR_NOSUCHSERVER, "")
 		}
 	}
 }

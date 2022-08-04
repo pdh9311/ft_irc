@@ -19,8 +19,8 @@ void	irc::cmd::part(Command* cmd)
 
 		if (!chan->isMember(cli))
 			return (cmd->queue(ERR_NOTONCHANNEL, chan->getName() + " :You're not on that channel"));
+		chan->broadcast(cli, "PART " + chan->getFName() + cmd->getTrailing());
 		chan->rmClient(cli);
-		chan->broadcast(cli, "PART " + chan->getFName() + " :does this msg count?");
 
 		if (chan->getSize() == 0)
 			serv->rmChannel(chan);

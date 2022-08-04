@@ -27,9 +27,10 @@ void	irc::cmd::join(Command *cmd)
 	for (size_t i = 0; i < channs.size(); ++i)
 	{
 		const std::string&	name = channs[i];
-
-		if (name[0] != '#')
-			return (cmd->queue(ERR_NOSUCHCHANNEL, name + " :No such server"));
+		
+		// std::cout << "sanity check:" << name << std::endl;
+		// if (name[0] != '#')
+		// 	return (cmd->queue(ERR_NOSUCHCHANNEL, name + " :No such server"));
 		Channel*	chan = serv->getChannel(name);
 		if (!chan)
 			chan = serv->addChannel(name);
@@ -55,7 +56,7 @@ void	irc::cmd::join(Command *cmd)
 
 		chan->addClient(cli);
 		cli->setCChannel(chan);
-
+		chan->sendNames(cli);
 		chan->broadcast(cli, "JOIN :" + chan->getFName());
 	}
 
