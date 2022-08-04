@@ -56,19 +56,18 @@ namespace irc
 				ERR_NICKNAMEINUSE
 				ERR_NICKCOLLISION
 		*/
-		// <nick>       ::= <letter> { <letter> | <number> | <special> }
 		void	nick(Command* cmd)
 		{
-			std::string	msg;
+			std::string			msg;
+			const std::string&	nick = cmd->getArgs()[0];
 
 			if (cmd->getArgC() < 1)
 			{
-				msg = ":No nickname given";
+				msg = nick + " : No nickname given";
 				cmd->queue(ERR_NONICKNAMEGIVEN, msg);	// no arg
 				return ;
 			}
 
-			const std::string&	nick = cmd->getArgs()[0];
 			if (!nick.size())
 			{
 				msg = ":No nickname given";
@@ -78,8 +77,10 @@ namespace irc
 
 			if (nick.size() > 9 || !isNickStr(nick))
 			{
-				msg = nick + " :Erroneus nickname";
-				cmd->queue(ERR_ERRONEUSNICKNAME, msg);
+				msg = ":" + nick + "!" + nick + "@" + cmd->getServer()->getName() + " ";
+				msg += to_string(ERR_ERRONEUSNICKNAME) + " ";
+				msg += " :Erroneus nickname";
+				cmd->queue(msg);
 				return ;
 			}
 
@@ -89,18 +90,25 @@ namespace irc
 			{
 				if (it->second->getNick() == nick)
 				{
-					// msg = ":" + nick + "!" + nick + "@" + cmd->getServer()->getName() + " ";
-					// msg += to_string(ERR_NICKNAMEINUSE) + " ";
-					// msg += nick + " :Nickname is already in use";
-					// cmd->queue(msg);
-					msg = nick + " :Nickname is already in use";
-					cmd->queue(ERR_NICKNAMEINUSE, msg);
+					msg = ": ";
+					msg = to_string(ERR_NICKNAMEINUSE) + " * ";
+					msg += nick + " :Nickname is already in use";
+					cmd->queue(msg);
 					return ;
 				}
 				++it;
 			}
 			// ERR_NICKCOLLISION? check if it's S2S
-			cmd->getClient()->setNick(cmd->getArgs()[0]);
+			Client* client = cmd->getClient();
+			client->setNick(cmd->getArgs()[0]);
+			if (client->getStatus() == Client::LOGGEDIN)
+			{
+				msg = ":Welcome to the Internet Relay Network ";
+				msg += client->getNick() + "!" + client->getUserName() + "@" + cmd->getServer()->getName();
+				cmd->queue(RPL_WELCOME, msg);
+
+				motd(cmd);
+			}
 		}
 
 		/*
@@ -127,32 +135,27 @@ namespace irc
 			const std::string&	username = cmd->getArgs()[0];
 			const std::string&	realname = cmd->getArgs()[3];
 
-			const Server::clients_t&			clients = cmd->getServer()->getClients();
-			Server::clients_t::const_iterator	it = clients.begin();
-
-			while (it != clients.end())
+			if (cmd->getClient()->isLoggedIn())
 			{
-				if (it->second->getUserName() == username)
-				{
-					// msg = ":" + username + "!" + username + "@" + cmd->getServer()->getName() + " ";
-					// msg += to_string(ERR_NICKNAMEINUSE) + " ";
-					// msg += username + " :Nickname is already in use";
-					// cmd->queue(msg);
-					msg = ":Unauthorized command (already registered)";
-					cmd->queue(ERR_ALREADYREGISTRED, msg);
-					return ;
-				}
-				++it;
+				msg = ":" + username + "!" + username + "@" + cmd->getServer()->getName() + " ";
+				msg += to_string(ERR_ALREADYREGISTRED) + " ";
+				msg += username + " :Unauthorized command (already registered)";
+				cmd->queue(msg);
+				return ;
 			}
 
 			Client*	client = cmd->getClient();
 			client->setUserName(username);
 			client->setRealName(realname);
 			client->setStatus(Client::LOGGEDIN);
-			msg = "Welcome to the Internet Relay Network ";
-			msg += client->getNick() + "!" + client->getUserName() + "@" + server->getName();
-			cmd->queue(RPL_WELCOME, msg);
-			motd(cmd);
+			if (!client->getNick().empty())
+			{
+				msg = ":Welcome to the Internet Relay Network ";
+				msg += client->getNick() + "!" + client->getUserName() + "@" + server->getName();
+				cmd->queue(RPL_WELCOME, msg);
+
+				motd(cmd);
+			}
 		}
 
 		void	server(Command* cmd)
