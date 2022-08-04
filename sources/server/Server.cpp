@@ -246,9 +246,9 @@ namespace irc
 
 	Channel*	Server::addChannel(std::string name)
 	{
-		if (name[0] == '#' || name[0] == '&')
-			name = name.substr(1, std::string::npos);
 		Channel*	channel = new Channel(this, name);
+		if (name[0] == '#' || name[0] == '&')
+			name = name.substr(1);
 		_channels.insert(std::make_pair(name, channel));
 		return (channel);
 	}
@@ -285,7 +285,7 @@ namespace irc
 
 	Channel*	Server::getChannel(std::string name) const
 	{
-		if (name[0] == '#' || name[0] == '&')
+		if (isChPrefix(name[0]))
 			name = name.substr(1);
 		if (hasChannel(name))
 			return (_channels.find(name)->second);
@@ -294,7 +294,7 @@ namespace irc
 
 	bool	Server::hasChannel(std::string name) const
 	{
-		if (name[0] == '#' || name[0] == '&')
+		if (isChPrefix(name[0]))
 			name = name.substr(1);
 		return (_channels.count(name));
 	}

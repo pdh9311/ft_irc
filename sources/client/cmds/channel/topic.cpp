@@ -3,13 +3,29 @@
 void	irc::cmd::topic(Command* cmd)
 {
 	if (!cmd->getArgC())
-		cmd->setResult(ERR_NEEDMOREPARAMS);
+		cmd->queue(ERR_NEEDMOREPARAMS);
 	const std::string&	name = cmd->getArgs()[0];
-	if (!cmd->getServer()->hasChannel(name))
-		return (cmd->setResult(ERR_NOSUCHCHANNEL));
+	const std::string	topic = cmd->getTrailing();
+	Server*				serv = cmd->getServer();
+	Client*				cli = cmd->getClient();
+	Channel*			chan = serv->getChannel(name);
 
-	Channel*		channel = cmd->getServer()->getChannel(name);
-	if (channel->getTopic().empty())
-		return (cmd->setResult(RPL_NOTOPIC));
-	return (cmd->setResult(RPL_TOPIC, channel->getTopic()));
+	if (!chan)
+		return (cmd->queue(ERR_NOSUCHCHANNEL, name + " :No such channel"));
+	if (!chan->isMember(cli))
+		return (cmd->queue(ERR_NOTONCHANNEL, chan->getFName() + " :You're not on that channel"));
+
+	if (topic.empty())
+	{
+		if (chan->getTopic().empty())
+			return (cmd->queue(RPL_NOTOPIC, chan->getFName() + " :No topic is set"));
+		return (cmd->queue(RPL_TOPIC, chan->getTopic()));
+	}
+	else
+	{
+		if (chan->hasMode('t') && !(chan->hasUserMode(cli, 'o') || chan->hasUserMode(cli, 'O')))
+		 	return (cmd->queue(ERR_CHANOPRIVSNEEDED, chan->getFName() + " :You're not channel operator"));
+		chan->setTopic(topic);
+		chan->broadcast(cli, "TOPIC " + chan->getFName() + " :" + chan->getTopic());	
+	}
 }

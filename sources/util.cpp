@@ -154,4 +154,9 @@ namespace irc
 		}
 		return (true);
 	}
+
+	bool	isChPrefix(const char c)
+	{
+		return (c == '#' || c == '&' || c == '!' || c == '+');
+	}
 }

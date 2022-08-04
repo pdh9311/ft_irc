@@ -24,9 +24,9 @@ namespace irc
 			Command	cmd(this, _server, _buf.substr(cur, fpos - cur));
 			cmd.run();
 			cur = fpos + 2;
+			_buf.erase(0, _buf.find_last_of('\n') + 2);
 		}
 
-		_buf.erase(0, _buf.find_last_of('\n') + 2);
 		return (ret);
 	}
 }
