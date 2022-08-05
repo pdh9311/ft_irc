@@ -96,8 +96,12 @@ void	irc::cmd::kick(Command* cmd)
 		return ;
 	}
 
-	// ERR_CHANOPRIVSNEEDED
-	// 	"<channel> :You're not channel operator"
+	if (channel->hasUserMode(cmd->getClient(), 'o') == false)
+	{
+		msg = channel_name + " :You're not channel operator";
+		cmd->queue(ERR_CHANOPRIVSNEEDED, msg);
+		return ;
+	}
 
 	clients.erase(*it);
 
