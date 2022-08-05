@@ -58,7 +58,8 @@ namespace irc
 		*/
 		void	nick(Command* cmd)
 		{
-			std::string			msg;
+			Server*	server = cmd->getServer();
+			std::string	msg;
 			const std::string&	nick = cmd->getArgs()[0];
 
 			if (cmd->getArgC() < 1)
@@ -77,10 +78,6 @@ namespace irc
 
 			if (nick.size() > 9 || !isNickStr(nick))
 			{
-				// msg = ":" + nick + "!" + nick + "@" + cmd->getServer()->getName() + " ";
-				// msg += to_string(ERR_ERRONEUSNICKNAME) + " ";
-				// msg += nick + " :Erroneus nickname";
-				// cmd->queue(msg);
 				msg = ":Erroneus nickname";
 				cmd->queue(ERR_ERRONEUSNICKNAME, msg);
 				return ;
@@ -104,8 +101,17 @@ namespace irc
 			// ERR_NICKCOLLISION? check if it's S2S
 
 			client->setNick(nick);
-
-			msg = ": NICK :" + cmd->getArgs()[0];
+			if (client->getPastName().empty())
+				client->setPastName(nick);
+			// msg = ": NICK :" + cmd->getArgs()[0];
+			// cmd->queue(msg);
+			msg = ":";
+			if (client->getWelcome() == true)
+			{
+				msg += client->getPastName(); + "!" + client->getUserName() + "@" + server->getName();
+				client->setPastName(client->getNick());
+			}
+			msg += " NICK :" + cmd->getArgs()[0];
 			cmd->queue(msg);
 			if (client->getStatus() == Client::LOGGEDIN && client->getWelcome() == 0)
 			{
@@ -115,8 +121,26 @@ namespace irc
 
 				motd(cmd);
 				client->setWelcome(1);
-			}
 
+				// 직접 whois 응답 비슷하게 임의로 만들어서 넣어주는 방식..
+				// > :ubuntu_!ubuntu@localhost 221 ubuntu_ +wi
+				// > :ubuntu_!ubuntu@localhost 311 ubuntu_ ubuntu ubuntu localhost * :Ubuntu
+				// > :ubuntu_!ubuntu@localhost 318 ubuntu_ ubuntu :End of /WHOIS list
+				// msg = ":" + client->getNick() + "!" + client->getUserName() + "@" + server->getName() + " 221 " + client->getNick() + " +wi";
+				// cmd->queue(msg);
+				// msg = ":" + client->getNick() + "!" + client->getUserName() + "@" + server->getName() + " 331 " + client->getNick() + " ";
+				// msg += client->getUserName() + " " + client->getUserName() + " " + server->getName() + " * :donpark";
+				// cmd->queue(msg);
+				// msg = ":" + client->getNick() + "!" + client->getUserName() + "@" + server->getName() + " 338 " + client->getNick() + " ";
+				// msg += client->getUserName() + ":End of /WHOIS list";
+				// cmd->queue(msg);
+
+				// TODO 직접 다시 nick 메시지 보내서 그냥 해결....... whois 응답 필요
+				msg = ":" + client->getPastName() + "!" + client->getUserName() + "@" + server->getName();
+				msg += " NICK :" + cmd->getArgs()[0];
+				cmd->queue(msg);
+				client->setPastName(client->getNick());
+			}
 		}
 
 		/*

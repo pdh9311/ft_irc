@@ -87,7 +87,7 @@ namespace irc
 		}
 
 		while (str[cur] == ' ') cur++;
-	
+
 		fpos = str.find(' ', cur);
 		_command = str.substr(cur, fpos - cur);
 		for (size_t i = 0; i < _command.size(); ++i)
@@ -199,6 +199,16 @@ namespace irc
 	{
 		std::string	str = _server->getPrefix(_client) + " ";
 		str += (to_string(rcode) + " ");
+		str += (_client->getNick() + " ");
+		str += msg;
+
+		_client->queue(str);
+	}
+
+	void	Command::queue(const std::string& rcode, const std::string msg)
+	{
+		std::string	str = _server->getPrefix(_client) + " ";
+		str += rcode + " ";
 		str += (_client->getNick() + " ");
 		str += msg;
 

@@ -41,6 +41,7 @@ namespace irc
 			std::string		_away_msg;
 			mode_t			_modes;
 			bool			_welcome;
+			std::string		_past_name;
 
 			int		parse();
 
@@ -64,6 +65,7 @@ namespace irc
 			bool				isLoggedIn() const;
 			const std::string&	getAwayMsg() const;
 			bool				getWelcome() const;
+			const std::string&	getPastName() const;
 
 			void	setAwayMsg(const std::string& msg);
 			void	setLastPing(const time_t& time);
@@ -77,6 +79,7 @@ namespace irc
 			void	setCChannel(Channel* channel);
 			void	setStatus(const char status);
 			void	setWelcome(bool i);
+			void	setPastName(const std::string& name);
 	};
 }
 

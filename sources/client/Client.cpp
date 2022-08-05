@@ -52,7 +52,7 @@ namespace irc
 		char	buf[512 + 1];
 
 		rs = ::recv(_fd, buf, 512, 0), DBG(-1, rs, "recv");
-
+		// std::cout << "nc command test " << buf << std::endl;	// TEST
 		if (rs == 0)
 		{
 			// check if quit was received, if not, generate appropriate quit message
@@ -213,6 +213,16 @@ namespace irc
 	void	Client::setWelcome(bool i)
 	{
 		_welcome = i;
+	}
+
+
+	const std::string&	Client::getPastName() const
+	{
+		return _past_name;
+	}
+	void	Client::setPastName(const std::string& name)
+	{
+		_past_name = name;
 	}
 
 }
