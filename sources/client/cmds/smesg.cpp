@@ -153,7 +153,7 @@ namespace irc
 			for (size_t i = 0; i < nicks.size(); i++)
 			{
 				// 수신자가 채널인 경우 - 채널이 있는지 확인하고, 채널에 있는 사람들에게 보낸다.
-				if (nicks[i][0] == '#')		// TODO
+				if (isChPrefix(nicks[i][0]))
 				{
 					if (send_channel(cmd, nicks, i) == false)
 						return ;
@@ -225,7 +225,6 @@ namespace irc
 			}
 		}
 
-
 		void	notice	(Command* cmd)
 		{
 			std::string						msg;
@@ -236,7 +235,7 @@ namespace irc
 			for (size_t i = 0; i < nicks.size(); i++)
 			{
 				// 수신자가 채널인 경우 - 채널이 있는지 확인하고, 채널에 있는 사람들에게 보낸다.
-				if (nicks[i][0] == '#')		// TODO
+				if (isChPrefix(nicks[i][0]))
 				{
 					nsend_channel(cmd, nicks, i);
 					continue ;

@@ -87,7 +87,7 @@ namespace irc
 		}
 
 		while (str[cur] == ' ') cur++;
-	
+
 		fpos = str.find(' ', cur);
 		_command = str.substr(cur, fpos - cur);
 		for (size_t i = 0; i < _command.size(); ++i)

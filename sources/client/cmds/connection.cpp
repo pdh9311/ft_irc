@@ -56,10 +56,11 @@ namespace irc
 				ERR_NICKNAMEINUSE
 				ERR_NICKCOLLISION
 		*/
-		// <nick>       ::= <letter> { <letter> | <number> | <special> }
 		void	nick(Command* cmd)
 		{
+			Server*	server = cmd->getServer();
 			std::string	msg;
+			const std::string&	nick = cmd->getArgs()[0];
 
 			if (cmd->getArgC() < 1)
 			{
@@ -68,7 +69,6 @@ namespace irc
 				return ;
 			}
 
-			const std::string&	nick = cmd->getArgs()[0];
 			if (!nick.size())
 			{
 				msg = ":No nickname given";
@@ -78,29 +78,69 @@ namespace irc
 
 			if (nick.size() > 9 || !isNickStr(nick))
 			{
-				msg = nick + " :Erroneus nickname";
+				msg = ":Erroneus nickname";
 				cmd->queue(ERR_ERRONEUSNICKNAME, msg);
 				return ;
 			}
 
 			const Server::clients_t&			clients = cmd->getServer()->getClients();
 			Server::clients_t::const_iterator	it = clients.begin();
+			Client* client = cmd->getClient();
 			while (it != clients.end())
 			{
 				if (it->second->getNick() == nick)
 				{
-					// msg = ":" + nick + "!" + nick + "@" + cmd->getServer()->getName() + " ";
-					// msg += to_string(ERR_NICKNAMEINUSE) + " ";
-					// msg += nick + " :Nickname is already in use";
-					// cmd->queue(msg);
-					msg = nick + " :Nickname is already in use";
-					cmd->queue(ERR_NICKNAMEINUSE, msg);
+					msg = ": ";
+					msg = to_string(ERR_NICKNAMEINUSE) + " * ";
+					msg += nick + " :Nickname is already in use";
+					cmd->queue(msg);
 					return ;
 				}
 				++it;
 			}
 			// ERR_NICKCOLLISION? check if it's S2S
-			cmd->getClient()->setNick(cmd->getArgs()[0]);
+
+			client->setNick(nick);
+			if (client->getPastName().empty())
+				client->setPastName(nick);
+			// msg = ": NICK :" + cmd->getArgs()[0];
+			// cmd->queue(msg);
+			msg = ":";
+			if (client->getWelcome() == true)
+			{
+				msg += client->getPastName(); + "!" + client->getUserName() + "@" + server->getName();
+				client->setPastName(client->getNick());
+			}
+			msg += " NICK :" + cmd->getArgs()[0];
+			cmd->queue(msg);
+			if (client->getStatus() == Client::LOGGEDIN && client->getWelcome() == 0)
+			{
+				msg = ":Welcome to the Internet Relay Network ";
+				msg += client->getNick() + "!" + client->getUserName() + "@" + cmd->getServer()->getName();
+				cmd->queue(RPL_WELCOME, msg);
+
+				motd(cmd);
+				client->setWelcome(1);
+
+				// 직접 whois 응답 비슷하게 임의로 만들어서 넣어주는 방식..
+				// > :ubuntu_!ubuntu@localhost 221 ubuntu_ +wi
+				// > :ubuntu_!ubuntu@localhost 311 ubuntu_ ubuntu ubuntu localhost * :Ubuntu
+				// > :ubuntu_!ubuntu@localhost 318 ubuntu_ ubuntu :End of /WHOIS list
+				// msg = ":" + client->getNick() + "!" + client->getUserName() + "@" + server->getName() + " 221 " + client->getNick() + " +wi";
+				// cmd->queue(msg);
+				// msg = ":" + client->getNick() + "!" + client->getUserName() + "@" + server->getName() + " 331 " + client->getNick() + " ";
+				// msg += client->getUserName() + " " + client->getUserName() + " " + server->getName() + " * :donpark";
+				// cmd->queue(msg);
+				// msg = ":" + client->getNick() + "!" + client->getUserName() + "@" + server->getName() + " 338 " + client->getNick() + " ";
+				// msg += client->getUserName() + ":End of /WHOIS list";
+				// cmd->queue(msg);
+
+				// TODO 직접 다시 nick 메시지 보내서 그냥 해결....... whois 응답 필요
+				msg = ":" + client->getPastName() + "!" + client->getUserName() + "@" + server->getName();
+				msg += " NICK :" + cmd->getArgs()[0];
+				cmd->queue(msg);
+				client->setPastName(client->getNick());
+			}
 		}
 
 		/*
@@ -127,32 +167,28 @@ namespace irc
 			const std::string&	username = cmd->getArgs()[0];
 			const std::string&	realname = cmd->getArgs()[3];
 
-			const Server::clients_t&			clients = cmd->getServer()->getClients();
-			Server::clients_t::const_iterator	it = clients.begin();
-
-			while (it != clients.end())
+			if (cmd->getClient()->isLoggedIn())
 			{
-				if (it->second->getUserName() == username)
-				{
-					// msg = ":" + username + "!" + username + "@" + cmd->getServer()->getName() + " ";
-					// msg += to_string(ERR_NICKNAMEINUSE) + " ";
-					// msg += username + " :Nickname is already in use";
-					// cmd->queue(msg);
-					msg = ":Unauthorized command (already registered)";
-					cmd->queue(ERR_ALREADYREGISTRED, msg);
-					return ;
-				}
-				++it;
+				msg = ":" + cmd->getClient()->getNick() + "!" + username + "@" + cmd->getServer()->getName() + " ";
+				msg += to_string(ERR_ALREADYREGISTRED) + " ";
+				msg += username + " :Unauthorized command (already registered)";
+				cmd->queue(msg);
+				return ;
 			}
 
 			Client*	client = cmd->getClient();
 			client->setUserName(username);
 			client->setRealName(realname);
 			client->setStatus(Client::LOGGEDIN);
-			msg = "Welcome to the Internet Relay Network ";
-			msg += client->getNick() + "!" + client->getUserName() + "@" + server->getName();
-			cmd->queue(RPL_WELCOME, msg);
-			motd(cmd);
+			if (!client->getNick().empty())
+			{
+				client->setWelcome(true);
+				msg = ":Welcome to the Internet Relay Network ";
+				msg += client->getNick() + "!" + client->getUserName() + "@" + server->getName();
+				cmd->queue(RPL_WELCOME, msg);
+
+				motd(cmd);
+			}
 		}
 
 		void	server(Command* cmd)
@@ -164,7 +200,7 @@ namespace irc
 		{
 			if (cmd->getArgC() < 2)
 				cmd->queue(ERR_NEEDMOREPARAMS);
-			
+
 			Server*				serv = cmd->getServer();
 			Client*				cli = cmd->getClient();
 			const std::string&	oper_nick = serv->conf.get_O().getNickname();
@@ -172,7 +208,7 @@ namespace irc
 
 			if (oper_nick.empty() || oper_pwd.empty())
 				cmd->queue(ERR_NOOPERHOST, ":No O-lines for your host");
-			
+
 			const std::string&	nick = cmd->getArgs()[0];
 			const std::string&	pwd = cmd->getArgs()[1];
 

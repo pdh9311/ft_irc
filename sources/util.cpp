@@ -13,7 +13,7 @@ namespace irc
 
 		if (str.empty())
 			return (ret);
-		
+
 		while (1)
 		{
 			fpos = str.find(delim, cur);
@@ -158,5 +158,13 @@ namespace irc
 	bool	isChPrefix(const char c)
 	{
 		return (c == '#' || c == '&' || c == '!' || c == '+');
+	}
+
+	// <any 8bit code except SPACE, BELL, NUL, CR, LF and comma (',')>
+	bool	isChString(const char c)
+	{
+		if (c == 0x20 || c == 0x07 || c == 0x00 || c == 0x0D || c == 0x0A || c == 0x2C)
+			return (false);
+		return (true);
 	}
 }

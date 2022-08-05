@@ -8,7 +8,7 @@
 namespace irc
 {
 	#define MAX_PARAMS	16
-	
+
 	class Server;
 	class Client;
 
