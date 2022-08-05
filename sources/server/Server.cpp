@@ -101,7 +101,7 @@ namespace irc
 
 	void	Server::queue (const int& fd, std::string msg)
 	{
-		std::cout << " >> [" << msg << "]" << std::endl;
+		std::cout << ">> [" << msg << "]" << std::endl;
 		_sque.push(std::make_pair(fd, msg + "\r\n"));
 	}
 
