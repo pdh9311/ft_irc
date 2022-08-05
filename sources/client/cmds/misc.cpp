@@ -30,7 +30,7 @@ namespace irc
 			if (it == clients.end())
 					return (cmd->setResult(ERR_NOSUCHNICK, user_str));	
 			client = it->second;
-			if (client->hasMode('o'))
+			if (client->hasMode('o') == 0)
 				return (cmd->setResult(ERR_NOPRIVILEGES));
 			cmd->getServer()->rmClient(client); //실패시 ERR_CANTKILLSERVER 
 			msg = cmd->getServer()->getPrefix(cmd->getClient()) + " KILL :" + cmd->getTrailing().substr(1);
