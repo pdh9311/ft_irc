@@ -96,18 +96,23 @@ void	irc::cmd::kick(Command* cmd)
 		return ;
 	}
 
-	// ERR_CHANOPRIVSNEEDED
-	// 	"<channel> :You're not channel operator"
+	// if (channel->hasUserMode(cmd->getClient(), 'o') == false)
+	// {
+	// 	msg = channel_name + " :You're not channel operator";
+	// 	cmd->queue(ERR_CHANOPRIVSNEEDED, msg);
+	// 	return ;
+	// }
 
-	clients.erase(*it);
+	// msg = ":" + client->getNick() + "!" + client->getUserName() + "@" + server->getName();
+	// msg += " KICK " + channel_name + " " + cmd->getArgs()[1];
+	// msg += " :";
+	// server->queue(client->getFD(), msg);
 
-	msg = ":" + client->getNick() + "!" + client->getUserName() + "@" + server->getName();
-	msg += " KICK " + channel_name + " " + cmd->getArgs()[1];
+	// msg = ":" + client->getNick() + "!" + client->getUserName() + "@" + server->getName();
+	msg = "KICK " + channel_name + " " + cmd->getArgs()[1];
 	msg += " :";
-	server->queue(client->getFD(), msg);
 
-	msg = ":" + client->getNick() + "!" + client->getUserName() + "@" + server->getName();
-	msg += " KICK " + channel_name + " " + cmd->getArgs()[1];
-	msg += " :";
-	cmd->queue(msg);
+	// cmd->queue(msg);
+	channel->broadcast(cmd->getClient(), msg);
+	channel->rmClient(server->getClient(*it));
 }

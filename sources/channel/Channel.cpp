@@ -48,12 +48,12 @@ namespace irc
 		std::string	str = _server->getPrefix(client) + " ";
 		str += (to_string(RPL_NAMREPLY) + " " + client->getNick());
 		if (hasMode('p'))
-			str += " * :";
+			str += " * ";
 		else if (hasMode('s'))
-			str += " @ :";
+			str += " @ ";
 		else
-			str += " = :";
-		str += getFName();
+			str += " = ";
+		str += getFName() + " :";
 
 		std::string	ustr;
 		clients_t::const_iterator	it = _clients.begin();
@@ -67,7 +67,7 @@ namespace irc
 			{
 				if (i)
 					client->queue(str + ustr);
-				ustr = str;
+				ustr = "";
 			}
 			if (ustr.size())
 				ustr += " ";
@@ -76,6 +76,9 @@ namespace irc
 			ustr += cli->getNick();
 			it++;
 		}
+		
+		if (ustr.size())
+			client->queue(str + ustr);
 
 		client->queue(_server->getPrefix(client) + " " + to_string(RPL_ENDOFNAMES)
 					+ " " + client->getNick() + " " + getFName() + " :End of /NAMES list");

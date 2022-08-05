@@ -101,7 +101,7 @@ namespace irc
 
 	void	Server::queue (const int& fd, std::string msg)
 	{
-		std::cout << fd << ">> [" << msg << "]" << std::endl;
+		std::cout << ">> [" << msg << "]" << std::endl;
 		_sque.push(std::make_pair(fd, msg + "\r\n"));
 	}
 
@@ -250,8 +250,6 @@ namespace irc
 		if (name[0] == '#' || name[0] == '&')
 			name = name.substr(1);
 		_channels.insert(std::make_pair(name, channel));
-		std::cout << "name: " << name << std::endl;
-		std::cout << "channel: " << channel->getName() << std::endl;
 		return (channel);
 	}
 
