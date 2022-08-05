@@ -3,6 +3,7 @@
 #include "client/Client.hpp"
 #include "server/Server.hpp"
 #include "client/numerics.hpp"
+#include "util.hpp"
 
 #include <ctime>
 
@@ -12,9 +13,32 @@ namespace irc
 	{
 		void	kill	(Command* cmd)
 		{
-			(void)cmd;
+			std::string			msg;
+			std::string 		user_str = cmd->getArgs()[0];
+			
+			if (cmd->getArgC() < 1 || cmd->getTrailing().length() == 1)
+				return (cmd->setResult(ERR_NEEDMOREPARAMS));
+			const Server::clients_t&			clients = cmd->getServer()->getClients();
+			Server::clients_t::const_iterator	it = clients.begin();
+			Client* client;
+			while (it != clients.end())
+			{
+				if (it->second->getNick() == user_str)
+					break;
+				++it;
+			}
+			if (it == clients.end())
+					return (cmd->setResult(ERR_NOSUCHNICK, user_str));	
+			client = it->second;
+			if (client->hasMode('o') == 0)
+				return (cmd->setResult(ERR_NOPRIVILEGES));
+			cmd->getServer()->rmClient(client); //실패시 ERR_CANTKILLSERVER 
+			msg = cmd->getServer()->getPrefix(cmd->getClient()) + " KILL :" + cmd->getTrailing().substr(1);
+			client->queue(msg);
+			msg = cmd->getServer()->getPrefix(cmd->getClient()) + " QUIT :" + cmd->getTrailing().substr(1);
+			client->queue(msg);
 		}
-
+		
 		void	ping	(Command* cmd)
 		{
 			// client should not call ping command. Ignore? nvm, irssi sends ping
