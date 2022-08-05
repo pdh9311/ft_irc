@@ -101,7 +101,7 @@ namespace irc
 			}
 			if (cliter == clients.end())
 			{
-				msg = nicks[i] + " :/channel";
+				msg = nicks[i] + " :No such nick/channel";
 				cmd->queue(ERR_NOSUCHNICK, msg);
 				return (false);
 			}
