@@ -109,7 +109,7 @@ namespace irc
 			cmd->queue(msg);
 			if (client->getStatus() == Client::LOGGEDIN && client->getWelcome() == 0)
 			{
-				msg = ":@@Welcome to the Internet Relay Network ";
+				msg = ":Welcome to the Internet Relay Network ";
 				msg += client->getNick() + "!" + client->getUserName() + "@" + cmd->getServer()->getName();
 				cmd->queue(RPL_WELCOME, msg);
 
