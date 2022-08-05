@@ -55,6 +55,8 @@ void	irc::cmd::join(Command *cmd)
 		}
 
 		chan->addClient(cli);
+		if (chan->getSize() == 1)
+			chan->setUserMode(cli, 'o');
 		cli->setCChannel(chan);
 		chan->sendNames(cli);
 		chan->broadcast(cli, "JOIN :" + chan->getFName());

@@ -217,7 +217,7 @@ namespace irc
 				str += (getCommand() + " :Not enough parameters");
 				break ;
 			case ERR_NOPRIVILEGES:
-				str += " :Permission Denied- You're not an IRC operator";
+				str += ":Permission Denied- You're not an IRC operator";
 				break ;
 		}
 

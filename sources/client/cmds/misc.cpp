@@ -17,7 +17,7 @@ namespace irc
 			std::string 		user_str = cmd->getArgs()[0];
 			
 			if (cmd->getArgC() < 1 || cmd->getTrailing().length() == 1)
-				return (cmd->setResult(ERR_NEEDMOREPARAMS));
+				return (cmd->queue(ERR_NEEDMOREPARAMS));
 			const Server::clients_t&			clients = cmd->getServer()->getClients();
 			Server::clients_t::const_iterator	it = clients.begin();
 			Client* client;
@@ -28,10 +28,10 @@ namespace irc
 				++it;
 			}
 			if (it == clients.end())
-					return (cmd->setResult(ERR_NOSUCHNICK, user_str));	
+					return (cmd->queue(ERR_NOSUCHNICK, user_str + " :No such nick/channel"));	
 			client = it->second;
-			if (client->hasMode('o') == 0)
-				return (cmd->setResult(ERR_NOPRIVILEGES));
+			if (cmd->getClient()->hasMode('o') == 0)
+				return (cmd->queue(ERR_NOPRIVILEGES));
 			cmd->getServer()->rmClient(client); //실패시 ERR_CANTKILLSERVER 
 			msg = cmd->getServer()->getPrefix(cmd->getClient()) + " KILL :" + cmd->getTrailing().substr(1);
 			client->queue(msg);
