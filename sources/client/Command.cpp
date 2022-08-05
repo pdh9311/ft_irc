@@ -205,16 +205,6 @@ namespace irc
 		_client->queue(str);
 	}
 
-	void	Command::queue(const std::string& rcode, const std::string msg)
-	{
-		std::string	str = _server->getPrefix(_client) + " ";
-		str += rcode + " ";
-		str += (_client->getNick() + " ");
-		str += msg;
-
-		_client->queue(str);
-	}
-
 	void	Command::queue(const short& rcode)
 	{
 		std::string str = _server->getPrefix(_client) + " ";

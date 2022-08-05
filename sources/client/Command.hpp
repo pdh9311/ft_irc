@@ -50,7 +50,6 @@ namespace irc
 
 			void	queue(const std::string msg);
 			void	queue(const short& rcode, const std::string msg);
-			void	queue(const std::string& rcode, const std::string msg);
 			void	queue(const short& rcode);
 
 			void	setResult(const std::string& rstr);
