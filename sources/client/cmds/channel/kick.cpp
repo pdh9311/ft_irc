@@ -80,7 +80,7 @@ void	irc::cmd::kick(Command* cmd)
 			return ;
 		}
 	}
-	// channel을 찾고
+
 	irc::Server::channels_t			channels = server->getChannels();
 	Channel*						channel = channels[channel_name.substr(1)];
 
