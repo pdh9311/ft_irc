@@ -30,7 +30,8 @@ namespace irc
 		private:
 			const int		_fd;
 			Server*			_server;
-			Channel*		_cchannel;
+			// Channel*		_cchannel;
+			bool			_on_channel;
 			time_t			_last_ping;
 			char			_status;
 			std::string		_buf;
@@ -60,7 +61,8 @@ namespace irc
 			const std::string&	getRealName() const;
 			const mode_t&		getModes() const;
 			const std::string	getModestr() const;
-			const Channel*		getCChannel() const;
+			// const Channel*		getCChannel() const;
+			bool				isOnChannel() const;
 			bool				hasMode(char c) const;
 			bool				isLoggedIn() const;
 			const std::string&	getAwayMsg() const;
@@ -76,7 +78,8 @@ namespace irc
 			void	setMode(const char c);
 			void	unsetModes(const std::string& modes);
 			void	unsetMode(const char c);
-			void	setCChannel(Channel* channel);
+			// void	setCChannel(Channel* channel);
+			void	setOnChannel(bool b);
 			void	setStatus(const char status);
 			void	setWelcome(bool i);
 			void	setPastName(const std::string& name);

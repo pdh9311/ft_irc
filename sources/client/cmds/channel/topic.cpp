@@ -3,7 +3,7 @@
 void	irc::cmd::topic(Command* cmd)
 {
 	if (!cmd->getArgC())
-		cmd->queue(ERR_NEEDMOREPARAMS);
+		return (cmd->queue(ERR_NEEDMOREPARAMS));
 	const std::string&	name = cmd->getArgs()[0];
 	const std::string	topic = cmd->getTrailing();
 	Server*				serv = cmd->getServer();

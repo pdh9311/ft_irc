@@ -229,9 +229,9 @@ namespace irc
 
 		void	squit(Command* cmd)
 		{
-			if (cmd->getArgC() < 2)
+			if (cmd->getArgC() < 1)
 				return ;
-			Server*	serv = cmd->getServer();
+			// Server*	serv = cmd->getServer();
 			Client*	cli = cmd->getClient();
 			const std::string&	name = cmd->getArgs()[0];
 
@@ -239,7 +239,6 @@ namespace irc
 				return (cmd->queue(ERR_NOPRIVILEGES));
 			return (cmd->queue(ERR_NOSUCHSERVER, name + " :No such server"));
 
-			// cmd->queue(ERR_NOSUCHSERVER, "")
 		}
 	}
 }

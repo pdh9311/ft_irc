@@ -111,7 +111,7 @@ namespace irc
 
 		if (_args.size() && _args.back()[0] == ':')
 		{
-			_trailing = _args.back();
+			_trailing = _args.back().substr(1);
 			_args.pop_back();
 		}
 	}
@@ -219,6 +219,14 @@ namespace irc
 			case ERR_NOPRIVILEGES:
 				str += ":Permission Denied- You're not an IRC operator";
 				break ;
+			case ERR_USERSDONTMATCH:
+				str += ":Cant change mode for other users";
+				break ;
+			case RPL_LISTEND:
+				str += ":End of /LIST";
+				break ;
+			default:
+				str += ":Internal error Command::queue rcode";
 		}
 
 		_client->queue(str);

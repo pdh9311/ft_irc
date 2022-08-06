@@ -14,12 +14,12 @@ void	irc::cmd::part(Command* cmd)
 		const std::string&	name = chans[i];
 		Channel*	chan = serv->getChannel(name);
 
-		if (name[0] != '#' || !chan)
+		if (!chan)
 			return (cmd->queue(ERR_NOSUCHCHANNEL, name + " :No such server"));
 
 		if (!chan->isMember(cli))
 			return (cmd->queue(ERR_NOTONCHANNEL, chan->getName() + " :You're not on that channel"));
-		chan->broadcast(cli, "PART " + chan->getFName() + cmd->getTrailing());
+		chan->broadcast(cli, "PART " + chan->getFName() + " " + cmd->getTrailing());
 		chan->rmClient(cli);
 
 		if (chan->getSize() == 0)

@@ -2,29 +2,36 @@
 
 void	irc::cmd::list(Command *cmd)
 {
-	// std::cout << "LIST CALLED" << cmd->getArgC() << std::endl;
-	// std::cout << cmd->getArgs()[0] << "#" << std::endl;
 	if (cmd->getArgC() > 1)
-		cmd->setResult(ERR_NOSUCHSERVER); // we dun know any servers.
+		return (cmd->queue(ERR_NOSUCHSERVER));
 
-	if (!cmd->getArgC()) // list all channels
+	Server*	serv = cmd->getServer();
+	// Client*	cli = cmd->getClient();
+	
+	if (!cmd->getArgC())
 	{
-		const Server::channels_t&	channels = cmd->getServer()->getChannels();
-		Server::channels_t::const_iterator	it = channels.begin();
+		const Server::channels_t&	chans = serv->getChannels();
+		Server::channels_t::const_iterator	it = chans.begin();
 
-		while (it != channels.end())
+		while (it != chans.end())
 		{
-			Channel*	channel = it->second;
-			std::string	str = cmd->getServer()->getPrefix(cmd->getClient()) + to_string(RPL_LIST);
-			str += (" " + cmd->getClient()->getNick() + " ");
-			str += ("#" + channel->getName() + ":" + channel->getTopic());
-			cmd->getServer()->queue(cmd->getClient(), str);
+			Channel*	chan = it->second;
+			cmd->queue(RPL_LIST, chan->getFName() + " " + irc::toString(chan->getSize()) + " :" + chan->getTopic());
 			++it;
 		}
-		cmd->setResult(RPL_LISTEND);
 	}
 	else
 	{
+		std::vector<std::string>	chans = irc::split(cmd->getArgs()[0]);
+		std::vector<std::string>::const_iterator	it = chans.begin();
 
+		while (it != chans.end())
+		{
+			Channel*	chan = serv->getChannel(*it);
+			if (chan)
+				cmd->queue(RPL_LIST, chan->getFName() + " " + irc::toString(chan->getSize()) + " :" + chan->getTopic());
+			++it;
+		}
 	}
+	cmd->queue(RPL_LISTEND);
 }
