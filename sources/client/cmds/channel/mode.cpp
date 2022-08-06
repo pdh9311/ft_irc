@@ -37,7 +37,7 @@ static void	_server_mode(irc::Command* cmd)
 			}
 			else if (pm == -1)
 				break ; // tmp
-			
+
 			size_t	ppos = astr.find_last_of('+');
 			size_t	mpos = astr.find_last_of('-');
 			if (pm == 0 && !chan->hasMode(*it)) // +
@@ -63,12 +63,13 @@ static void	_server_mode(irc::Command* cmd)
 
 bool	_is_user_modes(const char c)
 {
-	
+	(void)c;
+	return (false);
 }
 
 static void	_user_mode(irc::Command* cmd)
 {
-
+	(void)cmd;
 }
 
 void	irc::cmd::mode(Command* cmd)
