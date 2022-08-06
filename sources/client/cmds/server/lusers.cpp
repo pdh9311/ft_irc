@@ -2,6 +2,7 @@
 #include "client/Command.hpp"
 #include "server/Server.hpp"
 #include "client/numerics.hpp"
+#include "channel/Channel.hpp"
 #include "util.hpp"
 
 /*
@@ -28,11 +29,26 @@ void	irc::cmd::lusers	(irc::Command* cmd)
 		return ;
 	}
 	msg = ": Three are ";
-	msg+= toString(server->getClients().size());	// TODO
+	msg+= irc::itos(server->getClients().size());	// TODO
 	msg += " and <integer> services on 1 servers";
 	cmd->queue(RPL_LUSERCLIENT, msg);
 
-	msg =  "<integer> :operator(s) online";	// TODO
+	int	operatorCnt = 0;
+	irc::Server::channels_t				channels = server->getChannels();
+	irc::Server::channels_t::iterator	chit;
+	for (chit = channels.begin(); chit != channels.end(); ++chit)
+	{
+		Channel*				channel = chit->second;
+		irc::Channel::clients_t	clients = channel->getClients();
+		irc::Channel::clients_t::iterator	clit;
+		for (clit = clients.begin(); clit != clients.end(); ++clit)
+		{
+			Client* client = server->getClient(*clit);
+			if (channel->hasUserMode(client, 'o') || channel->hasUserMode(client, 'O'))
+				operatorCnt++;
+		}
+	}
+	msg = irc::itos(operatorCnt) + " :operator(s) online";
 	cmd->queue(RPL_LUSEROP, msg);
 
 	msg = "<integer> :unknown connection(s)";	// TODO
@@ -43,7 +59,7 @@ void	irc::cmd::lusers	(irc::Command* cmd)
 	cmd->queue(RPL_LUSERCHANNELS, msg);
 
 	msg = ":I have ";
-	msg += toString(server->getClients().size());
+	msg += irc::itos(server->getClients().size());
 	msg += " clients and 1 servers";
 	cmd->queue(RPL_LUSERME, msg);
 }

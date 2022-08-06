@@ -46,23 +46,19 @@ void	irc::cmd::nick(irc::Command* cmd)
 		return ;
 	}
 
-	const Server::clients_t&			clients = cmd->getServer()->getClients();
-	Server::clients_t::const_iterator	it = clients.begin();
-	Client* client = cmd->getClient();
-	while (it != clients.end())
+	Client* find_client = server->getClient(nick);
+	if (find_client != NULL)
 	{
-		if (it->second->getNick() == nick)
-		{
-			msg = ": ";
-			msg = to_string(ERR_NICKNAMEINUSE) + " * ";
-			msg += nick + " :Nickname is already in use";
-			cmd->queue(msg);
-			return ;
-		}
-		++it;
+		msg = ": ";
+		msg += to_string(ERR_NICKNAMEINUSE) + " * ";
+		msg += nick + " :Nickname is already in use";
+		cmd->queue(msg);
+		return ;
 	}
+
 	// ERR_NICKCOLLISION? check if it's S2S
 
+	Client* client = cmd->getClient();
 	client->setNick(nick);
 	if (client->getPastName().empty())
 		client->setPastName(nick);

@@ -5,8 +5,8 @@ namespace irc
 {
 	std::vector<std::string>	split(const std::string& str, char delim = ',');
 	int							stoi(const std::string& str);
+	std::string					itos(const int& x);
 	std::string					to_string(const int& x);
-	std::string					toString(const int& x);
 	bool						isLetterC(const char c);
 	bool						isLetterStr(const std::string& str);
 	bool						isDigitC(const char c);
