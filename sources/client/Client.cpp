@@ -23,7 +23,6 @@ namespace irc
 			std::cout << "<< [" + _buf.substr(cur, fpos - cur) << "]" << std::endl;
 			Command	cmd(this, _server, _buf.substr(cur, fpos - cur));
 			cmd.run();
-			// std::cout << "{" << _buf.substr(cur, fpos - cur) << "}" << std::endl;
 			_buf = _buf.substr(fpos + 2);
 			cur = 0;
 		}
