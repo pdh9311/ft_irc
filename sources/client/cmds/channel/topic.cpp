@@ -23,7 +23,7 @@ void	irc::cmd::topic(Command* cmd)
 	}
 	else
 	{
-		if (chan->hasMode('t') && !(chan->hasUserMode(cli, 'o') || chan->hasUserMode(cli, 'O')))
+		if (chan->hasMode('t') && !(chan->hasUserMode(cli, 'o') || chan->hasUserMode(cli, 'O' || cli->hasMode('o'))))
 		 	return (cmd->queue(ERR_CHANOPRIVSNEEDED, chan->getFName() + " :You're not channel operator"));
 		chan->setTopic(topic);
 		chan->broadcast(cli, "TOPIC " + chan->getFName() + " :" + chan->getTopic());	
