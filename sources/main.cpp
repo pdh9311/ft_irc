@@ -8,13 +8,14 @@ irc::Command::hashmap_t	irc::Command::hashmap = Command::build_hashmap();
 
 int	main(int argc, char** argv)
 {
-	if (argc < 2 || 3 < argc)
+	std::string port(argv[1]);
+	std::string password(argv[2]);
+	if (argc != 3 || port.empty() || password.empty())
 	{
-		std::cout << "Usage: " << argv[0] << " <port> [password]" << std::endl;
-		return (0);
+		std::cout << "Usage: " << argv[0] << " <port> <password>" << std::endl;
+		return (1);
 	}
-
-	irc::Server	serv(argv[1], (argv[2] == NULL ? "" : argv[2]));
+	irc::Server	serv(port, password);
 
 	serv.initialize();
 	serv.run();
