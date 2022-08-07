@@ -65,10 +65,11 @@ namespace irc
 				PE("Channel::sendNames tried to getClient a ghost");
 			if ((i % 10) == 0)
 			{
-				if (i)
+				if (i && ustr.size())
 					client->queue(str + ustr);
 				ustr = "";
 			}
+			// if (cli->hasMode('i')) // won't visibility flags
 			if (ustr.size())
 				ustr += " ";
 			if (hasUserMode(cli, 'O') || hasUserMode(cli, 'o') || cli->hasMode('o'))

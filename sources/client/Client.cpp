@@ -23,7 +23,7 @@ namespace irc
 			std::cout << "<< [" + _buf.substr(cur, fpos - cur) << "]" << std::endl;
 			Command	cmd(this, _server, _buf.substr(cur, fpos - cur));
 			cmd.run();
-			std::cout << "{" << _buf.substr(cur, fpos - cur) << "}" << std::endl;
+			// std::cout << "{" << _buf.substr(cur, fpos - cur) << "}" << std::endl;
 			_buf = _buf.substr(fpos + 2);
 			cur = 0;
 		}
@@ -35,7 +35,7 @@ namespace irc
 namespace irc
 {
 	Client::Client (const int& fd, Server* server)
-	:	_fd(fd), _server(server), _cchannel(NULL),
+	:	_fd(fd), _server(server), _on_channel(false),
 		_last_ping(std::time(0)), _status(PENDING), _welcome(false)
 	{
 		if (!server->getPass().size())	// 서버의 비밀번호가 없는 경우에도 사용할 수 있도록 하기 위함.
@@ -119,9 +119,14 @@ namespace irc
 		return (ret);
 	}
 
-	const Channel*	Client::getCChannel() const
+	// const Channel*	Client::getCChannel() const
+	// {
+	// 	return (_cchannel);
+	// }
+
+	bool	Client::isOnChannel() const
 	{
-		return (_cchannel);
+		return (_on_channel);
 	}
 
 	bool	Client::getWelcome() const
@@ -200,9 +205,14 @@ namespace irc
 		_modes.erase(c);
 	}
 
-	void	Client::setCChannel(Channel* channel)
+	// void	Client::setCChannel(Channel* channel)
+	// {
+	// 	_cchannel = channel;
+	// }
+
+	void	Client::setOnChannel(bool b)
 	{
-		_cchannel = channel;
+		_on_channel = b;
 	}
 
 	void	Client::setStatus(const char status)

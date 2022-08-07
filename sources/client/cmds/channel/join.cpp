@@ -10,19 +10,21 @@ void	irc::cmd::join(Command *cmd)
 	Client*	cli = cmd->getClient();
 	Server*	serv = cmd->getServer();
 
-	if (cmd->getArgs()[0] == "0")
-	{
-		const Server::channels_t	channels = serv->getChannels();
-		Server::channels_t::const_iterator	it = channels.begin();
-		while (it != channels.end())
-		{
-			Channel*	chan = it->second;
+	// if (cmd->getArgs()[0] == "0")
+	// {
+	// 	const Server::channels_t	channels = serv->getChannels();
+	// 	Server::channels_t::const_iterator	it = channels.begin();
+	// 	while (it != channels.end())
+	// 	{
+	// 		Channel*	chan = it->second;
 
-			if (chan->isMember(cli))
-				chan->rmClient(cli);
-		}
-		return ;
-	}
+	// 		if (chan->isMember(cli))
+	// 			chan->rmClient(cli);
+	// 	}
+	// 	return ;
+	// }
+
+	Channel*	tmp = 0;
 
 	for (size_t i = 0; i < channs.size(); ++i)
 	{
@@ -36,7 +38,7 @@ void	irc::cmd::join(Command *cmd)
 			chan = serv->addChannel(name);
 		if (chan->hasMode('k'))
 		{
-			const std::string&	key = (keys.size() > i ? keys[i] : "");
+			const std::string	key = (keys.size() > i ? keys[i] : "");
 			if (key != chan->getKey())
 			{
 				cmd->queue(ERR_BADCHANNELKEY, chan->getName() + " :Cannot join channel (+k)");
@@ -57,12 +59,14 @@ void	irc::cmd::join(Command *cmd)
 		chan->addClient(cli);
 		if (chan->getSize() == 1)
 			chan->setUserMode(cli, 'o');
-		cli->setCChannel(chan);
+		// cli->setCChannel(chan);
+		tmp = chan;
+		cli->setOnChannel(true);
 		chan->sendNames(cli);
 		chan->broadcast(cli, "JOIN :" + chan->getFName());
 	}
 
-	const Channel*	chan = cli->getCChannel();
-	if (chan && !chan->getTopic().empty())
-		cmd->queue(RPL_TOPIC, chan->getFName() + " :" + chan->getTopic());
+	// const Channel*	chan = cli->getCChannel();
+	if (tmp && !tmp->getTopic().empty())
+		cmd->queue(RPL_TOPIC, tmp->getFName() + " :" + tmp->getTopic());
 }
