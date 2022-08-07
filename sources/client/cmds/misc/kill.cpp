@@ -24,7 +24,7 @@ void	irc::cmd::kill	(irc::Command* cmd)
 	if (it == clients.end())
 			return (cmd->queue(ERR_NOSUCHNICK, user_str + " :No such nick/channel"));
 	client = it->second;
-	if (cmd->getClient()->hasMode('o') == 0 || cmd->getClient()->hasMode('O'))
+	if (cmd->getClient()->hasMode('o') == 0 && cmd->getClient()->hasMode('O') == 0)
 		return (cmd->queue(ERR_NOPRIVILEGES));
 	cmd->getServer()->rmClient(client); //실패시 ERR_CANTKILLSERVER
 	msg = cmd->getServer()->getPrefix(cmd->getClient()) + " KILL :" + cmd->getTrailing().substr(1);
