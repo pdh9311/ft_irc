@@ -2,6 +2,7 @@
 #include "client/Command.hpp"
 #include "server/Server.hpp"
 #include "client/numerics.hpp"
+#include "client/Client.hpp"
 #include "channel/Channel.hpp"
 #include "util.hpp"
 
@@ -34,19 +35,13 @@ void	irc::cmd::lusers	(irc::Command* cmd)
 	cmd->queue(RPL_LUSERCLIENT, msg);
 
 	int	operatorCnt = 0;
-	irc::Server::channels_t				channels = server->getChannels();
-	irc::Server::channels_t::iterator	chit;
-	for (chit = channels.begin(); chit != channels.end(); ++chit)
+	irc::Server::clients_t	clients = server->getClients();
+	irc::Server::clients_t::iterator clit;
+	for (clit = clients.begin(); clit != clients.end(); ++clit)
 	{
-		Channel*				channel = chit->second;
-		irc::Channel::clients_t	clients = channel->getClients();
-		irc::Channel::clients_t::iterator	clit;
-		for (clit = clients.begin(); clit != clients.end(); ++clit)
-		{
-			Client* client = server->getClient(*clit);
-			if (channel->hasUserMode(client, 'o') || channel->hasUserMode(client, 'O'))
-				operatorCnt++;
-		}
+		irc::Client* client = clit->second;
+		if (client->hasMode('o') || client->hasMode('O'))
+			operatorCnt++;
 	}
 	msg = irc::itos(operatorCnt) + " :operator(s) online";
 	cmd->queue(RPL_LUSEROP, msg);
