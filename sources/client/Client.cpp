@@ -17,25 +17,17 @@ namespace irc
 		size_t	cur = 0;
 		size_t	fpos;
 
-		if (_buf.find('\r') == std::string::npos)
+		while ((fpos = _buf.find('\r', cur)) != std::string::npos)
 		{
-			std::cout << "<< (" + _buf << ")" << std::endl;
-			Command	cmd(this, _server, _buf);
+			++ret;
+			std::cout << "<< [" + _buf.substr(cur, fpos - cur) << "]" << std::endl;
+			Command	cmd(this, _server, _buf.substr(cur, fpos - cur));
 			cmd.run();
-			_buf = "";
+			std::cout << "{" << _buf.substr(cur, fpos - cur) << "}" << std::endl;
+			_buf = _buf.substr(fpos + 2);
+			cur = 0;
 		}
-		else
-		{
-			while ((fpos = _buf.find('\r', cur)) != std::string::npos)
-			{
-				++ret;
-				std::cout << "<< [" + _buf.substr(cur, fpos - cur) << "]" << std::endl;
-				Command	cmd(this, _server, _buf.substr(cur, fpos - cur));
-				cmd.run();
-				cur = fpos + 2;
-				std::cout << "{" << _buf.substr(cur, fpos - cur) << "}" << std::endl;
-			}
-		}
+
 		return (ret);
 	}
 }
@@ -61,7 +53,6 @@ namespace irc
 		char	buf[512 + 1];
 
 		rs = ::recv(_fd, buf, 512, 0), DBG(-1, rs, "recv");
-		std::cout << "nc command test: " << buf << ", rs: " << rs << ", buf len: " << strlen(buf) << std::endl;
 		if (rs == 0)
 		{
 			// check if quit was received, if not, generate appropriate quit message
@@ -70,9 +61,7 @@ namespace irc
 		}
 
 		buf[rs] = '\0';
-		std::cout << "buf: " << buf << std::endl;
 		_buf += buf;
-		std::cout << "_buf: " << _buf << std::endl;
 
 		this->parse();
 	}
