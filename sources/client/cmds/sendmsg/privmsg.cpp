@@ -55,6 +55,9 @@ static bool	send_channel(irc::Command* cmd, std::vector<std::string>& ch_name, s
 		return (false);
 	}
 
+	// n
+	// 송신자의 채널이 있는지 확인, 있으면 송신자의 채널 확인
+	// 수신자의 채널과 송신자의 채널이 다르면 404
 	if (channel->hasMode('n') && !is_client_channel(cmd, client, ch_name[i].substr(1)))
 	{
 		msg = ch_name[i] + " :Cannot send to channel";
@@ -62,12 +65,14 @@ static bool	send_channel(irc::Command* cmd, std::vector<std::string>& ch_name, s
 		return (false);
 	}
 
+	// m
+	// 채널 모드가 m인지 확인, m 이면 채널내에 있는 수신자들 중 O, o, v 옵션이 있는 사람들만 채팅 가능
 	if (channel->hasMode('m') &&
 		!(client->hasMode('o') || client->hasMode('O') || client->hasMode('v')))
 	{
-			msg = ch_name[i] + " :Cannot send to channel";
-			cmd->queue(ERR_CANNOTSENDTOCHAN, msg);
-			return (false);
+		msg = ch_name[i] + " :Cannot send to channel";
+		cmd->queue(ERR_CANNOTSENDTOCHAN, msg);
+		return (false);
 	}
 
 	const irc::Channel::clients_t&	chcls = channel->getClients();
