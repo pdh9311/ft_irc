@@ -36,6 +36,13 @@ namespace irc
 		return (ret);
 	}
 
+	std::string	itos(const int& x)
+	{
+		std::stringstream	ss;
+		ss << x;
+		return (ss.str());
+	}
+
 	std::string	to_string(const int& x)
 	{
 		std::stringstream	ss;
@@ -45,12 +52,6 @@ namespace irc
 		return (ss.str());
 	}
 
-	std::string	toString(const int& x)
-	{
-		std::stringstream	ss;
-		ss << x;
-		return (ss.str());
-	}
 
 	bool	isLetterC(const char c)
 	{
