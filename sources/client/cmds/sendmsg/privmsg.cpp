@@ -26,81 +26,60 @@ static bool	duplicate_recipient(irc::Command* cmd, std::vector<std::string> nick
 	return (true);
 }
 
-static bool	send_channel(irc::Command* cmd, std::vector<std::string>& nicks, size_t i)
+static bool	send_channel(irc::Command* cmd, std::vector<std::string>& ch_name, size_t i)
 {
-	irc::Server*						server = cmd->getServer();
-	std::string							msg;
-	irc::Server::channels_t				channels = server->getChannels();
-	irc::Server::channels_t::iterator	chiter;
-	irc::Channel::clients_t				chcl;
-	irc::Channel::clients_t::iterator	chcliter;
-	std::string							sender_msg = cmd->getArgs()[1].substr(1);
+	irc::Server*	server = cmd->getServer();
+	std::string		msg;
+	std::string		sender_msg = cmd->getArgs()[1].substr(1);
+	irc::Client*	client = cmd->getClient();
+	irc::Channel*	channel = server->getChannel(ch_name[i]);
 
-	nicks[i] = nicks[i].substr(1);
-	for (chiter = channels.begin(); chiter != channels.end(); ++chiter)
+	if (channel == NULL)
 	{
-		if (nicks[i] == (*chiter).first)	// 채널을 찾음
-		{
-			chcl = ((*chiter).second)->getClients();	// 채널에 있는 수신자들
-			for (chcliter = chcl.begin(); chcliter != chcl.end(); ++chcliter)
-			{
-				// 이름 같은거 말고
-				int chcl_fd = *chcliter;
-				if (cmd->getClient()->getNick() != server->getClients().at(chcl_fd)->getNick())
-				{
-					msg = server->getPrefix(cmd->getClient()) + " ";
-					msg += "PRIVMSG ";
-					msg += chiter->second->getFName();
-					msg += " :";
-					msg += sender_msg;
-					server->queue(chcl_fd, msg);
-				}
-			}
-			break ;
-		}
-	}
-	if (chiter == channels.end())
-	{
-		msg = "#" + nicks[i] + " :No such nick/channel";
-		cmd->queue(ERR_NOSUCHNICK, msg);
-
-		msg = "#" + nicks[i] + " :Cannot send to channel";
-		cmd->queue(ERR_CANNOTSENDTOCHAN, msg);
+		cmd->queue(ERR_NOSUCHNICK, ch_name[i] + " :No such nick/channel");
 		return (false);
 	}
+	const irc::Channel::clients_t&	chcls = channel->getClients();
+	irc::Channel::clients_t::iterator it = chcls.begin();
+
+	msg = server->getPrefix(client) + " ";
+	msg += "PRIVMSG ";
+	msg += channel->getFName();
+	msg += " :";
+	msg += sender_msg;
+
+	while (it != chcls.end())
+	{
+		irc::Client* cli = server->getClient(*it);
+		if (cli && cli->getNick() != client->getNick())
+			cli->queue(msg);
+		++it;
+	}
+
 	return (true);
 }
 
-bool	send_receiver(irc::Command* cmd, std::vector<std::string>& nicks, size_t i)
+static bool	send_receiver(irc::Command* cmd, std::vector<std::string>& nicks, size_t i)
 {
-	irc::Server*						server = cmd->getServer();
-	std::string							msg;
-	irc::Server::clients_t				clients = server->getClients();
-	irc::Server::clients_t::iterator	cliter;
-	std::string							sender_msg = cmd->getArgs()[1].substr(1);
-	irc::Client*						receiver = NULL;
+	irc::Server*	server = cmd->getServer();
+	std::string		msg;
+	std::string		sender_msg = cmd->getArgs()[1].substr(1);
+	irc::Client*	cli = server->getClient(nicks[i]);
 
-	for (cliter = clients.begin(); cliter != clients.end(); ++cliter)
-	{
-		receiver = (*cliter).second;
-		if (nicks[i] == receiver->getNick())
-		{
-			int	receiver_fd = receiver->getFD();
-			msg = server->getPrefix(cmd->getClient()) + " ";
-			msg += "PRIVMSG ";
-			msg += receiver->getNick();
-			msg += " :";
-			msg += sender_msg;
-			server->queue(receiver_fd, msg);
-			break ;
-		}
-	}
-	if (cliter == clients.end())
+	if (cli == NULL)
 	{
 		msg = nicks[i] + " :No such nick/channel";
 		cmd->queue(ERR_NOSUCHNICK, msg);
 		return (false);
 	}
+
+	msg = server->getPrefix(cmd->getClient()) + " ";
+	msg += "PRIVMSG ";
+	msg += cli->getNick();
+	msg += " :";
+	msg += sender_msg;
+	server->queue(cli->getFD(), msg);
+
 	return (true);
 }
 
