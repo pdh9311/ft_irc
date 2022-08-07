@@ -16,7 +16,7 @@ void	irc::cmd::list(Command *cmd)
 		while (it != chans.end())
 		{
 			Channel*	chan = it->second;
-			cmd->queue(RPL_LIST, chan->getFName() + " " + irc::toString(chan->getSize()) + " :" + chan->getTopic());
+			cmd->queue(RPL_LIST, chan->getFName() + " " + irc::itos(chan->getSize()) + " :" + chan->getTopic());
 			++it;
 		}
 	}
@@ -29,7 +29,7 @@ void	irc::cmd::list(Command *cmd)
 		{
 			Channel*	chan = serv->getChannel(*it);
 			if (chan)
-				cmd->queue(RPL_LIST, chan->getFName() + " " + irc::toString(chan->getSize()) + " :" + chan->getTopic());
+				cmd->queue(RPL_LIST, chan->getFName() + " " + irc::itos(chan->getSize()) + " :" + chan->getTopic());
 			++it;
 		}
 	}

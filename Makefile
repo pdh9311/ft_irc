@@ -1,7 +1,6 @@
 NAME		=	ircserv
 
 SRCF		=	sources
-SRCF_B		=	$(SRCF)/bonus
 INCF		=	sources
 
 FIL_M		=	main \
@@ -35,24 +34,46 @@ FIL_M		=	main \
 				client/cmds/channel/names \
 				client/cmds/channel/part \
 				client/cmds/channel/topic\
-				client/cmds/connection \
-				client/cmds/misc \
-				client/cmds/optional \
-				client/cmds/queries \
-				client/cmds/server \
-				client/cmds/smesg \
+				client/cmds/connection/pass \
+				client/cmds/connection/nick \
+				client/cmds/connection/user \
+				client/cmds/connection/server \
+				client/cmds/connection/oper \
+				client/cmds/connection/quit \
+				client/cmds/connection/squit \
+				client/cmds/sendmsg/privmsg \
+				client/cmds/sendmsg/notice \
+				client/cmds/server/motd \
+				client/cmds/server/lusers \
+				client/cmds/server/version \
+				client/cmds/server/stats \
+				client/cmds/server/links \
+				client/cmds/server/time \
+				client/cmds/server/connect \
+				client/cmds/server/trace \
+				client/cmds/server/admin \
+				client/cmds/server/info \
+				client/cmds/misc/kill \
+				client/cmds/misc/ping \
+				client/cmds/misc/pong \
+				client/cmds/misc/error \
+				client/cmds/queries/who \
+				client/cmds/queries/whois \
+				client/cmds/queries/whowas \
+				client/cmds/optional/away \
+				client/cmds/optional/rehash \
+				client/cmds/optional/restart \
+				client/cmds/optional/summon \
+				client/cmds/optional/users \
+				client/cmds/optional/wallops \
+				client/cmds/optional/userhost \
+				client/cmds/optional/ison \
 				util \
 				debug
 
-FIL_B		=
-
 SRCS_M		=	$(addsuffix .cpp, $(addprefix $(SRCF)/, $(FIL_M)))
-SRCS_B		=	$(addsuffix _bonus.cpp, $(addprefix $(SRCF_B)/, $(FIL_M) $(FIL_B)))
 
 OBJS_M		=	$(SRCS_M:.cpp=.o)
-OBJS_B		=	$(SRCS_B:.cpp=.o)
-
-# INC			=	$(foreach d, $(INCF), -I$d)
 
 CC			=	c++
 CFLAGS		=	-I$(INCF) -O3 -Wall -Wextra -std=c++98 -pedantic # Werror omitted for now.
@@ -65,11 +86,8 @@ RM			=	rm -f
 $(NAME)		:	$(OBJS_M)
 			$(CC) $(OBJS_M) $(CFLAGS) $(CFLAG_EXT) -o $(NAME)
 
-bonus		:	$(OBJS_B)
-			$(CC) $(OBJS_B) $(CFLAGS) $(CFLAG_EXT) -o $(NAME)
-
 clean		:
-			$(RM) $(OBJS_M) $(OBJS_B)
+			$(RM) $(OBJS_M)
 
 all			:	$(NAME)
 
@@ -78,5 +96,4 @@ fclean		:	clean
 
 re			:	fclean all
 
-
-.PHONY		:	.c.o all clean fclean re bonus
+.PHONY		:	all clean fclean re bonus

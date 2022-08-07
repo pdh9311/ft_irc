@@ -23,9 +23,10 @@ namespace irc
 			std::cout << "<< [" + _buf.substr(cur, fpos - cur) << "]" << std::endl;
 			Command	cmd(this, _server, _buf.substr(cur, fpos - cur));
 			cmd.run();
-			cur = fpos + 2;
+			// std::cout << "{" << _buf.substr(cur, fpos - cur) << "}" << std::endl;
+			_buf = _buf.substr(fpos + 2);
+			cur = 0;
 		}
-		_buf.erase(0, _buf.find_last_of('\n') + 2);
 
 		return (ret);
 	}
@@ -52,7 +53,6 @@ namespace irc
 		char	buf[512 + 1];
 
 		rs = ::recv(_fd, buf, 512, 0), DBG(-1, rs, "recv");
-		// std::cout << "nc command test " << buf << std::endl;	// TEST
 		if (rs == 0)
 		{
 			// check if quit was received, if not, generate appropriate quit message
