@@ -14,7 +14,7 @@
 
 // m
 /**
- * 채널 모드가 m인지 확인, m 이면 채널내에 있는 수신자들 중 O, o, v  옵션이 있는 사람들만 채팅 가능
+ * 채널 모드가 m인지 확인, m 이면 채널내에 있는 수신자들 중 O, o, v 옵션이 있는 사람들만 채팅 가능
  */
 
 
@@ -51,25 +51,77 @@ static bool	send_channel(irc::Command* cmd, std::vector<std::string>& ch_name, s
 		cmd->queue(ERR_NOSUCHNICK, ch_name[i] + " :No such nick/channel");
 		return (false);
 	}
-
-	if (client->isOnChannel())
+/*
+	// Channel n mode check
+	irc::Channel::modes_t	modes = channel->getModes();
+	// std::cout << "===================" << std::endl;
+	// for (irc::Channel::modes_t::iterator it = modes.begin(); it != modes.end(); ++it)
+	// {
+	// 	std::cout << *it << " ";
+	// }
+	// std::cout << "===================" << std::endl;
+	irc::Channel::modes_t::iterator n_mode = channel->getModes().find('n');
+	if (n_mode != modes.end())
 	{
-		// 송신자의 채널 목록 확인
-		irc::Server::channels_t	sender_channels = server->getClientChannels(client);
-		irc::Server::channels_t::iterator it = sender_channels.find(ch_name[i].substr(1));	// 송신자의 채널목록에 수신자의 채널
-		if (it == sender_channels.end())
+		std::cout << "Channel n mode" << std::endl;
+		if (client->isOnChannel())
 		{
+			std::cout << "isOnChannel" << std::endl;
+			// 송신자의 채널 목록 확인
+			irc::Server::channels_t	sender_channels = server->getClientChannels(client);
+			// std::cout << "ch_name[i]: " << ch_name[i] << std::endl;
+			// std::cout << "sender_channels[0]: " << sender_channels.begin()->first << std::endl;
+			irc::Server::channels_t::iterator it = sender_channels.find(ch_name[i].substr(1));	// 송신자의 채널목록에 수신자의 채널
+			if (it == sender_channels.end())
+			{
+				msg = ch_name[i] + " :Cannot send to channel";
+				cmd->queue(ERR_CANNOTSENDTOCHAN, msg);
+				return (false);
+			}
+		}
+		else
+		{
+			std::cout << "No OnChannel" << std::endl;
 			msg = ch_name[i] + " :Cannot send to channel";
 			cmd->queue(ERR_CANNOTSENDTOCHAN, msg);
 			return (false);
 		}
 	}
 
+	// Channel m mode check
+	irc::Channel::modes_t::iterator m_mode = channel->getModes().find('m');
+	// std::cout << "----------------------" << std::endl;
+	// for (irc::Channel::modes_t::iterator it = modes.begin(); it != modes.end(); ++it)
+	// {
+	// 	std::cout << *it << " ";
+	// }
+	// std::cout << "----------------------" << std::endl;
+	if (m_mode != modes.end())
+	{
+		std::cout << "Channel m mode" << std::endl;
+		const irc::Channel::clients_t&	chcls = channel->getClients();
+		irc::Channel::clients_t::iterator it = chcls.begin();
 
+		msg = server->getPrefix(client) + " ";
+		msg += "PRIVMSG ";
+		msg += channel->getFName();
+		msg += " :";
+		msg += sender_msg;
 
-
-
-
+		while (it != chcls.end())
+		{
+			irc::Client*	cli = server->getClient(*it);
+			const irc::Client::mode_t&	umodes = cli->getModes();
+			if (cli && cli->getNick() != client->getNick() &&
+				(umodes.find('O') != umodes.end() ||
+				 umodes.find('o') != umodes.end() ||
+				 umodes.find('v') != umodes.end()))
+				cli->queue(msg);
+			++it;
+		}
+		return (true);
+	}
+*/
 	const irc::Channel::clients_t&	chcls = channel->getClients();
 	irc::Channel::clients_t::iterator it = chcls.begin();
 

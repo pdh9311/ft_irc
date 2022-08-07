@@ -278,22 +278,6 @@ namespace irc
 		return (NULL);
 	}
 
-	Server::channels_t&	Server::getClientChannels(Client* client)
-	{
-		Server::channels_t				client_channels;
-		Server::channels_t::iterator	it = _channels.begin();
-		while (it != _channels.end())
-		{
-			Channel*	channel = it->second;
-			irc::Channel::clients_t	chcl = channel->getClients();
-			irc::Channel::clients_t::iterator	chclit = chcl.find(client->getFD());
-			if (chclit != chcl.end())
-				client_channels.insert(std::pair<std::string, Channel*>(channel->getName(), channel));
-			++it;
-		}
-		return (client_channels);
-	}
-
 	const Server::channels_t&	Server::getChannels() const
 	{
 		return (_channels);
@@ -334,5 +318,21 @@ namespace irc
 	const std::string	Server::getPass() const
 	{
 		return _pass;
+	}
+
+	Server::channels_t	Server::getClientChannels(Client* client)
+	{
+		Server::channels_t				client_channels;
+		Server::channels_t::iterator	it = _channels.begin();
+		while (it != _channels.end())
+		{
+			Channel*	channel = it->second;
+			irc::Channel::clients_t	chcl = channel->getClients();
+			irc::Channel::clients_t::iterator	chclit = chcl.find(client->getFD());
+			if (chclit != chcl.end())
+				client_channels.insert(std::pair<std::string, Channel*>(channel->getName(), channel));
+			++it;
+		}
+		return (client_channels);
 	}
 }
