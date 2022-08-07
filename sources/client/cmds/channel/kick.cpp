@@ -29,30 +29,11 @@ bool	isChannel(irc::Server::channels_t channels, const std::string& channel_name
 		ERR_CHANOPRIVSNEEDED
 		ERR_NOTONCHANNEL
 */
-/*
-ERR_NEEDMOREPARAMS
-	"<command> :Not enough parameters"
-ERR_NOSUCHCHANNEL
-	"<channel name> :No such channel"
-ERR_BADCHANMASK
-	"<channel> :Bad Channel Mask"
-ERR_CHANOPRIVSNEEDED
-	"<channel> :You're not channel operator"
-ERR_NOTONCHANNEL
-	"<channel> :You're not on that channel"
-*/
-// argc : 2
-// args[0] : 채널명
-// args[1] : nickname
 void	irc::cmd::kick(Command* cmd)
 {
 	Server*	server = cmd->getServer();
 	std::string	channel_name = cmd->getArgs()[0];	// 채널명
 	std::string	msg;
-
-	// std::cout << cmd->getArgC() << " " << cmd->getArgs()[0] << " " << cmd->getArgs()[1] << std::endl;
-	// if (!cmd->getArgs()[2].empty())
-	// 	std::cout << cmd->getArgs()[2] << std::endl;
 
 	if (cmd->getArgC() != 2 && cmd->getArgC() != 3)
 	{
@@ -85,10 +66,10 @@ void	irc::cmd::kick(Command* cmd)
 	Channel*						channel = channels[channel_name.substr(1)];
 
 	std::string						kicked_nick = cmd->getArgs()[1];
-	Client*							client = server->getClient(kicked_nick);
+	Client*							kicked_client = server->getClient(kicked_nick);
 
 	Channel::clients_t				clients = channel->getClients();
-	Channel::clients_t::iterator	it = clients.find(client->getFD());
+	Channel::clients_t::iterator	it = clients.find(kicked_client->getFD());
 	if (it == clients.end())
 	{
 		msg = channel_name + " :You're not on that channel";
@@ -96,23 +77,19 @@ void	irc::cmd::kick(Command* cmd)
 		return ;
 	}
 
-	// if (channel->hasUserMode(cmd->getClient(), 'o') == false)
-	// {
-	// 	msg = channel_name + " :You're not channel operator";
-	// 	cmd->queue(ERR_CHANOPRIVSNEEDED, msg);
-	// 	return ;
-	// }
+	Client*	client = cmd->getClient();
+	if (!(channel->hasUserMode(client, 'o') ||
+		channel->hasUserMode(client, 'O') ||
+		cmd->getClient()->hasMode('o')))
+	{
+		msg = channel_name + " :You're not channel operator";
+		cmd->queue(ERR_CHANOPRIVSNEEDED, msg);
+		return ;
+	}
 
-	// msg = ":" + client->getNick() + "!" + client->getUserName() + "@" + server->getName();
-	// msg += " KICK " + channel_name + " " + cmd->getArgs()[1];
-	// msg += " :";
-	// server->queue(client->getFD(), msg);
-
-	// msg = ":" + client->getNick() + "!" + client->getUserName() + "@" + server->getName();
 	msg = "KICK " + channel_name + " " + cmd->getArgs()[1];
 	msg += " :";
 
-	// cmd->queue(msg);
-	channel->broadcast(cmd->getClient(), msg);
+	channel->broadcast(client, msg);
 	channel->rmClient(server->getClient(*it));
 }
