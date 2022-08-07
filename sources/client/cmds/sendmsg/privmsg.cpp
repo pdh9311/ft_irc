@@ -6,6 +6,18 @@
 #include "channel/Channel.hpp"
 #include "util.hpp"
 
+// n
+/**
+ * 송신자의 채널이 있는지 확인, 있으면 송신자의 채널 확인
+ * 수신자의 채널과 송신자의 채널이 다르면 404
+ */
+
+// m
+/**
+ * 채널 모드가 m인지 확인, m 이면 채널내에 있는 수신자들 중 O, o, v  옵션이 있는 사람들만 채팅 가능
+ */
+
+
 static bool	duplicate_recipient(irc::Command* cmd, std::vector<std::string> nicks)
 {
 	std::string	msg;
@@ -39,6 +51,25 @@ static bool	send_channel(irc::Command* cmd, std::vector<std::string>& ch_name, s
 		cmd->queue(ERR_NOSUCHNICK, ch_name[i] + " :No such nick/channel");
 		return (false);
 	}
+
+	if (client->isOnChannel())
+	{
+		// 송신자의 채널 목록 확인
+		irc::Server::channels_t	sender_channels = server->getClientChannels(client);
+		irc::Server::channels_t::iterator it = sender_channels.find(ch_name[i].substr(1));	// 송신자의 채널목록에 수신자의 채널
+		if (it == sender_channels.end())
+		{
+			msg = ch_name[i] + " :Cannot send to channel";
+			cmd->queue(ERR_CANNOTSENDTOCHAN, msg);
+			return (false);
+		}
+	}
+
+
+
+
+
+
 	const irc::Channel::clients_t&	chcls = channel->getClients();
 	irc::Channel::clients_t::iterator it = chcls.begin();
 

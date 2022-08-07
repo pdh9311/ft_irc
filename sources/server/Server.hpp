@@ -66,6 +66,8 @@ namespace irc
 			const std::string	getName() const;
 			const std::string	getPrefix (const Client* client) const;
 			const std::string	getPass() const;
+
+			channels_t&			getClientChannels(Client* client);
 	};
 }
 
