@@ -43,6 +43,7 @@ namespace irc
 			mode_t			_modes;
 			bool			_welcome;
 			std::string		_past_name;
+			std::string 	_host_name;
 
 			int		parse();
 
@@ -68,11 +69,14 @@ namespace irc
 			const std::string&	getAwayMsg() const;
 			bool				getWelcome() const;
 			const std::string&	getPastName() const;
+			const std::string&	getHostName() const;
+			
 
 			void	setAwayMsg(const std::string& msg);
 			void	setLastPing(const time_t& time);
 			void	setNick(const std::string& str);
 			void	setUserName(const std::string& name);
+			void	setHostName(const std::string& name);
 			void	setRealName(const std::string& name);
 			void	setModes(const std::string& modes);
 			void	setMode(const char c);

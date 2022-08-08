@@ -30,7 +30,7 @@ namespace irc
 			modes_t		_modes;
 			umodes_t	_user_modes;
 			invites_t	_invites;
-
+			
 		public:
 			Channel(Server* server, const std::string name);
 			~Channel();

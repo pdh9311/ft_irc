@@ -30,7 +30,7 @@ void	irc::cmd::lusers	(irc::Command* cmd)
 		return ;
 	}
 	msg = ": Three are ";
-	msg+= irc::itos(server->getClients().size());	// TODO
+	msg+= irc::itos(server->getClients().size());	
 	msg += " and <integer> services on 1 servers";
 	cmd->queue(RPL_LUSERCLIENT, msg);
 
@@ -46,7 +46,7 @@ void	irc::cmd::lusers	(irc::Command* cmd)
 	msg = irc::itos(operatorCnt) + " :operator(s) online";
 	cmd->queue(RPL_LUSEROP, msg);
 
-	msg = "<integer> :unknown connection(s)";	// TODO
+	msg = "<integer> :unknown connection(s)";	
 	cmd->queue(RPL_LUSERUNKNOWN, msg);
 
 	msg = server->getChannels().size();

@@ -78,11 +78,5 @@ void	irc::cmd::nick(irc::Command* cmd)
 
 		motd(cmd);
 		client->setWelcome(1);
-
-		// TODO 직접 다시 nick 메시지 보내서 그냥 해결....... whois 응답 필요
-		msg = ":" + client->getPastName() + "!" + client->getUserName() + "@" + server->getName();
-		msg += " NICK :" + cmd->getArgs()[0];
-		cmd->queue(msg);
-		client->setPastName(client->getNick());
 	}
 }

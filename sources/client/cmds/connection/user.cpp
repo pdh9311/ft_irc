@@ -27,6 +27,7 @@ void	irc::cmd::user(irc::Command* cmd)
 	}
 
 	const std::string&	username = cmd->getArgs()[0];
+	const std::string&	hostname = cmd->getArgs()[2];
 	const std::string&	realname = cmd->getArgs()[3];
 
 	if (cmd->getClient()->isLoggedIn())
@@ -40,6 +41,7 @@ void	irc::cmd::user(irc::Command* cmd)
 
 	irc::Client*	client = cmd->getClient();
 	client->setUserName(username);
+	client->setHostName(hostname);
 	client->setRealName(realname);
 	client->setStatus(irc::Client::LOGGEDIN);
 	if (!client->getNick().empty())

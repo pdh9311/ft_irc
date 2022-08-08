@@ -169,6 +169,11 @@ namespace irc
 		_user_name = name;
 	}
 
+	void	Client::setHostName(const std::string& name)
+	{
+		_host_name = name;
+	}
+
 	void	Client::setRealName(const std::string& name)
 	{
 		_real_name = name;
@@ -232,6 +237,11 @@ namespace irc
 	void	Client::setPastName(const std::string& name)
 	{
 		_past_name = name;
+	}
+
+	const std::string&	Client::getHostName() const
+	{
+		return (_host_name);
 	}
 
 }
