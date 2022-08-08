@@ -235,7 +235,10 @@ namespace irc
 		{
 			Channel*	chan = it->second;
 			if (chan->isMember(client))
+			{
+				chan->broadcast(client, "QUIT :connection lost");
 				chan->rmClient(client);
+			}
 			++it;
 		}
 		_dque.insert(client->getFD());

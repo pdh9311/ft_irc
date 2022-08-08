@@ -3,32 +3,33 @@
 #include "client/Client.hpp"
 #include "server/Server.hpp"
 #include "client/numerics.hpp"
+#include "channel/Channel.hpp"
 #include "util.hpp"
 
 void	irc::cmd::kill	(irc::Command* cmd)
 {
-	std::string	msg;
-	std::string	user_str = cmd->getArgs()[0];
-
-	if (cmd->getArgC() < 1 || cmd->getTrailing().empty() == true)
+	if (cmd->getArgC() < 1 || cmd->getTrailing().empty())
 		return (cmd->queue(ERR_NEEDMOREPARAMS));
-	const irc::Server::clients_t&			clients = cmd->getServer()->getClients();
-	irc::Server::clients_t::const_iterator	it = clients.begin();
-	irc::Client* client;
-	while (it != clients.end())
+	
+	const std::string&	name = cmd->getArgs()[0];
+	Server*	serv = cmd->getServer();
+	Client*	cli = cmd->getClient();
+	Client*	targ = serv->getClient(name);
+
+	if (!(cli->hasMode('o') || cli->hasMode('O')))
+		return (cmd->queue(ERR_NOPRIVILEGES));
+	if (!targ)
+		return (cmd->queue(ERR_NOSUCHNICK, name + " :No such nick/channel"));
+
+	Server::channels_t	chans = serv->getChannels();
+	Server::channels_t::const_iterator	it = chans.begin();
+
+	while (it != chans.end())
 	{
-		if (it->second->getNick() == user_str)
-			break;
+		Channel*	chan = it->second;
+		if (chan->isMember(targ))
+			chan->broadcast(targ, "QUIT :" + cmd->getTrailing());
 		++it;
 	}
-	if (it == clients.end())
-			return (cmd->queue(ERR_NOSUCHNICK, user_str + " :No such nick/channel"));
-	client = it->second;
-	if (cmd->getClient()->hasMode('o') == 0 && cmd->getClient()->hasMode('O') == 0)
-		return (cmd->queue(ERR_NOPRIVILEGES));
-	cmd->getServer()->rmClient(client); //실패시 ERR_CANTKILLSERVER
-	msg = cmd->getServer()->getPrefix(cmd->getClient()) + " KILL :" + cmd->getTrailing().substr(1);
-	client->queue(msg);
-	msg = cmd->getServer()->getPrefix(cmd->getClient()) + " QUIT :" + cmd->getTrailing().substr(1);
-	client->queue(msg);
+	targ->queue(serv->getPrefix(targ) + " KILL :" + cmd->getTrailing());
 }
