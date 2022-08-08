@@ -107,7 +107,7 @@ namespace irc
 
 	const std::string	Client::getModestr() const
 	{
-		std::string				ret = "";
+		std::string				ret;
 		mode_t::const_iterator	it = _modes.begin();
 
 		while (it != _modes.end())
