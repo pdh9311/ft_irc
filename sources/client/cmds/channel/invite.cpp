@@ -23,24 +23,9 @@ void	irc::cmd::invite(Command* cmd)
 		return (cmd->queue(ERR_USERONCHANNEL, chan->getFName() + " :is already on channel"));
 	if (chan->hasMode('i') && !(chan->hasUserMode(cli, 'o') || chan->hasUserMode(cli, 'O') || cli->hasMode('o')))
 		return (cmd->queue(ERR_CHANOPRIVSNEEDED, chan->getFName() + " :You're not channel operator"));
-	tcli->queue(serv->getPrefix(cli) + " " + cli->getNick() + " INVITE " + target + " " + chname);
-	cmd->queue(RPL_INVITING, target + " " + chname);
+	tcli->queue(serv->getPrefix(cli) + " INVITE " + target + " " + chname);
+	cmd->queue(RPL_INVITING, chname + " " + target);
 	chan->inviteMember(tcli);
 	if (tcli->hasMode('a'))
 		cmd->queue(RPL_AWAY, tcli->getNick() + " :" + tcli->getAwayMsg());	
-
-	// if (cmd->getArgC() < 2)
-	// 	return (cmd->setResult(ERR_NEEDMOREPARAMS));
-
-	// const std::string&	target = cmd->getArgs()[0];
-	// const std::string&	chann = cmd->getArgs()[1];
-
-	// Client*	client = cmd->getServer()->getClient(target);
-	// if (!client)
-	// 	return (cmd->setResult(ERR_NOSUCHNICK));
-	// if (!cmd->getServer()->hasChannel(chann))
-	// 	return (cmd->setResult(ERR_NOSUCHCHANNEL));
-	// Channel*	channel = cmd->getServer()->getChannel(chann);
-	// channel->inviteMember(client);
-	// cmd->setResult(RPL_INVITING, "#" + channel->getName() + " " + client->getNick());
 }

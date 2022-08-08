@@ -144,16 +144,16 @@ namespace irc
 		{
 			int	fd = *(_dque.begin());
 
-			channels_t::iterator	chit = _channels.begin();
-			while (chit != _channels.end())
-			{
-				channels_t::iterator	tmp = chit++;
-				Channel*	channel = tmp->second;
+			// channels_t::iterator	chit = _channels.begin();
+			// while (chit != _channels.end())
+			// {
+			// 	channels_t::iterator	tmp = chit++;
+			// 	Channel*	channel = tmp->second;
 
-				if (channel->isMember(fd) && channel->getSize() == 1)
-					delete tmp->second;
-				_channels.erase(tmp);
-			}
+			// 	if (channel->isMember(fd) && channel->getSize() == 1)
+			// 		delete tmp->second;
+			// 	_channels.erase(tmp);
+			// }
 
 			pfds_t::iterator it = _pfds.begin();
 			while (++it != _pfds.end())
@@ -210,29 +210,35 @@ namespace irc
 				}
 			}
 
-			if (_sque.size() || _dque.size())
-				this->flush();
-
 			// destroy empty channels.
 			channels_t::iterator	it = _channels.begin();
 			while (it != _channels.end())
 			{
 				channels_t::iterator tmp = it++;
-				if (tmp->second->getClients().empty())
+				if (!tmp->second->getSize())
 				{
 					delete tmp->second;
 					_channels.erase(tmp);
 				}
 			}
+
+			if (_sque.size() || _dque.size())
+				this->flush();
 		}
 	}
 
 	void	Server::rmClient(Client* client)
 	{
-		// queue clients to be removed since vector.erase will ruin iterators
-		// if we need to send something to client before termination, this is a good time to do so
+		channels_t::const_iterator	it = _channels.begin();
+
+		while (it != _channels.end())
+		{
+			Channel*	chan = it->second;
+			if (chan->isMember(client))
+				chan->rmClient(client);
+			++it;
+		}
 		_dque.insert(client->getFD());
-		// delete queue will be flushed after sque
 	}
 
 	void	Server::rmChannel(Channel* channel)
