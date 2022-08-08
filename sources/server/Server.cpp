@@ -247,7 +247,7 @@ namespace irc
 	Channel*	Server::addChannel(std::string name)
 	{
 		Channel*	channel = new Channel(this, name);
-		if (name[0] == '#' || name[0] == '&')
+		if (isChPrefix(name[0]))
 			name = name.substr(1);
 		_channels.insert(std::make_pair(name, channel));
 		return (channel);
