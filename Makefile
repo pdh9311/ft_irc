@@ -76,7 +76,7 @@ SRCS_M		=	$(addsuffix .cpp, $(addprefix $(SRCF)/, $(FIL_M)))
 OBJS_M		=	$(SRCS_M:.cpp=.o)
 
 CC			=	c++
-CFLAGS		=	-I$(INCF) -O3 -Wall -Wextra -Werror -std=c++98 -pedantic 
+CFLAGS		=	-I$(INCF) -O3 -Wall -Wextra -Werror -std=c++98
 
 RM			=	rm -f
 

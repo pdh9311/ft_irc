@@ -26,6 +26,31 @@ static bool	duplicate_recipient(irc::Command* cmd, std::vector<std::string> nick
 	return (true);
 }
 
+// client 채널 목록에서 보내려는 채널의 목록이 있는지 확인
+static bool	is_client_channel(irc::Command* cmd, irc::Client* client, std::string ch_name)
+{
+	irc::Server*	server = cmd->getServer();
+	irc::Server::channels_t	client_channels = server->getClientChannels(client);
+	irc::Server::channels_t::iterator	it;
+	for (it = client_channels.begin(); it != client_channels.end(); ++it)
+	{
+		std::string channel_name = it->first;
+		if (channel_name == ch_name)
+			return (true);
+	}
+	return (false);
+}
+
+static bool has_o_O_v(irc::Channel* channel, irc::Client* client)
+{
+	if (channel->hasUserMode(client, 'o') ||
+	 channel->hasUserMode(client, 'O') ||
+	 channel->hasUserMode(client, 'v') ||
+	 client->hasMode('o') || client->hasMode('O'))
+	 	return (true);
+	return (false);
+}
+
 static bool	send_channel(irc::Command* cmd, std::vector<std::string>& ch_name, size_t i)
 {
 	irc::Server*	server = cmd->getServer();
@@ -39,6 +64,26 @@ static bool	send_channel(irc::Command* cmd, std::vector<std::string>& ch_name, s
 		cmd->queue(ERR_NOSUCHNICK, ch_name[i] + " :No such nick/channel");
 		return (false);
 	}
+
+	// n
+	// 송신자의 채널이 있는지 확인, 있으면 송신자의 채널 확인
+	// 수신자의 채널과 송신자의 채널이 다르면 404
+	if (channel->hasMode('n') && !is_client_channel(cmd, client, ch_name[i].substr(1)))
+	{
+		msg = ch_name[i] + " :Cannot send to channel";
+		cmd->queue(ERR_CANNOTSENDTOCHAN, msg);
+		return (false);
+	}
+
+	// m
+	// 채널 모드가 m인지 확인, m 이면 채널내에 있는 수신자들 중 O, o, v 옵션이 있는 사람들만 채팅 가능
+	if (channel->hasMode('m') && !(has_o_O_v(channel, client)))
+	{
+		msg = ch_name[i] + " :Cannot send to channel";
+		cmd->queue(ERR_CANNOTSENDTOCHAN, msg);
+		return (false);
+	}
+
 	const irc::Channel::clients_t&	chcls = channel->getClients();
 	irc::Channel::clients_t::iterator it = chcls.begin();
 
@@ -50,7 +95,7 @@ static bool	send_channel(irc::Command* cmd, std::vector<std::string>& ch_name, s
 
 	while (it != chcls.end())
 	{
-		irc::Client* cli = server->getClient(*it);
+		irc::Client* cli = server->getClient(*it);	// 수신자 cli
 		if (cli && cli->getNick() != client->getNick())
 			cli->queue(msg);
 		++it;
