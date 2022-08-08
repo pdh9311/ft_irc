@@ -20,6 +20,12 @@ int	main(int argc, char** argv)
 		std::cout << "port or password is empty" << std::endl;
 		return (1);
 	}
+	int	iport = irc::stoi(port);
+	if (iport <= 0)
+	{
+		std::cout << "invalid port" << std::endl;
+		return (1);
+	}
 	irc::Server	serv(port, password);
 
 	serv.initialize();
