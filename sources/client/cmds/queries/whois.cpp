@@ -39,13 +39,6 @@ void	irc::cmd::whois	(irc::Command* cmd)
 		msg = cmd->getArgs()[0] + " " + client->getUserName() + " " + client->getHostName() + " * " + client->getRealName();
 		cmd->queue(RPL_WHOISUSER, msg);
 		
-		msg = client->getNick() + " " + serv->getName();
-       	cmd->queue(RPL_WHOISSERVER, msg);
-		
-		time_t  current_time;
-        std::time(&current_time);
-		msg = client->getNick() + " " + irc::itos((int)difftime(current_time, client->getLastPing()));
-		cmd->queue(RPL_WHOISIDLE, msg);
         if (client->hasMode('o'))
 		{
 			msg = client->getNick();
@@ -58,7 +51,14 @@ void	irc::cmd::whois	(irc::Command* cmd)
 			while (it != chans.end())
 			{
 				if (it->second->isMember(client))
-					cmd->queue(RPL_WHOISCHANNELS, cmd->getArgs()[0] + " " + "#"+ it->second->getName());					
+				{
+					msg = client->getNick() + " ";
+					if (it->second->hasUserMode(client, 'o') || it->second->hasUserMode(client, 'O') || client->hasMode('o'))
+						msg += '@';
+					if (it->second->hasUserMode(client, 'v'))
+						msg += '+';
+					cmd->queue(RPL_WHOISCHANNELS, msg + it->second->getFName());					
+				}
 				it++;
 			}
 		}   
