@@ -26,5 +26,5 @@ void	irc::cmd::oper(irc::Command* cmd)
 		return (cmd->queue(ERR_PASSWDMISMATCH, ":Password Incorrect"));
 	cmd->queue(RPL_YOUREOPER, ":You are now an IRC operator");
 	cli->setMode('o');
-	cmd->queue(RPL_UMODEIS, "+ " + cli->getModestr());
+	cmd->queue(RPL_UMODEIS, "+" + cli->getModestr());
 }

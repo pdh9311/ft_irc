@@ -1,9 +1,39 @@
 #include "channel.hpp"
 
-bool	_is_server_modes(const char c)
+static bool	_is_server_modes(const char c)
 {
-	return (c == 'o' || c == 'p' || c == 's' || c == 'i' ||
-			c == 't' || c == 'n' || c == 'b' || c == 'v');
+	return (c == 'p' || c == 's' || c == 'i' ||
+			c == 't' || c == 'n' || c == 'm');
+}
+
+static bool	_is_user_modes(const char c)
+{
+	return (c == 'o' || c == 'O' || c == 'a' || c == 'i' ||
+			c == 'w' || c == 'r' || c == 's' || c == 'v');
+}
+
+static char	_check_sms(std::string str)
+{
+	std::string::const_iterator	it = str.begin();
+	while (it != str.end())
+	{
+		if (*it != '+' && *it != '-' && !_is_server_modes(*it))
+			return (*it);
+		++it;
+	}
+	return (0);
+}
+
+static char	_check_ums(std::string str)
+{
+	std::string::const_iterator	it = str.begin();
+	while (it != str.end())
+	{
+		if (*it != '+' && *it != '-' && !_is_user_modes(*it))
+			return (*it);
+		++it;
+	}
+	return (0);
 }
 
 static void	_server_mode(irc::Command* cmd)
@@ -22,12 +52,66 @@ static void	_server_mode(irc::Command* cmd)
 	if (!(chan->hasUserMode(cli, 'o') || chan->hasUserMode(cli, 'O') || cli->hasMode('o')))
 		return (cmd->queue(ERR_CHANOPRIVSNEEDED, chan->getFName() + " :You're not channel operator"));
 	
-
 	const std::string&	modes = cmd->getArgs()[1];
 	std::string::const_iterator	it = modes.begin();
 	char	pm = -1;
+	std::string	astr;
+
+	if (cmd->getArgC() > 2)
+	{
+		const std::string&	target = cmd->getArgs()[2];
+		irc::Client*		tcli = serv->getClient(target);
+		if (!tcli)
+			return (cmd->queue(ERR_NOSUCHNICK, target + " :No such nick/channel"));
+		if (!chan->isMember(tcli))
+			return (cmd->queue(ERR_USERNOTINCHANNEL, tcli->getNick() + " " + chan->getFName() + " :They aren't on that channel"));
+		char	invalid = _check_ums(modes);
+		if (invalid)
+			return (cmd->queue(ERR_UNKNOWNMODE, std::string(":") + invalid + " is unknown mode char to me"));
+		while (it != modes.end())
+		{
+			const char&	c = *it;
+			if (c == '+' || c == '-')
+			{
+				if (c == '-' || c == '+')
+				{
+					pm = (*it == '-');
+					++it;
+					continue ;
+				}
+				else if (pm == -1)
+					break ;
+				
+				size_t	ppos = astr.find_last_of('+');
+				size_t	mpos = astr.find_last_of('-');
+
+				if (pm == 0 && !chan->hasUserMode(tcli, c))
+				{
+					if (ppos == std::string::npos || (mpos != std::string::npos && ppos < mpos))
+						astr += '+';
+					astr += *it;
+					chan->setUserMode(tcli, c);
+				}
+				else if (pm == 1 && chan->hasUserMode(tcli, c))
+				{
+					if (mpos == std::string::npos || (ppos != std::string::npos && mpos < ppos))
+						astr += '-';
+					astr += *it;
+					chan->unsetUserMode(tcli, c);
+				}
+			}
+			++it;
+		}
+		chan->broadcast(cli, "MODE " + chan->getFName() + " " + astr + " " + tcli->getNick());
+		return ;
+	}
+
+	char	invalid = _check_sms(modes);
+	if (invalid)
+		return (cmd->queue(ERR_UNKNOWNMODE, std::string(":") + invalid + " is unknown mode char to me"));
 	while (it != modes.end())
 	{
+
 		const char&	c = *it;
 		if (c == '+' || c == '-' || _is_server_modes(*it))
 		{
@@ -39,22 +123,34 @@ static void	_server_mode(irc::Command* cmd)
 			}
 			else if (pm == -1)
 				break ; // tmp
+
+			size_t	ppos = astr.find_last_of('+');
+			size_t	mpos = astr.find_last_of('-');
+
 			if (pm == 0 && !chan->hasMode(c)) // +
+			{
+				if (ppos == std::string::npos || (mpos != std::string::npos && ppos < mpos))
+					astr += '+';
+				astr += *it;
 				chan->setMode(c);
+			}
 			else if (pm == 1 && chan->hasMode(c))
+			{
+				if (mpos == std::string::npos || (ppos != std::string::npos && mpos < ppos))
+					astr += '-';
+				astr += *it;
 				chan->unsetMode(c);
+			}
 		}
+		// else if (!_is_server_modes(*it))
+			// return (cmd->queue(ERR_UNKNOWNMODE, std::string(":") + c + " is unknown mode char to me"));
 		++it;
 	}
 	// std::cout << astr << std::endl;
-	cmd->queue(RPL_CHANNELMODEIS, chan->getFName() + " +" + chan->getModestr());
+	// cmd->queue(RPL_CHANNELMODEIS, chan->getFName() + " +" + chan->getModestr());
+	chan->broadcast(cli, "MODE " + chan->getFName() + " " + astr);
 }
 
-bool	_is_user_modes(const char c)
-{
-	return (c == 'o' || c == 'O' || c == 'a' || c == 'i' ||
-			c == 'w' || c == 'r' || c == 's');
-}
 
 static void	_user_mode(irc::Command* cmd)
 {
@@ -68,6 +164,9 @@ static void	_user_mode(irc::Command* cmd)
 		return (cmd->queue(RPL_UMODEIS, "+" + cli->getModestr()));
 
 	const std::string&	modes = cmd->getArgs()[1];
+	char	invalid = _check_ums(modes);
+	if (invalid)
+		return (cmd->queue(ERR_UMODEUNKNOWNFLAG, ":Unknown MODE flag"));
 	std::string::const_iterator it = modes.begin();
 	char pm = -1;
 	while (it != modes.end())
@@ -85,7 +184,7 @@ static void	_user_mode(irc::Command* cmd)
 			
 			if (pm == 0 && !cli->hasMode(*it))
 			{
-				if (*it != 'o' && *it != 'O' && *it != 'a')
+				if (*it != 'o' && *it != 'O' && *it != 'a' && *it != 'v')
 					cli->setMode(*it);
 			}
 			else if (pm == 1 && cli->hasMode(*it))
@@ -94,6 +193,8 @@ static void	_user_mode(irc::Command* cmd)
 					cli->unsetMode(*it);
 			}
 		}
+		// else if (!_is_user_modes(*it))
+			// return (cmd->queue(ERR_UMODEUNKNOWNFLAG, ":Unknown MODE flag"));
 		++it;
 	}
 	cmd->queue(RPL_UMODEIS, "+" + cli->getModestr());
