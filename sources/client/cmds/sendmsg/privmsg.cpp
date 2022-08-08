@@ -77,8 +77,7 @@ static bool	send_channel(irc::Command* cmd, std::vector<std::string>& ch_name, s
 
 	// m
 	// 채널 모드가 m인지 확인, m 이면 채널내에 있는 수신자들 중 O, o, v 옵션이 있는 사람들만 채팅 가능
-	if (channel->hasMode('m') &&
-		!(has_o_O_v(channel, client)))
+	if (channel->hasMode('m') && !(has_o_O_v(channel, client)))
 	{
 		msg = ch_name[i] + " :Cannot send to channel";
 		cmd->queue(ERR_CANNOTSENDTOCHAN, msg);
