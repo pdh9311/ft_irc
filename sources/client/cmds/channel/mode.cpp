@@ -71,38 +71,36 @@ static void	_server_mode(irc::Command* cmd)
 		while (it != modes.end())
 		{
 			const char&	c = *it;
-			if (c == '+' || c == '-')
+			if (c == '-' || c == '+')
 			{
-				if (c == '-' || c == '+')
-				{
-					pm = (*it == '-');
-					++it;
-					continue ;
-				}
-				else if (pm == -1)
-					break ;
-				
-				size_t	ppos = astr.find_last_of('+');
-				size_t	mpos = astr.find_last_of('-');
-
-				if (pm == 0 && !chan->hasUserMode(tcli, c))
-				{
-					if (ppos == std::string::npos || (mpos != std::string::npos && ppos < mpos))
-						astr += '+';
-					astr += *it;
-					chan->setUserMode(tcli, c);
-				}
-				else if (pm == 1 && chan->hasUserMode(tcli, c))
-				{
-					if (mpos == std::string::npos || (ppos != std::string::npos && mpos < ppos))
-						astr += '-';
-					astr += *it;
-					chan->unsetUserMode(tcli, c);
-				}
+				pm = (*it == '-');
+				++it;
+				continue ;
 			}
+			else if (pm == -1)
+				break ;
+			
+			size_t	ppos = astr.find_last_of('+');
+			size_t	mpos = astr.find_last_of('-');
+
+			if (pm == 0 && !chan->hasUserMode(tcli, c))
+			{
+				if (ppos == std::string::npos || (mpos != std::string::npos && ppos < mpos))
+					astr += '+';
+				astr += c;
+				chan->setUserMode(tcli, c);
+			}
+			else if (pm == 1 && chan->hasUserMode(tcli, c))
+			{
+				if (mpos == std::string::npos || (ppos != std::string::npos && mpos < ppos))
+					astr += '-';
+				astr += c;
+				chan->unsetUserMode(tcli, c);
+			}
+		
 			++it;
 		}
-		chan->broadcast(cli, "MODE " + chan->getFName() + " " + astr + " " + tcli->getNick());
+		chan->broadcast(cli, "MODE " + chan->getFName() + " " + (astr == "" ? modes : astr) + " " + tcli->getNick());
 		return ;
 	}
 
@@ -111,36 +109,32 @@ static void	_server_mode(irc::Command* cmd)
 		return (cmd->queue(ERR_UNKNOWNMODE, std::string(":") + invalid + " is unknown mode char to me"));
 	while (it != modes.end())
 	{
-
 		const char&	c = *it;
-		if (c == '+' || c == '-' || _is_server_modes(*it))
+		if (c == '-' || c == '+')
 		{
-			if (c == '-' || c == '+')
-			{
-				pm = (*it == '-');
-				++it;
-				continue ;
-			}
-			else if (pm == -1)
-				break ; // tmp
+			pm = (*it == '-');
+			++it;
+			continue ;
+		}
+		else if (pm == -1)
+			break ; // tmp
 
-			size_t	ppos = astr.find_last_of('+');
-			size_t	mpos = astr.find_last_of('-');
+		size_t	ppos = astr.find_last_of('+');
+		size_t	mpos = astr.find_last_of('-');
 
-			if (pm == 0 && !chan->hasMode(c)) // +
-			{
-				if (ppos == std::string::npos || (mpos != std::string::npos && ppos < mpos))
-					astr += '+';
-				astr += *it;
-				chan->setMode(c);
-			}
-			else if (pm == 1 && chan->hasMode(c))
-			{
-				if (mpos == std::string::npos || (ppos != std::string::npos && mpos < ppos))
-					astr += '-';
-				astr += *it;
-				chan->unsetMode(c);
-			}
+		if (pm == 0 && !chan->hasMode(c)) // +
+		{
+			if (ppos == std::string::npos || (mpos != std::string::npos && ppos < mpos))
+				astr += '+';
+			astr += *it;
+			chan->setMode(c);
+		}
+		else if (pm == 1 && chan->hasMode(c))
+		{
+			if (mpos == std::string::npos || (ppos != std::string::npos && mpos < ppos))
+				astr += '-';
+			astr += *it;
+			chan->unsetMode(c);
 		}
 		// else if (!_is_server_modes(*it))
 			// return (cmd->queue(ERR_UNKNOWNMODE, std::string(":") + c + " is unknown mode char to me"));
@@ -171,28 +165,26 @@ static void	_user_mode(irc::Command* cmd)
 	char pm = -1;
 	while (it != modes.end())
 	{
-		if (*it == '+' || *it == '-' || _is_user_modes(*it))
+		if (*it == '-' || *it == '+')
 		{
-			if (*it == '-' || *it == '+')
-			{
-				pm = (*it == '-');
-				++it;
-				continue ;
-			}
-			else if (pm == -1)
-				break ;
-			
-			if (pm == 0 && !cli->hasMode(*it))
-			{
-				if (*it != 'o' && *it != 'O' && *it != 'a' && *it != 'v')
-					cli->setMode(*it);
-			}
-			else if (pm == 1 && cli->hasMode(*it))
-			{
-				if (*it != 'a' && *it != 'r')
-					cli->unsetMode(*it);
-			}
+			pm = (*it == '-');
+			++it;
+			continue ;
 		}
+		else if (pm == -1)
+			break ;
+		
+		if (pm == 0 && !cli->hasMode(*it))
+		{
+			if (*it != 'o' && *it != 'O' && *it != 'a' && *it != 'v')
+				cli->setMode(*it);
+		}
+		else if (pm == 1 && cli->hasMode(*it))
+		{
+			if (*it != 'a' && *it != 'r')
+				cli->unsetMode(*it);
+		}
+	
 		// else if (!_is_user_modes(*it))
 			// return (cmd->queue(ERR_UMODEUNKNOWNFLAG, ":Unknown MODE flag"));
 		++it;
