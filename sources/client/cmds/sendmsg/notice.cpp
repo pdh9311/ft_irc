@@ -69,9 +69,9 @@ void	irc::cmd::notice	(irc::Command* cmd)
 	const std::string			sender_msg = cmd->getTrailing();
 
 	// 중복 닉네임 간소화
-	// std::sort(nicks.begin(), nicks.end());
-	// std::vector<std::string>::iterator	uit = std::unique(nicks.begin(), nicks.end());
-	// nicks.erase(uit, nicks.end());
+	std::sort(nicks.begin(), nicks.end());
+	std::vector<std::string>::iterator	uit = std::unique(nicks.begin(), nicks.end());
+	nicks.erase(uit, nicks.end());
 
 	// 수신자가 채널인지 아닌지 판단. // 수신자가 현재 서버에 존재하는지 확인
 	for (size_t i = 0; i < nicks.size(); i++)
