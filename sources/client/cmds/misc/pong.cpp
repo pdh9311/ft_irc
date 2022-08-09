@@ -9,8 +9,10 @@
 
 void	irc::cmd::pong	(irc::Command* cmd)
 {
-	const std::string& a1 = cmd->getArgs()[0];
-	if (a1.empty())
-		return (cmd->setResult(ERR_NOORIGIN));
-	cmd->getClient()->setLastPing(std::time(0)); // does pong arg have to match nick?
+	const std::string&	sender = cmd->getTrailing();
+	Client*	cli = cmd->getClient();
+
+	if (sender.empty())
+		return (cmd->queue(ERR_NOORIGIN));
+	cli->setLastPing(std::time(0));
 }

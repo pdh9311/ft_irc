@@ -23,7 +23,6 @@ void	irc::cmd::nick(irc::Command* cmd)
 {
 	irc::Server*		server = cmd->getServer();
 	std::string			msg;
-	const std::string&	nick = cmd->getArgs()[0];
 
 	if (cmd->getArgC() < 1)
 	{
@@ -31,6 +30,8 @@ void	irc::cmd::nick(irc::Command* cmd)
 		cmd->queue(ERR_NONICKNAMEGIVEN, msg);	// no arg
 		return ;
 	}
+	
+	const std::string&	nick = cmd->getArgs()[0];
 
 	if (!nick.size())
 	{
