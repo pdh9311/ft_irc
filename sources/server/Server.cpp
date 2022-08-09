@@ -108,13 +108,13 @@ namespace irc
 	void	Server::initialize()
 	{
 		int			sock;
+		int option = 1;	// SO_REUSEADDR 의 옵션 값을 TRUE
 		sockaddr_in	sin;
 		protoent	*pe;
 		pollfd		pfd;
 
 		pe = static_cast<protoent*>(DBGV(NULL, getprotobyname("tcp"), "getprotobyname"));
 		sock = DBG(-1, socket(PF_INET, SOCK_STREAM, pe->p_proto), "socket");
-		int option = 1;	// SO_REUSEADDR 의 옵션 값을 TRUE
 		DBG(-1, setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)), "setsockopt");	// SO_REUSEADDR을 지정해 주면 같은 포트에 대해 다른 소켓이 bind()되는 것을 허락해 주기 때문에 bind()에러 없이 프로그램을 실행할 수 있다.
 		fcntl(sock, F_SETFL, O_NONBLOCK);
 		std::memset(&sin, 0, sizeof(sin));	// 구조체 초기화 필요함.(sockaddr과 sockaddr_in 크기를 맞추기 위해서 sockaddr_in에 zero 배열이 있는데 이 배열을 0으로 만들어줘야 하기때문에 값을 대입하기 전에 0으로 초기화기 필요함.)
