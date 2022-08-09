@@ -47,19 +47,17 @@ namespace irc
 
 	void	Server::ping()
 	{
-		time_t								ct = std::time(0);
-		std::map<int, Client*>::iterator	it = _clients.begin();
+		time_t				ct = std::time(0);
+		clients_t::iterator	it = _clients.begin();
 
 		while (it != _clients.end())
 		{
 			Client*&	client = it->second;
 
-			if (client->getStatus() == Client::PENDING)
-				continue ;
-			if (ct - client->getLastPing() >= conf.get_Y().getPingFrequency() * 3)	// give 3 times to try
+			if (client->getStatus() >= Client::LOGGEDIN)
+				this->queue(client->getFD(), "PING " + client->getNick());
+			else if (ct - client->getLastPing() >= conf.get_Y().getPingFrequency() * 3)	// give 3 times to try
 				rmClient(client);
-
-			this->queue(client->getFD(), "PING " + client->getNick());
 			it++;
 		}
 	}

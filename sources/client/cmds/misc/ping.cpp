@@ -9,11 +9,9 @@
 
 void	irc::cmd::ping	(irc::Command* cmd)
 {
-	// client should not call ping command. Ignore? nvm, irssi sends ping
 	if (cmd->getArgC() < 1)
-		return ; // ping won't send ERR_NEEDMOREPARAMS
-	const std::string&	targ = cmd->getArgs()[0];
-	if (cmd->getClient()->getNick() == targ)
-		cmd->getServer()->queue(cmd->getClient()->getFD(),
-			cmd->getServer()->getPrefix(cmd->getClient()) + " PONG " + targ);
+		return (cmd->queue(ERR_NOORIGIN));
+	const std::string&	sender = cmd->getArgs()[0];
+	
+	cmd->queue("PONG :" + sender);	
 }

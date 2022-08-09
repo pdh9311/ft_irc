@@ -32,7 +32,9 @@ bool	isChannel(irc::Server::channels_t channels, const std::string& channel_name
 void	irc::cmd::kick(Command* cmd)
 {
 	Server*	server = cmd->getServer();
-	std::string	channel_name = cmd->getArgs()[0];	// 채널명
+	if (!cmd->getArgC())
+		return (cmd->queue(ERR_NEEDMOREPARAMS));
+	const std::string	channel_name = cmd->getArgs()[0];	// 채널명
 	std::string	msg;
 
 	if (cmd->getArgC() != 2 && cmd->getArgC() != 3)

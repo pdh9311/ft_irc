@@ -222,6 +222,12 @@ namespace irc
 			case ERR_USERSDONTMATCH:
 				str += ":Cant change mode for other users";
 				break ;
+			case ERR_NOORIGIN:
+				str += ":No origin specified";
+				break ;
+			case ERR_NOTEXTTOSEND:
+				str += ":No text to send";
+				break ;
 			case RPL_LISTEND:
 				str += ":End of /LIST";
 				break ;
