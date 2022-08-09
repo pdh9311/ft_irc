@@ -29,7 +29,6 @@ static void	send_channel(irc::Command* cmd, const std::string& ch_name)
 	// n
 	// 송신자의 채널이 있는지 확인, 있으면 송신자의 채널 확인
 	// 수신자의 채널과 송신자의 채널이 다르면 404
-	// if (channel->hasMode('n') && !(is_client_channel(cmd, client, ch_name[i].substr(1)) || client->hasMode('o')))
 	if (channel->hasMode('n') && !channel->isMember(client))
 		return (cmd->queue(ERR_CANNOTSENDTOCHAN, ch_name + " :Cannot send to channel"));
 
