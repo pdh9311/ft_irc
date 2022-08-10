@@ -54,10 +54,10 @@ namespace irc
 		{
 			Client*&	client = it->second;
 
-			if (client->getStatus() >= Client::LOGGEDIN)
-				this->queue(client->getFD(), "PING " + client->getNick());
-			else if (ct - client->getLastPing() >= conf.get_Y().getPingFrequency() * 3)	// give 3 times to try
+			if (ct - client->getLastPing() >= conf.get_Y().getPingFrequency() * 4)	// give 3 times to try
 				rmClient(client);
+			else if (client->getStatus() >= Client::LOGGEDIN)
+				this->queue(client->getFD(), "PING " + client->getNick());
 			it++;
 		}
 	}
@@ -186,7 +186,7 @@ namespace irc
 				this->ping(), last_ping = std::time(0);
 
 			_pfds.reserve(42);
-			pr = poll(&_pfds[0], _pfds.size(), ptime * 1004), DBG(-1, pr, "poll");
+			pr = poll(&_pfds[0], _pfds.size(), 1000), DBG(-1, pr, "poll");
 
 			if (_pfds[0].revents)
 				this->accept();
