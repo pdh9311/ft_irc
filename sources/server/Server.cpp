@@ -54,10 +54,10 @@ namespace irc
 		{
 			Client*&	client = it->second;
 
-			if (ct - client->getLastPing() >= conf.get_Y().getPingFrequency() * 3)	// give 3 times to try
-				this->queue(client->getFD(), "PING " + client->getNick());
-			else if (client->getStatus() >= Client::LOGGEDIN)
+			if (ct - client->getLastPing() >= conf.get_Y().getPingFrequency() * 4)	// give 3 times to try
 				rmClient(client);
+			else if (client->getStatus() >= Client::LOGGEDIN)
+				this->queue(client->getFD(), "PING " + client->getNick());
 			it++;
 		}
 	}
