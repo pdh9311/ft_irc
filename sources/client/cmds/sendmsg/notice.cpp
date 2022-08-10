@@ -9,6 +9,12 @@
 #include <algorithm>
 #include <vector>
 
+static bool has_o_O_v(irc::Channel* channel, irc::Client* client)
+{
+	return (channel->hasUserMode(client, 'o') || channel->hasUserMode(client, 'O') ||
+			channel->hasUserMode(client, 'v') || client->hasMode('o'));
+}
+
 static void	nsend_channel(irc::Command* cmd, const std::string& ch_name)
 {
 	irc::Server*			server = cmd->getServer();
@@ -18,6 +24,12 @@ static void	nsend_channel(irc::Command* cmd, const std::string& ch_name)
 	irc::Channel*			channel = server->getChannel(ch_name);
 
 	if (!channel)
+		return ;
+
+	if (channel->hasMode('n') && !channel->isMember(client))
+		return ;
+
+	if (channel->hasMode('m') && !(has_o_O_v(channel, client)))
 		return ;
 
 	const irc::Channel::clients_t&	chcls = channel->getClients();
