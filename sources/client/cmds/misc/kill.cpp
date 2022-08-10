@@ -28,8 +28,19 @@ void	irc::cmd::kill	(irc::Command* cmd)
 	{
 		Channel*	chan = it->second;
 		if (chan->isMember(targ))
-			chan->broadcast(targ, "QUIT :" + cmd->getTrailing());
+		{
+			const Channel::clients_t&	clients = chan->getClients();
+			Channel::clients_t::const_iterator	cit;
+			for (cit = clients.begin(); cit != clients.end(); ++cit)
+			{
+				Client*	client = serv->getClient(*cit);
+				if (targ->getNick() != client->getNick())
+					client->queue(serv->getPrefix(targ) + " QUIT :Killed by " + cli->getNick() + " reason: " + cmd->getTrailing());
+			}
+			chan->rmClient(targ);
+		}
 		++it;
 	}
 	targ->queue(serv->getPrefix(targ) + " KILL :" + cmd->getTrailing());
+	serv->rmClient(targ);
 }

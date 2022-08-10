@@ -186,7 +186,7 @@ namespace irc
 				this->ping(), last_ping = std::time(0);
 
 			_pfds.reserve(42);
-			pr = poll(&_pfds[0], _pfds.size(), ptime * 1004), DBG(-1, pr, "poll");
+			pr = poll(&_pfds[0], _pfds.size(), 1000), DBG(-1, pr, "poll");
 
 			if (_pfds[0].revents)
 				this->accept();
